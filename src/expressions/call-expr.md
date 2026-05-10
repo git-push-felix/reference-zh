@@ -15,14 +15,14 @@ r[expr.call.convergence]
 如果函数最终返回，则表达式完成。
 
 r[expr.call.trait]
-对于[非函数类型]，表达式 `f(...)` 根据函数操作数使用以下 trait 之一上的方法：
+对于[非函数类型][non-function types]，表达式 `f(...)` 根据函数操作数使用以下 trait 之一上的方法：
 
 - [`Fn`] 或 [`AsyncFn`] --- 共享引用。
 - [`FnMut`] 或 [`AsyncFnMut`] --- 可变引用。
 - [`FnOnce`] 或 [`AsyncFnOnce`] --- 值。
 
 r[expr.call.autoref-deref]
-如果需要，会自动进行借用。函数操作数也会根据需要被[自动解引用]。
+如果需要，会自动进行借用。函数操作数也会根据需要被[自动解引用][automatically dereferenced]。
 
 一些调用表达式的示例：
 
@@ -36,7 +36,7 @@ r[expr.call.desugar]
 ## 消歧函数调用
 
 r[expr.call.desugar.fully-qualified]
-所有函数调用都是更显式的[完全限定语法]的语法糖。
+所有函数调用都是更显式的[完全限定语法][fully-qualified syntax]的语法糖。
 
 r[expr.call.desugar.ambiguity]
 函数调用可能需要完全限定，这取决于调用的歧义性以及作用域内的项。

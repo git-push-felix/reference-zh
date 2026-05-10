@@ -107,6 +107,6 @@ fn takes_fn_ptr<'short, 'middle: 'short>(
 }
 ```
 
-[函数指针]: types/function-pointer.md
-[高阶]: ../nomicon/hrtb.html
-[trait 对象]: types/trait-object.md
+[function pointers]: types/function-pointer.md
+[Higher-ranked]: ../nomicon/hrtb.html
+[trait objects]: types/trait-object.md

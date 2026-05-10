@@ -22,7 +22,7 @@ r[expr.literal.intro]
 *字面量表达式*是由单个记号而非记号序列组成的表达式，它直接且立即表示它所求值为的值，而不是通过名称或其他求值规则来引用它。
 
 r[expr.literal.const-expr]
-字面量是[常量表达式]的一种形式，因此（主要在）编译时求值。
+字面量是[常量表达式][constant expression]的一种形式，因此（主要在）编译时求值。
 
 r[expr.literal.literal-token]
 前面描述的每种词法[字面量][literal tokens]形式都可以构成字面量表达式，关键字 `true` 和 `false` 也可以。
@@ -76,24 +76,24 @@ r[expr.literal.escape.hex-octet]
 
 转义序列由 `\x` 后跟两个十六进制数字组成。
 
-转义值是其 [Unicode 标量值]等于将转义序列最后两个字符解释为十六进制整数的字符，如同使用 [`u8::from_str_radix`] 以基数 16 解释。
+转义值是其 [Unicode 标量值][Unicode scalar value]等于将转义序列最后两个字符解释为十六进制整数的字符，如同使用 [`u8::from_str_radix`] 以基数 16 解释。
 
 > [!NOTE]
-> 因此，转义值的 [Unicode 标量值]在 [`u8`][numeric types] 的范围内。
+> 因此，转义值的 [Unicode 标量值][Unicode scalar value]在 [`u8`][numeric types] 的范围内。
 
 r[expr.literal.escape.hex-ascii]
 ### 7 位转义
 
 转义序列由 `\x` 后跟一个八进制数字和一个十六进制数字组成。
 
-转义值是其 [Unicode 标量值]等于将转义序列最后两个字符解释为十六进制整数的字符，如同使用 [`u8::from_str_radix`] 以基数 16 解释。
+转义值是其 [Unicode 标量值][Unicode scalar value]等于将转义序列最后两个字符解释为十六进制整数的字符，如同使用 [`u8::from_str_radix`] 以基数 16 解释。
 
 r[expr.literal.escape.unicode]
 ### Unicode 转义
 
 转义序列由 `\u{` 后跟一串字符（每个字符是十六进制数字或 `_`）再后跟 `}` 组成。
 
-转义值是其 [Unicode 标量值]等于将转义序列中包含的十六进制数字解释为十六进制整数的字符，如同使用 [`u32::from_str_radix`] 以基数 16 解释。
+转义值是其 [Unicode 标量值][Unicode scalar value]等于将转义序列中包含的十六进制数字解释为十六进制整数的字符，如同使用 [`u32::from_str_radix`] 以基数 16 解释。
 
 > [!NOTE]
 > [CHAR_LITERAL] 或 [STRING_LITERAL] 记号的允许形式确保存在这样一个字符。
@@ -150,7 +150,7 @@ r[expr.literal.char.single]
 * 否则，表示字符是构成字面量内容的单个字符。
 
 r[expr.literal.char.result]
-表达式的值是与表示字符的 [Unicode 标量值]相对应的 [`char`]。
+表达式的值是与表示字符的 [Unicode 标量值][Unicode scalar value]相对应的 [`char`]。
 
 > [!NOTE]
 > [CHAR_LITERAL] 记号的允许形式确保这些规则总是产生单个字符。
@@ -237,7 +237,7 @@ r[expr.literal.byte-char.single]
 * 否则，表示字符是构成字面量内容的单个字符。
 
 r[expr.literal.byte-char.result]
-表达式的值是表示字符的 [Unicode 标量值]。
+表达式的值是表示字符的 [Unicode 标量值][Unicode scalar value]。
 
 > [!NOTE]
 > [BYTE_LITERAL] 记号的允许形式确保这些规则总是产生单个字符，其 Unicode 标量值在 [`u8`][numeric types] 的范围内。
@@ -281,7 +281,7 @@ r[expr.literal.byte-string.raw]
 * 如果记号是 [RAW_BYTE_STRING_LITERAL]，则表示字符串与字面量内容完全相同。
 
 r[expr.literal.byte-string.result]
-表达式的值是对一个静态分配的数组的引用，该数组按相同顺序包含表示字符串中每个字符的 [Unicode 标量值]。
+表达式的值是对一个静态分配的数组的引用，该数组按相同顺序包含表示字符串中每个字符的 [Unicode 标量值][Unicode scalar values]。
 
 > [!NOTE]
 > [BYTE_STRING_LITERAL] 和 [RAW_BYTE_STRING_LITERAL] 记号的允许形式确保这些规则始终产生在 [`u8`][numeric types] 范围内的数组元素值。
@@ -320,8 +320,8 @@ r[expr.literal.c-string.represented]
 r[expr.literal.c-string.escape]
 * 如果记号是 [C_STRING_LITERAL]，字面量内容被视为一个项序列，每一项要么是除 `\` 之外的单个 Unicode 字符，要么是一个[转义][Escape]。该序列按如下方式转换为字节序列：
   * 每个单个 Unicode 字符贡献其 UTF-8 表示。
-  * 每个[简单转义][simple escape]贡献其转义值的 [Unicode 标量值]。
-  * 每个 [8 位转义][8-bit escape]贡献一个包含其转义值的 [Unicode 标量值]的单个字节。
+  * 每个[简单转义][simple escape]贡献其转义值的 [Unicode 标量值][Unicode scalar value]。
+  * 每个 [8 位转义][8-bit escape]贡献一个包含其转义值的 [Unicode 标量值][Unicode scalar value]的单个字节。
   * 每个 [Unicode 转义][unicode escape]贡献其转义值的 UTF-8 表示。
   * 每个[字符串续行转义][string continuation escape]不贡献任何字节。
 
@@ -361,7 +361,7 @@ r[expr.literal.int.intro]
 整数字面量表达式由单个 [INTEGER_LITERAL] 记号组成。
 
 r[expr.literal.int.suffix]
-如果记号有[后缀]，则该后缀必须是[原始整数类型][numeric types]之一：`u8`、`i8`、`u16`、`i16`、`u32`、`i32`、`u64`、`i64`、`u128`、`i128`、`usize` 或 `isize`，并且表达式具有该类型。
+如果记号有[后缀][suffix]，则该后缀必须是[原始整数类型][numeric types]之一：`u8`、`i8`、`u16`、`i16`、`u32`、`i32`、`u64`、`i64`、`u128`、`i128`、`usize` 或 `isize`，并且表达式具有该类型。
 
 r[expr.literal.int.infer]
 如果记号没有后缀，则表达式的类型通过类型推断确定：
@@ -420,13 +420,13 @@ r[expr.literal.int.u128-value]
 * 将字符串转换为 `u128` 值，如同使用 [`u128::from_str_radix`] 并以所选基数转换。如果该值不适合 `u128`，则为编译错误。
 
 r[expr.literal.int.cast]
-* 通过[数值转换]将 `u128` 值转换为表达式的类型。
+* 通过[数值转换][numeric cast]将 `u128` 值转换为表达式的类型。
 
 > [!NOTE]
-> 如果字面量的值不适合表达式类型，最终转换将截断该值。`rustc` 包含一个名为 `overflowing_literals` 的 [lint 检查]，默认值为 `deny`，当发生这种情况时拒绝表达式。
+> 如果字面量的值不适合表达式类型，最终转换将截断该值。`rustc` 包含一个名为 `overflowing_literals` 的 [lint 检查][lint check]，默认值为 `deny`，当发生这种情况时拒绝表达式。
 
 > [!NOTE]
-> 例如 `-1i8` 是[取反运算符]应用于字面量表达式 `1i8`，而不是单个整数字面量表达式。参见[溢出][Overflow]获取有关表示有符号类型最负值的说明。
+> 例如 `-1i8` 是[取反运算符][negation operator]应用于字面量表达式 `1i8`，而不是单个整数字面量表达式。参见[溢出][Overflow]获取有关表示有符号类型最负值的说明。
 
 r[expr.literal.float]
 ## 浮点字面量表达式
@@ -437,7 +437,7 @@ r[expr.literal.float.intro]
  * 一个有后缀且无基数指示符的单独 [INTEGER_LITERAL] 记号
 
 r[expr.literal.float.suffix]
-如果记号有[后缀]，则该后缀必须是[原始浮点类型][floating-point types]之一：`f32` 或 `f64`，并且表达式具有该类型。
+如果记号有[后缀][suffix]，则该后缀必须是[原始浮点类型][floating-point types]之一：`f32` 或 `f64`，并且表达式具有该类型。
 
 r[expr.literal.float.infer]
 如果记号没有后缀，则表达式的类型通过类型推断确定：
@@ -475,7 +475,7 @@ r[expr.literal.float.value]
 * 将字符串转换为表达式的类型，如同使用 [`f32::from_str`] 或 [`f64::from_str`]。
 
 > [!NOTE]
-> 例如 `-1.0` 是[取反运算符]应用于字面量表达式 `1.0`，而不是单个浮点字面量表达式。
+> 例如 `-1.0` 是[取反运算符][negation operator]应用于字面量表达式 `1.0`，而不是单个浮点字面量表达式。
 
 > [!NOTE]
 > `inf` 和 `NaN` 不是字面量记号。可以使用 [`f32::INFINITY`]、[`f64::INFINITY`]、[`f32::NAN`] 和 [`f64::NAN`] 常量来代替字面量表达式。在 `rustc` 中，足够大到被求值为无穷大的字面量将触发 `overflowing_literals` lint 检查。
@@ -487,7 +487,7 @@ r[expr.literal.bool.intro]
 布尔字面量表达式由关键字 `true` 或 `false` 之一组成。
 
 r[expr.literal.bool.result]
-表达式的类型是原始[布尔类型]，其值为：
+表达式的类型是原始[布尔类型][boolean type]，其值为：
  * 如果关键字是 `true`，则为 true
  * 如果关键字是 `false`，则为 false
 

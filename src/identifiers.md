@@ -48,10 +48,10 @@ r[ident.zero-width-chars]
 r[ident.ascii-limitations]
 在以下情况下，标识符仅限于 [`XID_Start`] 和 [`XID_Continue`] 的 ASCII 子集：
 
-* [`extern crate`][extern crate] 声明（除 [AsClause] 标识符外）
+* [`extern crate`][`extern crate`] 声明（除 [AsClause] 标识符外）
 * 在[路径][path]中引用的外部 crate 名称
-* 从文件系统加载且不带 [`path` 属性][path attribute]的[模块][module]名称
-* 带有 [`no_mangle`][no_mangle] 属性的程序项
+* 从文件系统加载且不带 [`path` 属性][`path` attribute]的[模块][module]名称
+* 带有 [`no_mangle`][`no_mangle`] 属性的程序项
 * [外部块][external blocks]中的程序项名称
 
 r[ident.normalization]

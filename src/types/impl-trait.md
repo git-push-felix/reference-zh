@@ -167,6 +167,6 @@ r[type.impl-trait.constraint]
 
 `impl Trait` 只能作为非 `extern` 函数的参数或返回类型出现。它不能是 `let` 绑定的类型、字段类型，也不能出现在类型别名中。
 
-[`use<..>` 边界]: ../trait-bounds.md#use-bounds
+[`use<..>` bound]: ../trait-bounds.md#use-bounds
 [closures]: closure.md
 [trait object]: trait-object.md

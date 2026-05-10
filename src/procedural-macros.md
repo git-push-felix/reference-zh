@@ -116,7 +116,7 @@ r[macro.proc.derive]
 ## `proc_macro_derive` 属性
 
 r[macro.proc.derive.intro]
-将 *`proc_macro_derive` [属性]* 应用于一个函数可定义一个*派生宏*，该宏可以由 [`derive` 属性][`derive` attribute]调用。这些宏会接收一个 [struct]、[enum] 或 [union] 定义的 token 流，并且可以在这些定义之后生成新的[项][items]。它们还可以声明和使用[派生宏辅助属性][derive macro helper attributes]。
+将 *`proc_macro_derive` [属性][attribute]* 应用于一个函数可定义一个*派生宏*，该宏可以由 [`derive` 属性][`derive` attribute]调用。这些宏会接收一个 [struct]、[enum] 或 [union] 定义的 token 流，并且可以在这些定义之后生成新的[项][items]。它们还可以声明和使用[派生宏辅助属性][derive macro helper attributes]。
 
 > [!EXAMPLE]
 > 此派生宏忽略其输入，并追加定义函数的 token。

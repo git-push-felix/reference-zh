@@ -13,7 +13,7 @@ r[expr.await.construct]
 await 表达式的语法是一个类型实现了 [`IntoFuture`] trait 的表达式（称为*future 操作数*），然后是 `.` 记号，再然后是 `await` 关键字。
 
 r[expr.await.allowed-positions]
-Await 表达式仅在[异步上下文]（如 [`async fn`]、[`async` 闭包]或 [`async` 块]）中合法。
+Await 表达式仅在[异步上下文][async context]（如 [`async fn`]、[`async` 闭包][`async` closure]或 [`async` 块][`async` block]）中合法。
 
 r[expr.await.effects]
 更具体地说，await 表达式具有以下效果。
@@ -32,7 +32,7 @@ r[expr.await.edition2018]
 r[expr.await.task]
 ## 任务上下文
 
-任务上下文指的是当异步上下文本身被轮询时提供给当前[异步上下文]的 [`Context`]。因为 `await` 表达式仅在异步上下文中合法，所以必须有某个任务上下文可用。
+任务上下文指的是当异步上下文本身被轮询时提供给当前[异步上下文][async context]的 [`Context`]。因为 `await` 表达式仅在异步上下文中合法，所以必须有某个任务上下文可用。
 
 r[expr.await.desugar]
 ## 近似脱糖

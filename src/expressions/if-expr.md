@@ -34,10 +34,10 @@ r[expr.if.intro]
 `if` 表达式的语法是由 `&&` 分隔的一个或多个条件操作数的序列，后跟一个结果块，任意数量的 `else if` 条件和块，以及一个可选的尾部 `else` 块。
 
 r[expr.if.condition]
-条件操作数必须是一个具有[布尔类型]的[表达式][Expression]或一个条件 `let` 匹配。
+条件操作数必须是一个具有[布尔类型][boolean type]的[表达式][Expression]或一个条件 `let` 匹配。
 
 r[expr.if.condition-true]
-如果所有条件操作数都求值为 `true` 且所有 `let` 模式都成功匹配其[受检者]，则执行结果块，并跳过任何后续的 `else if` 或 `else` 块。
+如果所有条件操作数都求值为 `true` 且所有 `let` 模式都成功匹配其[受检者][scrutinee]，则执行结果块，并跳过任何后续的 `else if` 或 `else` 块。
 
 r[expr.if.else-if]
 如果任何条件操作数求值为 `false` 或任何 `let` 模式未匹配其受检者，则跳过结果块，并求值任何后续的 `else if` 条件。
@@ -127,7 +127,7 @@ if let _ = 5 {
 ```
 
 r[expr.if.let.or-pattern]
-可以使用 `|` 运算符指定多个模式。这与 [`match` 表达式]中的 `|` 具有相同的语义：
+可以使用 `|` 运算符指定多个模式。这与 [`match` 表达式][`match` expressions]中的 `|` 具有相同的语义：
 
 ```rust
 enum E {

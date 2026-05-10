@@ -32,7 +32,7 @@ r[expr.operator.int-overflow.binary-arith]
 * 当 `+`、`*` 或二元 `-` 创建的值大于可存储的最大值，或小于可存储的最小值时。
 
 r[expr.operator.int-overflow.unary-neg]
-* 将一元 `-` 应用于任何有符号整数类型的最负值，除非操作数是[字面量表达式]（或单独出现在一个或多个[分组表达式]内部的字面量表达式）。
+* 将一元 `-` 应用于任何有符号整数类型的最负值，除非操作数是[字面量表达式][literal expression]（或单独出现在一个或多个[分组表达式][grouped expression]内部的字面量表达式）。
 
 r[expr.operator.int-overflow.div]
 * 使用 `/` 或 `%`，其中左侧参数是有符号整数类型的最小整数，右侧参数是 `-1`。由于历史原因，即使禁用 `-C overflow-checks` 也会执行这些检查。
@@ -65,7 +65,7 @@ r[expr.operator.borrow.intro]
 `&`（共享借用）和 `&mut`（可变借用）运算符是一元前缀运算符。
 
 r[expr.operator.borrow.result]
-当应用于[位置表达式]时，此表达式产生一个指向该值所指位置的引用（指针）。
+当应用于[位置表达式][place expression]时，此表达式产生一个指向该值所指位置的引用（指针）。
 
 r[expr.operator.borrow.lifetime]
 该内存位置也被置于借用状态，持续时间为引用的生命周期。对于共享借用（`&`），这意味着该位置不能被修改，但可以被读取或再次共享。对于可变借用（`&mut`），在借用到期之前，不能以任何方式访问该位置。
@@ -74,7 +74,7 @@ r[expr.operator.borrow.mut]
 `&mut` 在可变位置表达式上下文中求值其操作数。
 
 r[expr.operator.borrow.temporary]
-如果 `&` 或 `&mut` 运算符应用于[值表达式]，则会创建[临时值]。
+如果 `&` 或 `&mut` 运算符应用于[值表达式][value expression]，则会创建[临时值][temporary value]。
 
 这些运算符不能被重载。
 
@@ -118,7 +118,7 @@ r[expr.borrow.raw.result]
 `&raw const expr` 创建一个类型为 `*const T` 的指向给定位置的 const 裸指针，`&raw mut expr` 创建一个类型为 `*mut T` 的可变裸指针。
 
 r[expr.borrow.raw.invalid-ref]
-每当位置表达式可能求值为未正确对齐的位置或未按类型存储有效值的位置时，或者每当创建引用会引入不正确的别名假设时，必须使用裸借用运算符而不是借用运算符。在这些情况下，使用借用运算符会因创建无效引用而导致[未定义行为]，但裸指针仍然可以被构造。
+每当位置表达式可能求值为未正确对齐的位置或未按类型存储有效值的位置时，或者每当创建引用会引入不正确的别名假设时，必须使用裸借用运算符而不是借用运算符。在这些情况下，使用借用运算符会因创建无效引用而导致[未定义行为][undefined behavior]，但裸指针仍然可以被构造。
 
 以下是通过 `packed` 结构体创建指向未对齐位置的裸指针的示例：
 
@@ -167,16 +167,16 @@ r[expr.deref.result]
 当应用于[指针](../types/pointer.md)或 [`Box`] 时，它表示指向的位置。
 
 r[expr.deref.mut]
-如果表达式的类型为 `&mut T`、`*mut T` 或 `Box<T>`，并且是局部变量、局部变量的（嵌套）字段或可变的[位置表达式]，则可以赋值给结果内存位置。
+如果表达式的类型为 `&mut T`、`*mut T` 或 `Box<T>`，并且是局部变量、局部变量的（嵌套）字段或可变的[位置表达式][place expression]，则可以赋值给结果内存位置。
 
 r[expr.deref.box]
-当应用于 [`Box`] 时，结果位置可以被[移出]。
+当应用于 [`Box`] 时，结果位置可以被[移出][moved from]。
 
 r[expr.deref.safety]
 解引用裸指针需要 `unsafe`。
 
 r[expr.deref.traits]
-对于非指针类型，`*x` 等价于[不可变位置表达式上下文](../expressions.md#mutability)中的 `*std::ops::Deref::deref(&x)` 和可变位置表达式上下文中的 `*std::ops::DerefMut::deref_mut(&mut x)`，不同之处在于当 `*x` 经历[临时值生命周期延长]时，被解引用的表达式 `x` 的[临时值作用域]也会被延长。
+对于非指针类型，`*x` 等价于[不可变位置表达式上下文](../expressions.md#mutability)中的 `*std::ops::Deref::deref(&x)` 和可变位置表达式上下文中的 `*std::ops::DerefMut::deref_mut(&mut x)`，不同之处在于当 `*x` 经历[临时值生命周期延长][temporary lifetime extension]时，被解引用的表达式 `x` 的[临时值作用域][temporary scope]也会被延长。
 
 ```rust
 # struct NoCopy;
@@ -535,11 +535,11 @@ r[expr.as.coercions]
 | 整数类型              | `*V`，其中 `V: Sized`      | [地址到指针转换][expr.as.int-as-pointer]          |
 | `&m₁ [T; n]`          | `*m₂ T` [^lessmut]         | 数组到指针转换                                    |
 | `*m₁ [T; n]`          | `*m₂ T` [^lessmut]         | 数组到指针转换                                    |
-| [函数项]              | [函数指针]                 | 函数项到函数指针转换                              |
-| [函数项]              | `*V`，其中 `V: Sized`      | 函数项到指针转换                                  |
-| [函数项]              | 整数                       | 函数项到地址转换                                  |
-| [函数指针]            | `*V`，其中 `V: Sized`      | 函数指针到指针转换                                |
-| [函数指针]            | 整数                       | 函数指针到地址转换                                |
+| [函数项][Function item]              | [函数指针][Function pointer]                 | 函数项到函数指针转换                              |
+| [函数项][Function item]              | `*V`，其中 `V: Sized`      | 函数项到指针转换                                  |
+| [函数项][Function item]              | 整数                       | 函数项到地址转换                                  |
+| [函数指针][Function pointer]            | `*V`，其中 `V: Sized`      | 函数指针到指针转换                                |
+| [函数指针][Function pointer]            | 整数                       | 函数指针到地址转换                                |
 | 闭包 [^no-capture]    | 函数指针                   | 闭包到函数指针转换                                |
 
 [^lessmut]: 仅当 `m₁` 为 `mut` 或 `m₂` 为 `const` 时。允许将 `mut` 引用/指针转换为 `const` 指针。
@@ -647,8 +647,8 @@ r[expr.as.enum]
 r[expr.as.enum.discriminant]
 将枚举转换为其判别值，然后根据需要应用数值转换。转换仅限于以下类型的枚举：
 
-* [仅单元变体枚举]
-* 没有[显式判别值]的[无字段枚举]，或其中仅有单元变体具有显式判别值
+* [仅单元变体枚举][Unit-only enums]
+* 没有[显式判别值][explicit discriminants]的[无字段枚举][field-less enums]，或其中仅有单元变体具有显式判别值
 
 ```rust
 enum Enum { A, B, C }
@@ -696,7 +696,7 @@ r[expr.as.int-as-pointer]
 > [!WARNING]
 > 这与 Rust 内存模型交互，该模型仍在开发中。
 > 从此转换获得的指针可能受到额外限制，即使它在位级别上与有效指针相等。
-> 如果不遵循别名规则，解引用此类指针可能是[未定义行为]。
+> 如果不遵循别名规则，解引用此类指针可能是[未定义行为][undefined behavior]。
 
 一个合理的地址算术简单示例：
 
@@ -911,10 +911,10 @@ r[expr.assign.intro]
 *赋值表达式*将一个值移动到指定位置。
 
 r[expr.assign.assignee]
-赋值表达式由一个[可变][mutable]的[赋值目标表达式]（*赋值目标操作数*）、后跟一个等号（`=`）和一个[值表达式]（*所赋值的值操作数*）组成。
+赋值表达式由一个[可变][mutable]的[赋值目标表达式][assignee expression]（*赋值目标操作数*）、后跟一个等号（`=`）和一个[值表达式][value expression]（*所赋值的值操作数*）组成。
 
 r[expr.assign.behavior-basic]
-在其最基本的形式中，赋值目标表达式是[位置表达式]，我们首先讨论这种情况。
+在其最基本的形式中，赋值目标表达式是[位置表达式][place expression]，我们首先讨论这种情况。
 
 r[expr.assign.behavior-destructuring]
 下面将讨论解构赋值的更通用情况，但这种情况下总是分解为对位置表达式的顺序赋值，后者可以被视为更基本的情况。
@@ -932,10 +932,10 @@ r[expr.assign.destructuring-order]
 > 这与其他表达式不同，因为右侧操作数在左侧之前求值。
 
 r[expr.assign.drop-target]
-然后它的效果是首先[丢弃]赋值位置上的值，除非该位置是未初始化的局部变量或局部变量的未初始化字段。
+然后它的效果是首先[丢弃][dropping]赋值位置上的值，除非该位置是未初始化的局部变量或局部变量的未初始化字段。
 
 r[expr.assign.behavior]
-接下来它将所赋值的值[复制或移动]到赋值位置。
+接下来它将所赋值的值[复制或移动][copies or moves]到赋值位置。
 
 r[expr.assign.result]
 赋值表达式始终产生[单元值][unit]。
@@ -961,7 +961,7 @@ let (mut a, mut b) = (0, 1);
 ```
 
 r[expr.assign.destructure.assignee]
-与使用 `let` 的解构声明不同，由于语法歧义，模式不能出现在赋值的左侧。相反，一组对应于模式的表达式被指定为[赋值目标表达式][assignee expression]，并允许出现在赋值的左侧。赋值目标表达式随后被脱糖为模式匹配后跟顺序赋值。
+与使用 `let` 的解构声明不同，由于语法歧义，模式不能出现在赋值的左侧。相反，一组对应于模式的表达式被指定为[赋值目标表达式][assignee expression][assignee expression]，并允许出现在赋值的左侧。赋值目标表达式随后被脱糖为模式匹配后跟顺序赋值。
 
 r[expr.assign.destructure.irrefutable]
 脱糖后的模式必须是不可反驳的：特别是，这意味着只有长度在编译时已知的切片模式和简单切片 `[..]` 才允许用于解构赋值。
@@ -1002,16 +1002,16 @@ r[expr.assign.destructure.repeat-ident]
 不禁止标识符在单个赋值目标表达式中多次使用。
 
 r[expr.assign.destructure.discard-value]
-[下划线表达式]和空[区间表达式]可用于忽略某些值，而不绑定它们。
+[下划线表达式][Underscore expressions]和空[区间表达式][range expressions]可用于忽略某些值，而不绑定它们。
 
 r[expr.assign.destructure.default-binding]
 注意，默认绑定模式不适用于脱糖后的表达式。
 
 r[expr.assign.destructure.tmp-scopes]
 > [!NOTE]
-> 脱糖限制了赋值值操作数（RHS）的[临时值作用域]。
+> 脱糖限制了赋值值操作数（RHS）的[临时值作用域][temporary scope]。
 >
-> 在基本赋值中，[临时值]在外围临时值作用域的末尾被丢弃。下面是语句的末尾。因此，赋值和使用是允许的。
+> 在基本赋值中，[临时值][temporary value]在外围临时值作用域的末尾被丢弃。下面是语句的末尾。因此，赋值和使用是允许的。
 >
 > ```rust
 > # fn temp() {}
@@ -1045,9 +1045,9 @@ r[expr.assign.destructure.tmp-scopes]
 
 r[expr.assign.destructure.tmp-ext]
 > [!NOTE]
-> 由于脱糖，解构赋值的赋值值操作数（RHS）是新引入块内的一个[延长表达式]。
+> 由于脱糖，解构赋值的赋值值操作数（RHS）是新引入块内的一个[延长表达式][extending expression]。
 >
-> 下面，由于[临时值作用域]被延长到此引入块的末尾，赋值是允许的。
+> 下面，由于[临时值作用域][temporary scope]被延长到此引入块的末尾，赋值是允许的。
 >
 > ```rust
 > # fn temp() {}
@@ -1063,7 +1063,7 @@ r[expr.assign.destructure.tmp-ext]
 > { let [_x] = [&temp()]; x = _x; } // OK
 > ```
 >
-> 然而，如果我们尝试使用 `x`，即使在同一条语句内，也会得到错误，因为[临时值]在此引入块的末尾被丢弃。
+> 然而，如果我们尝试使用 `x`，即使在同一条语句内，也会得到错误，因为[临时值][temporary value]在此引入块的末尾被丢弃。
 >
 > ```rust,compile_fail,E0716
 > # fn temp() {}
@@ -1114,7 +1114,7 @@ x += 1;
 assert!(x == 6);
 ```
 
-复合赋值的语法是一个[可变][mutable]的[位置表达式]（*被赋值操作数*），后跟一个运算符和一个 `=` 作为一个整体记号（无空白），再后跟一个[值表达式]（*修改操作数*）。
+复合赋值的语法是一个[可变][mutable]的[位置表达式][place expression]（*被赋值操作数*），后跟一个运算符和一个 `=` 作为一个整体记号（无空白），再后跟一个[值表达式][value expression]（*修改操作数*）。
 
 r[expr.compound-assign.place]
 与其他位置操作数不同，被赋值的位置操作数必须是位置表达式。
@@ -1168,10 +1168,10 @@ fn main() {
 > [!NOTE]
 > 这是不寻常的。在其他地方，从左到右求值是常态。
 >
-> 有关更多示例，请参见[求值顺序测试]。
+> 有关更多示例，请参见[求值顺序测试][eval order test]。
 
 r[expr.compound-assign.trait]
-否则，此表达式是使用运算符对应 trait 的语法糖（参见 [expr.arith-logic.behavior]），并以左侧作为[接收者]、右侧作为下一个参数来调用其方法。
+否则，此表达式是使用运算符对应 trait 的语法糖（参见 [expr.arith-logic.behavior]），并以左侧作为[接收者][receiver]、右侧作为下一个参数来调用其方法。
 
 例如，以下两条语句是等价的：
 
@@ -1184,7 +1184,7 @@ fn f<T: AddAssign + Copy>(mut x: T, y: T) {
 ```
 
 > [!NOTE]
-> 令人惊讶的是，将其进一步脱糖为完全限定方法调用是不等价的，因为当通过[自动引用]获取对第一个操作数的可变引用时，借检查器有特殊行为。
+> 令人惊讶的是，将其进一步脱糖为完全限定方法调用是不等价的，因为当通过[自动引用][autoref]获取对第一个操作数的可变引用时，借检查器有特殊行为。
 >
 > ```rust
 > # use std::ops::AddAssign;

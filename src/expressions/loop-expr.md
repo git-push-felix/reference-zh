@@ -58,7 +58,7 @@ r[expr.loop.while.intro]
 `while` 循环表达式允许在一组条件保持为 true 时重复求值一个块。
 
 r[expr.loop.while.condition]
-条件操作数必须是一个具有[布尔类型]的[表达式][Expression]或一个条件 `let` 匹配。如果所有条件操作数都求值为 `true` 且所有 `let` 模式都成功匹配其[受检者]，则执行循环体块。
+条件操作数必须是一个具有[布尔类型][boolean type]的[表达式][Expression]或一个条件 `let` 匹配。如果所有条件操作数都求值为 `true` 且所有 `let` 模式都成功匹配其[受检者][scrutinee]，则执行循环体块。
 
 r[expr.loop.while.repeat]
 循环体成功执行后，重新求值条件操作数以确定是否应再次执行循环体。
@@ -100,7 +100,7 @@ while let _ = 5 {
 ```
 
 r[expr.loop.while.let.desugar]
-`while let` 循环等价于包含 [`match` 表达式]的 `loop` 表达式，如下所示。
+`while let` 循环等价于包含 [`match` 表达式][`match` expression]的 `loop` 表达式，如下所示。
 
 <!-- ignore: expansion example -->
 ```rust,ignore
@@ -136,7 +136,7 @@ r[expr.loop.while.chains]
 ### `while` 条件链
 
 r[expr.loop.while.chains.intro]
-多个条件操作数可以用 `&&` 分隔。这些具有与 [`if` 条件链]相同的语义和限制。
+多个条件操作数可以用 `&&` 分隔。这些具有与 [`if` 条件链][`if` condition chains]相同的语义和限制。
 
 以下是链式多个表达式的示例，混合了 `let` 绑定和布尔表达式，并且表达式可以引用先前表达式的模式绑定：
 
@@ -191,7 +191,7 @@ assert_eq!(sum, 55);
 ```
 
 r[expr.loop.for.desugar]
-`for` 循环等价于包含 [`match` 表达式]的 `loop` 表达式，如下所示：
+`for` 循环等价于包含 [`match` 表达式][`match` expression]的 `loop` 表达式，如下所示：
 
 <!-- ignore: expansion example -->
 ```rust,ignore
@@ -226,7 +226,7 @@ r[expr.loop.for.lang-items]
 变量名 `next`、`iter` 和 `val` 仅用于说明，它们实际上没有用户可以输入的名字。
 
 > [!NOTE]
-> 外层的 `match` 用于确保 `iter_expr` 中的任何[临时值]不会在循环完成之前被丢弃。`next` 在被赋值之前声明，因为这更经常地使类型被正确推断。
+> 外层的 `match` 用于确保 `iter_expr` 中的任何[临时值][temporary values]不会在循环完成之前被丢弃。`next` 在被赋值之前声明，因为这更经常地使类型被正确推断。
 
 r[expr.loop.label]
 ## 循环标签
@@ -297,7 +297,7 @@ r[expr.loop.break.value]
 `break` 表达式仅允许在循环体内部，并具有以下形式之一：`break`、`break 'label` 或（[见下文](#break-and-loop-values)）`break EXPR` 或 `break 'label EXPR`。
 
 r[expr.loop.break-value.implicit-value]
-在[带有 break 表达式的 `loop`][expr.loop.break-value] 或[带标签的块表达式]中，不含表达式的 `break` 等价于 `break ()`。
+在[带有 break 表达式的 `loop`][expr.loop.break-value] 或[带标签的块表达式][labeled block expression]中，不含表达式的 `break` 等价于 `break ()`。
 
 r[expr.loop.block-labels]
 ## 带标签的块表达式
@@ -336,7 +336,7 @@ let result = 'block: {
 ```
 
 r[expr.loop.block-labels.type]
-带标签的块表达式的类型是所有 break 操作数和最终操作数的[最小上界]。如果省略了最终操作数，则最终操作数的类型默认为[单元类型]，除非块[发散][expr.block.diverging]，在这种情况下它是[永不类型]。
+带标签的块表达式的类型是所有 break 操作数和最终操作数的[最小上界][least upper bound]。如果省略了最终操作数，则最终操作数的类型默认为[单元类型][unit type]，除非块[发散][expr.block.diverging]，在这种情况下它是[永不类型][never type]。
 
 > [!EXAMPLE]
 > ```rust
@@ -399,7 +399,7 @@ assert_eq!(result, 13);
 ```
 
 r[expr.loop.break-value.type]
-具有关联 `break` 表达式的 `loop` 的类型是所有 break 操作数的[最小上界]。
+具有关联 `break` 表达式的 `loop` 的类型是所有 break 操作数的[最小上界][least upper bound]。
 
 > [!EXAMPLE]
 > ```rust

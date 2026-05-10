@@ -31,7 +31,7 @@ UseBoundGenericArg ->
 ```
 
 r[bound.intro]
-[Trait] 约束和生命周期约束为[泛型项][generic]提供了一种方式来限制哪些类型和生命周期可以用作它们的参数。约束可以在 [where 子句]中的任何类型上提供。对于某些常见情况，还有更简短的形式：
+[Trait] 约束和生命周期约束为[泛型项][generic]提供了一种方式来限制哪些类型和生命周期可以用作它们的参数。约束可以在 [where 子句][where clause]中的任何类型上提供。对于某些常见情况，还有更简短的形式：
 
 * 在声明[泛型参数][generic]之后写出的约束：`fn f<A: Copy>() {}` 等同于 `fn f<A>() where A: Copy {}`。
 * 在 trait 声明中作为[超 trait][supertraits]：`trait Circle : Shape {}` 等价于 `trait Circle where Self : Shape {}`。
@@ -237,7 +237,7 @@ r[bound.use]
 
 某些约束列表可以包含 `use<..>` 约束来控制哪些泛型参数被 `impl Trait` [抽象返回类型][abstract return type]所捕获。更多细节请参阅[精确捕获][precise capturing]。
 
-[抽象返回类型]: types/impl-trait.md#abstract-return-types
+[abstract return type]: types/impl-trait.md#abstract-return-types
 [arrays]: types/array.md
 [associated types]: items/associated-items.md#associated-types
 [hrtb-scopes]: names/scopes.md#higher-ranked-trait-bound-scopes

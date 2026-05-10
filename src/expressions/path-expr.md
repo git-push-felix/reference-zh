@@ -12,10 +12,10 @@ r[expr.path.intro]
 用作表达式上下文的[路径][path]表示局部变量或项。
 
 r[expr.path.place]
-解析为局部变量或静态变量的路径表达式是[位置表达式]；其他路径是[值表达式]。
+解析为局部变量或静态变量的路径表达式是[位置表达式][place expressions]；其他路径是[值表达式][value expressions]。
 
 r[expr.path.safety]
-使用 [`static mut`] 变量需要 [`unsafe` 块]。
+使用 [`static mut`] 变量需要 [`unsafe` 块][`unsafe` block]。
 
 ```rust
 # mod globals {
@@ -32,7 +32,7 @@ let slice_reverse = <[i32]>::reverse;
 ```
 
 r[expr.path.const]
-关联常量的求值与 [`const` 块]的处理方式相同。
+关联常量的求值与 [`const` 块][`const` blocks]的处理方式相同。
 
 [place expressions]: ../expressions.md#place-expressions-and-value-expressions
 [value expressions]: ../expressions.md#place-expressions-and-value-expressions

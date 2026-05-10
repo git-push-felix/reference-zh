@@ -126,7 +126,7 @@ crate 名称不能为空，且只能包含 [Unicode 字母数字字符][Unicode 
 
 [^cratesourcefile]: crate 在某种程度上类似于 ECMA-335 CLI 模型中的 *assembly*、SML/NJ 编译管理器中的 *library*、Owens 和 Flatt 模块系统中的 *unit*，或 Mesa 中的 *configuration*。
 
-[Unicode 字母数字字符]: char::is_alphanumeric
+[Unicode alphanumeric]: char::is_alphanumeric
 [`!`]: types/never.md
 [`ExitCode`]: std::process::ExitCode
 [`Infallible`]: std::convert::Infallible
@@ -135,8 +135,8 @@ crate 名称不能为空，且只能包含 [Unicode 字母数字字符][Unicode 
 [attributes]: attributes.md
 [function]: items/functions.md
 [module]: items/modules.md
-[模块路径]: paths.md
+[module path]: paths.md
 [panic-docs]: panic.md#unwinding-across-ffi-boundaries
 [shebang]: shebang.md
-[trait 约束或生命周期约束]: trait-bounds.md
-[where 子句]: items/generics.md#where-clauses
+[trait or lifetime bounds]: trait-bounds.md
+[where clauses]: items/generics.md#where-clauses

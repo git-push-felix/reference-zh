@@ -460,21 +460,21 @@ r[attributes.codegen.target_feature.riscv]
 
 在此平台上使用 `#[target_feature]` 函数遵循[上述限制][attributes.codegen.target_feature.safety-restrictions]。
 
-[rest of RISC-V table kept same as English source]
+rest of RISC-V table kept same as English source
 
 r[attributes.codegen.target_feature.wasm]
 #### `wasm32` 或 `wasm64`
 
 在 Wasm 平台上，安全的 `#[target_feature]` 函数始终可以在安全上下文中使用。无法通过 `#[target_feature]` 属性导致未定义行为，因为尝试使用 Wasm 引擎不支持的指令将在加载时失败，而不会有被以不同于编译器预期的方式解释的风险。
 
-[rest of wasm table kept same as English source]
+rest of wasm table kept same as English source
 
 r[attributes.codegen.target_feature.s390x]
 #### `s390x`
 
 在 `s390x` 目标上，使用 `#[target_feature]` 属性的函数遵循[上述限制][attributes.codegen.target_feature.safety-restrictions]。
 
-[rest of s390x table kept same as English source]
+rest of s390x table kept same as English source
 
 r[attributes.codegen.target_feature.info]
 ### 附加信息

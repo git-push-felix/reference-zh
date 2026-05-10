@@ -91,7 +91,7 @@ r[layout.tuple]
 ## 元组布局
 
 r[layout.tuple.def]
-元组按照 [`Rust` 表示法]进行布局。
+元组按照 [`Rust` 表示法][`Rust`]进行布局。
 
 r[layout.tuple.unit]
 例外是单元元组（`()`），它被保证作为[零大小类型][zero-sized type]，大小为 0，对齐方式为 1。

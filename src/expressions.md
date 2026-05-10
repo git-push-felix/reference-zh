@@ -152,7 +152,7 @@ r[expr.place-value.place-memory-location]
 *位置表达式*是表示内存位置的表达式。
 
 r[expr.place-value.place-expr-kinds]
-这些表达式包括引用局部变量的[路径]、[静态变量]、[解引用][deref]（`*expr`）、[数组索引]表达式（`expr[expr]`）、[字段]引用（`expr.f`）和带括号的位置表达式。
+这些表达式包括引用局部变量的[路径][paths]、[静态变量][static variables]、[解引用][deref]（`*expr`）、[数组索引][array indexing]表达式（`expr[expr]`）、[字段][field]引用（`expr.f`）和带括号的位置表达式。
 
 r[expr.place-value.value-expr-kinds]
 所有其他表达式都是值表达式。
@@ -163,15 +163,15 @@ r[expr.place-value.value-result]
 r[expr.place-value.place-context]
 以下上下文是*位置表达式*上下文：
 
-* [复合赋值]表达式的左操作数。
-* 一元[借用]、[裸借用]或[解引用][deref]运算符的操作数。
-* [字段表达式]的操作数。
-* [数组索引表达式]的索引操作数。
-* [元组索引表达式]的元组操作数。
-* 任何[隐式借用]的操作数。
-* [let 语句]的初始化器。
-* [`if let`]、[`match`][match] 或 [`while let`] 表达式的[受检者]。
-* [函数式更新]结构体表达式的基值。
+* [复合赋值][compound assignment]表达式的左操作数。
+* 一元[借用][borrow]、[裸借用][raw borrow]或[解引用][deref]运算符的操作数。
+* [字段表达式][field expression]的操作数。
+* [数组索引表达式][array indexing expression]的索引操作数。
+* [元组索引表达式][tuple indexing expression]的元组操作数。
+* 任何[隐式借用][implicit borrow]的操作数。
+* [let 语句][let statement]的初始化器。
+* [`if let`]、[`match`][match] 或 [`while let`] 表达式的[受检者][scrutinee]。
+* [函数式更新][functional update]结构体表达式的基值。
 
 > [!NOTE]
 > 历史上，位置表达式曾被称为*lvalues*，值表达式曾被称为*rvalues*。
@@ -180,12 +180,12 @@ r[expr.place-value.assignee]
 *赋值目标表达式*是出现在[赋值][assign]表达式左操作数中的表达式。具体来说，赋值目标表达式包括：
 
 - 位置表达式。
-- [下划线]。
-- 由赋值目标表达式构成的[元组]。
+- [下划线][Underscores]。
+- 由赋值目标表达式构成的[元组][Tuples]。
 - 由赋值目标表达式构成的[切片][expr.array.index]。
-- 由赋值目标表达式构成的[元组结构体]。
-- 由赋值目标表达式构成的[结构体]（可带命名字段）。
-- [单元结构体]
+- 由赋值目标表达式构成的[元组结构体][Tuple structs]。
+- 由赋值目标表达式构成的[结构体][Structs]（可带命名字段）。
+- [单元结构体][Unit structs]
 
 r[expr.place-value.parenthesis]
 在赋值目标表达式内部允许任意加括号。
@@ -205,7 +205,7 @@ r[expr.move.requires-sized]
 r[expr.move.movable-place]
 只有以下位置表达式可以被移出：
 
-* 当前未被借用的[变量]。
+* 当前未被借用的[变量][Variables]。
 * [临时值](#temporaries)。
 * 可以被移出且未实现 [`Drop`] 的位置表达式的[字段][field]。
 * 对类型为 [`Box<T>`] 且也可以被移出的表达式的[解引用][deref]结果。
@@ -220,33 +220,33 @@ r[expr.mut]
 ### 可变性
 
 r[expr.mut.intro]
-要使一个位置表达式能够被[赋值][assign]、可变[借用][borrow]、[隐式可变借用]或绑定到包含 `ref mut` 的模式，它必须是*可变的*。我们称这些为*可变位置表达式*。相反，其他位置表达式称为*不可变位置表达式*。
+要使一个位置表达式能够被[赋值][assign]、可变[借用][borrow]、[隐式可变借用][implicitly mutably borrowed]或绑定到包含 `ref mut` 的模式，它必须是*可变的*。我们称这些为*可变位置表达式*。相反，其他位置表达式称为*不可变位置表达式*。
 
 r[expr.mut.valid-places]
 以下表达式可以是可变位置表达式上下文：
 
-* 当前未被借用的可变[变量]。
-* [可变 `static` 项]。
-* [临时值]。
+* 当前未被借用的可变[变量][Variables]。
+* [可变 `static` 项][Mutable `static` items]。
+* [临时值][Temporary values]。
 * [字段][field]：这在可变位置表达式上下文中求值子表达式。
 * 对 `*mut T` 指针的[解引用][deref]。
 * 对类型为 `&mut T` 的变量或变量的字段的解引用。注意：这是下一条规则要求的例外。
 * 对实现了 `DerefMut` 的类型的解引用：这要求被解引用的值在可变位置表达式上下文中求值。
-* 对实现了 `IndexMut` 的类型的[数组索引]：这在可变位置表达式上下文中求值被索引的值，但不求值索引。
+* 对实现了 `IndexMut` 的类型的[数组索引][array indexing]：这在可变位置表达式上下文中求值被索引的值，但不求值索引。
 
 r[expr.temporary]
 ### 临时值
 
-在大多数位置表达式上下文中使用值表达式时，会创建一个临时的无名内存位置并初始化为该值。表达式求值为该位置，除非被[提升]为 `static`。临时值的[丢弃作用域]通常是包围语句的末尾。
+在大多数位置表达式上下文中使用值表达式时，会创建一个临时的无名内存位置并初始化为该值。表达式求值为该位置，除非被[提升][promoted]为 `static`。临时值的[丢弃作用域][drop scope]通常是包围语句的末尾。
 
 r[expr.super-macros]
 ### 超级宏
 
 r[expr.super-macros.intro]
-某些内置宏可能会创建[临时值]，其[作用域][temporary scopes]可以被[延长]。这些临时值是*超级临时值*，这些宏是*超级宏*。这些宏的[调用][macro invocations]是*超级宏调用表达式*。这些宏的参数可以是*超级操作数*。
+某些内置宏可能会创建[临时值][temporaries]，其[作用域][temporary scopes]可以被[延长][extended]。这些临时值是*超级临时值*，这些宏是*超级宏*。这些宏的[调用][macro invocations]是*超级宏调用表达式*。这些宏的参数可以是*超级操作数*。
 
 > [!NOTE]
-> 当超级宏调用表达式是[延长表达式]时，其超级操作数是[延长表达式]，并且超级临时值的[作用域][temporary scopes]被[延长]。参见 [destructors.scope.lifetime-extension.exprs]。
+> 当超级宏调用表达式是[延长表达式][extending expression]时，其超级操作数是[延长表达式][extending expressions]，并且超级临时值的[作用域][temporary scopes]被[延长][extended]。参见 [destructors.scope.lifetime-extension.exprs]。
 
 r[expr.super-macros.format_args]
 #### `format_args!`
@@ -263,7 +263,7 @@ let _ = format_args!("{}", { &temp() }); // OK
 ```
 
 r[expr.super-macros.format_args.super-temporaries]
-[`format_args!`] 的超级操作数被[隐式借用]，因此是[位置表达式上下文]。当传递[值表达式]作为参数时，它创建一个*超级临时值*。
+[`format_args!`] 的超级操作数被[隐式借用][implicitly borrowed]，因此是[位置表达式上下文][place expression contexts]。当传递[值表达式][value expression]作为参数时，它创建一个*超级临时值*。
 
 ```rust
 # fn temp() -> String { String::from("") }
@@ -305,7 +305,7 @@ let _ = pin!({ &temp() }); // OK
 ```
 
 r[expr.super-macros.pin.super-temporaries]
-[`pin!`] 的参数是[值表达式上下文]，并创建一个*超级临时值*。
+[`pin!`] 的参数是[值表达式上下文][value expression context]，并创建一个*超级临时值*。
 
 ```rust
 # use core::pin::pin;
@@ -340,11 +340,11 @@ r[expr.implicit-borrow.application]
 
 * [方法调用][method-call]表达式中的左操作数。
 * [字段][field]表达式中的左操作数。
-* [调用表达式]中的左操作数。
-* [数组索引]表达式中的左操作数。
+* [调用表达式][call expressions]中的左操作数。
+* [数组索引][array indexing]表达式中的左操作数。
 * [解引用运算符][deref]（`*`）的操作数。
-* [比较]的操作数。
-* [复合赋值]的左操作数。
+* [比较][comparison]的操作数。
+* [复合赋值][compound assignment]的左操作数。
 * 传递给 [`format_args!`] 的参数（格式字符串除外）。
 
 r[expr.overload]
@@ -356,11 +356,11 @@ r[expr.attr]
 ## 表达式属性
 
 r[expr.attr.restriction]
-表达式前允许[外部属性]的情况仅限于以下几种：
+表达式前允许[外部属性][Outer attributes]的情况仅限于以下几种：
 
-* 用作[语句]的表达式之前。
-* [数组表达式]、[元组表达式]、[调用表达式]和元组式[结构体]表达式的元素。
-* [块表达式]的尾部表达式。
+* 用作[语句][statement]的表达式之前。
+* [数组表达式][array expressions]、[元组表达式][tuple expressions]、[调用表达式][call expressions]和元组式[结构体][struct]表达式的元素。
+* [块表达式][block expressions]的尾部表达式。
 <!-- Keep list in sync with block-expr.md -->
 
 r[expr.attr.never-before]

@@ -25,7 +25,7 @@ r[expr.block.namespace]
 作为匿名命名空间作用域，项声明仅在块自身内部有效，由 `let` 语句声明的变量从下一条语句开始直到块结束都有效。更多细节参见[作用域][scopes]章节。
 
 r[expr.block.inner-attributes]
-块的语法是 `{`，然后是一些[内部属性]，然后是一些[语句]，然后是一个可选的表达式（称为最终操作数），最后是 `}`。
+块的语法是 `{`，然后是一些[内部属性][inner attributes]，然后是一些[语句][statements]，然后是一个可选的表达式（称为最终操作数），最后是 `}`。
 
 r[expr.block.statements]
 语句通常要求后跟分号，有两个例外：
@@ -43,7 +43,7 @@ r[expr.block.result]
 然后执行最终操作数（如果有给出的话）。
 
 r[expr.block.value-trailing-expr]
-当块包含[最终操作数]时，块具有该最终操作数的类型和值。
+当块包含[最终操作数][final operand]时，块具有该最终操作数的类型和值。
 
 ```rust
 let x: u8 = { 0u8 }; // `0u8` 是最终操作数。
@@ -53,7 +53,7 @@ assert_eq!(x, 0);
 ```
 
 r[expr.block.value-no-trailing-expr]
-当块不包含[最终操作数]且块不发散时，块具有[单元类型]和[单元值]。
+当块不包含[最终操作数][final operand]且块不发散时，块具有[单元类型][unit type]和[单元值][unit value]。
 
 ```rust
 let x: () = {}; // 没有最终操作数。
@@ -63,7 +63,7 @@ assert_eq!(x, ());
 ```
 
 r[expr.block.value-diverges-no-trailing-expr]
-当块不包含[最终操作数]且块[发散][diverges]时，块具有[永不类型]且没有最终值（因为其类型是[无人居住][uninhabited]的）。
+当块不包含[最终操作数][final operand]且块[发散][diverges]时，块具有[永不类型][never type]且没有最终值（因为其类型是[无人居住][uninhabited]的）。
 
 ```rust,no_run
 fn f() -> ! { loop {}; } // 发散且没有最终操作数。
@@ -83,7 +83,7 @@ fn f() -> ! { loop {}; } // 发散且没有最终操作数。
 > 作为控制流表达式，如果块表达式是表达式语句的外围表达式，则期望类型为 `()`，除非其后紧跟分号。
 
 r[expr.block.diverging]
-如果一个块的所有可达控制流路径都包含一个发散表达式，则该块被认为是[发散的][diverging]，除非该表达式是未被读取的[位置表达式]。
+如果一个块的所有可达控制流路径都包含一个发散表达式，则该块被认为是[发散的][divergence]，除非该表达式是未被读取的[位置表达式][place expression]。
 
 ```rust,no_run
 # #![ feature(never_type) ]
@@ -141,7 +141,7 @@ fn diverging_place_not_read() -> ! {
 ```
 
 r[expr.block.value]
-块始终是[值表达式]，并在值表达式上下文中求值最后一个操作数。
+块始终是[值表达式][value expressions]，并在值表达式上下文中求值最后一个操作数。
 
 > [!NOTE]
 > 这可以用于在确实需要时强制移动值。例如，下面的示例在调用 `consume_self` 时失败，因为结构体已在块表达式中从 `s` 移出。
@@ -198,12 +198,12 @@ r[expr.block.async.edition2018]
 r[expr.block.async.capture]
 ### 捕获模式
 
-Async 块使用与闭包相同的[捕获模式]从环境中捕获变量。与闭包类似，当写为 `async { .. }` 时，每个变量的捕获模式将根据块的内容推断。而 `async move { .. }` 块则会将所有引用的变量移动到生成的 future 中。
+Async 块使用与闭包相同的[捕获模式][capture modes]从环境中捕获变量。与闭包类似，当写为 `async { .. }` 时，每个变量的捕获模式将根据块的内容推断。而 `async move { .. }` 块则会将所有引用的变量移动到生成的 future 中。
 
 r[expr.block.async.context]
 ### 异步上下文
 
-因为 async 块构造一个 future，它们定义了一个**异步上下文**，其中又可以包含 [`await` 表达式]。异步上下文由 async 块以及异步函数体建立，异步函数的语义是通过 async 块来定义的。
+因为 async 块构造一个 future，它们定义了一个**异步上下文**，其中又可以包含 [`await` 表达式][`await` expressions]。异步上下文由 async 块以及异步函数体建立，异步函数的语义是通过 async 块来定义的。
 
 r[expr.block.async.function]
 ### 控制流运算符
@@ -237,7 +237,7 @@ r[expr.block.const.intro]
 *const 块*是块表达式的一种变体，其主体在编译时求值而不是在运行时求值。
 
 r[expr.block.const.context]
-Const 块允许你定义常量值而无需定义新的[常量项]，因此有时也称为*内联常量*。它还支持类型推断，因此无需像[常量项]那样指定类型。
+Const 块允许你定义常量值而无需定义新的[常量项][constant items]，因此有时也称为*内联常量*。它还支持类型推断，因此无需像[常量项][constant items]那样指定类型。
 
 r[expr.block.const.generic-params]
 与[自由项][free item]常量项不同，Const 块能够引用作用域内的泛型参数。它们被脱糖为作用域内有泛型参数的常量项（类似于关联常量，但没有与之关联的 trait 或类型）。例如，以下代码：
@@ -295,9 +295,9 @@ UnsafeBlockExpression -> `unsafe` BlockExpression
 ```
 
 r[expr.block.unsafe.intro]
-*有关何时使用 `unsafe` 的更多信息，请参见 [`unsafe` 块]。*
+*有关何时使用 `unsafe` 的更多信息，请参见 [`unsafe` 块][`unsafe` blocks]。*
 
-代码块可以用 `unsafe` 关键字作为前缀，以允许[不安全操作]。示例：
+代码块可以用 `unsafe` 关键字作为前缀，以允许[不安全操作][unsafe operations]。示例：
 
 ```rust
 unsafe {
@@ -320,17 +320,17 @@ r[expr.block.attributes]
 ## 块表达式上的属性
 
 r[expr.block.attributes.inner-attributes]
-在以下情况下，允许在块表达式的开花括号后直接放置[内部属性]：
+在以下情况下，允许在块表达式的开花括号后直接放置[内部属性][inner attributes]：
 
 * [函数][Function]和[方法][method]体。
 * 循环体（[`loop`]、[`while`] 和 [`for`]）。
-* 用作[语句]的块表达式。
-* 作为[数组表达式]、[元组表达式]、[调用表达式]和元组式[结构体][struct]表达式元素的块表达式。
+* 用作[语句][statement]的块表达式。
+* 作为[数组表达式][array expressions]、[元组表达式][tuple expressions]、[调用表达式][call expressions]和元组式[结构体][struct]表达式元素的块表达式。
 * 作为另一个块表达式的尾部表达式的块表达式。
 <!-- Keep list in sync with expressions.md -->
 
 r[expr.block.attributes.valid]
-在块表达式上有意义的属性是 [`cfg`] 和 [lint 检查属性]。
+在块表达式上有意义的属性是 [`cfg`] 和 [lint 检查属性][the lint check attributes]。
 
 例如，此函数在 unix 平台上返回 `true`，在其他平台上返回 `false`。
 

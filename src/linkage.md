@@ -176,3 +176,4 @@ r[link.unwinding.prohibited]
 [procedural macros]: procedural-macros.md
 [panic strategy]: panic.md#panic-strategy
 [`-C panic`]: ../rustc/codegen-options/index.html#panic
+[cargo]: ../cargo/reference/environment-variables.html#environment-variables-cargo-sets-for-build-scripts

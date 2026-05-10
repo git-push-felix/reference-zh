@@ -7,19 +7,19 @@ FieldExpression -> Expression `.` IDENTIFIER
 ```
 
 r[expr.field.intro]
-*字段表达式*是一种[位置表达式]，它求值为[结构体][struct]或[联合体][union]字段的位置。
+*字段表达式*是一种[位置表达式][place expression]，它求值为[结构体][struct]或[联合体][union]字段的位置。
 
 r[expr.field.mut]
 当操作数是[可变][mutable]的时，字段表达式也是可变的。
 
 r[expr.field.form]
-字段表达式的语法是一个表达式（称为*容器操作数*），然后是一个 `.`，最后是一个[标识符]。
+字段表达式的语法是一个表达式（称为*容器操作数*），然后是一个 `.`，最后是一个[标识符][identifier]。
 
 r[expr.field.not-method-call]
-字段表达式后面不能跟括号括起来的、以逗号分隔的表达式列表，因为这会被解析为[方法调用表达式]。也就是说，它们不能是[调用表达式]的函数操作数。
+字段表达式后面不能跟括号括起来的、以逗号分隔的表达式列表，因为这会被解析为[方法调用表达式][method call expression]。也就是说，它们不能是[调用表达式][call expression]的函数操作数。
 
 > [!NOTE]
-> 将字段表达式用[括号表达式]括起来，以在调用表达式中使用。
+> 将字段表达式用[括号表达式][parenthesized expression]括起来，以在调用表达式中使用。
 >
 > ```rust
 > # struct HoldsCallable<F: Fn()> { callable: F }

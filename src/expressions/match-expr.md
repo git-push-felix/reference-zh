@@ -45,7 +45,7 @@ r[expr.match.intro]
 *`match` 表达式*基于模式进行分支。所发生的匹配的确切形式取决于[模式][pattern]。
 
 r[expr.match.scrutinee]
-`match` 表达式有一个*[受检者]表达式*，即要与模式进行比较的值。
+`match` 表达式有一个*[受检者][scrutinee]表达式*，即要与模式进行比较的值。
 
 r[expr.match.scrutinee-constraint]
 受检者表达式和模式必须具有相同的类型。
@@ -54,10 +54,10 @@ r[expr.match.scrutinee-behavior]
 `match` 的行为取决于受检者表达式是[位置表达式还是值表达式][place expression]。
 
 r[expr.match.scrutinee-value]
-如果受检者表达式是[值表达式]，它首先被求值到一个临时位置，然后结果值按顺序与分支中的模式进行比较，直到找到匹配。第一个具有匹配模式的分支被选为 `match` 的分支目标，模式绑定的任何变量被赋值给分支块中的局部变量，控制进入该块。
+如果受检者表达式是[值表达式][value expression]，它首先被求值到一个临时位置，然后结果值按顺序与分支中的模式进行比较，直到找到匹配。第一个具有匹配模式的分支被选为 `match` 的分支目标，模式绑定的任何变量被赋值给分支块中的局部变量，控制进入该块。
 
 r[expr.match.scrutinee-place]
-当受检者表达式是[位置表达式]时，`match` 不分配临时位置；然而，按值绑定可能会从内存位置复制或移动。如果可能，最好对位置表达式进行匹配，因为这类匹配的生命周期继承位置表达式的生命周期，而不是被限制在 match 内部。
+当受检者表达式是[位置表达式][place expression]时，`match` 不分配临时位置；然而，按值绑定可能会从内存位置复制或移动。如果可能，最好对位置表达式进行匹配，因为这类匹配的生命周期继承位置表达式的生命周期，而不是被限制在 match 内部。
 
 `match` 表达式示例：
 
@@ -78,7 +78,7 @@ r[expr.match.pattern-vars]
 模式内绑定的变量的作用域是匹配守卫和分支表达式。
 
 r[expr.match.pattern-var-binding]
-[绑定模式]（移动、复制或引用）取决于模式。
+[绑定模式][binding mode]（移动、复制或引用）取决于模式。
 
 r[expr.match.or-pattern]
 可以使用 `|` 运算符连接多个匹配模式。每个模式将按从左到右的顺序进行测试，直到找到成功的匹配。
@@ -103,7 +103,7 @@ match S(1, 2) {
 ```
 
 > [!NOTE]
-> `2..=9` 是一个[区间模式]，而不是[区间表达式]。因此，只有区间模式支持的那些类型的区间才能用于匹配分支中。
+> `2..=9` 是一个[区间模式][Range Pattern]，而不是[区间表达式][Range Expression]。因此，只有区间模式支持的那些类型的区间才能用于匹配分支中。
 
 r[expr.match.or-patterns-restriction]
 每个 `|` 分隔模式中的每个绑定都必须出现在该分支的所有模式中。
@@ -112,7 +112,7 @@ r[expr.match.binding-restriction]
 每个同名的绑定必须具有相同的类型和相同的绑定模式。
 
 r[expr.match.type]
-整个 `match` 表达式的类型是各个匹配分支的[最小上界]。
+整个 `match` 表达式的类型是各个匹配分支的[最小上界][least upper bound]。
 
 r[expr.match.empty]
 如果没有匹配分支，则 `match` 表达式是[发散][diverging]的，类型为 [`!`]。
@@ -142,7 +142,7 @@ r[expr.match.guard.condition]
 模式守卫出现在 `if` 关键字之后的模式之后，由一个具有[布尔类型][type.bool]的[表达式][Expression]或一个条件 `let` 匹配组成。
 
 r[expr.match.guard.behavior]
-当模式成功匹配时，模式守卫被执行。如果所有守卫条件操作数都求值为 `true` 且所有 `let` 模式都成功匹配其[受检者]，则该匹配分支被成功匹配，并执行分支体。
+当模式成功匹配时，模式守卫被执行。如果所有守卫条件操作数都求值为 `true` 且所有 `let` 模式都成功匹配其[受检者][scrutinee]，则该匹配分支被成功匹配，并执行分支体。
 
 r[expr.match.guard.next]
 否则，测试下一个模式，包括同一分支中使用 `|` 运算符的其他匹配。
@@ -250,10 +250,10 @@ r[expr.match.attributes]
 ## 匹配分支上的属性
 
 r[expr.match.attributes.outer]
-匹配分支上允许外部属性。在匹配分支上有意义的唯一属性是 [`cfg`] 和 [lint 检查属性]。
+匹配分支上允许外部属性。在匹配分支上有意义的唯一属性是 [`cfg`] 和 [lint 检查属性][lint check attributes]。
 
 r[expr.match.attributes.inner]
-在匹配表达式开花括号后直接允许[内部属性]，其所在表达式上下文与[块表达式上的属性]相同。
+在匹配表达式开花括号后直接允许[内部属性][Inner attributes]，其所在表达式上下文与[块表达式上的属性][attributes on block expressions]相同。
 
 [`!`]: type.never
 [`cfg`]: ../conditional-compilation.md

@@ -34,7 +34,7 @@ r[expr.array.length-operand]
 `;` 之后的表达式称为*长度操作数*。
 
 r[expr.array.length-restriction]
-长度操作数必须是[推断常量]或类型为 `usize` 的[常量表达式]（例如[字面量]或[常量项]）。
+长度操作数必须是[推断常量][inferred const]或类型为 `usize` 的[常量表达式][constant expression]（例如[字面量][literal]或[常量项][constant item]）。
 
 ```rust
 const C: usize = 1;
@@ -45,13 +45,13 @@ let _: [u8; C] = [0; (((_)))]; // 推断常量。
 ```
 
 > [!NOTE]
-> 在数组表达式中，[推断常量]被解析为[表达式][Expression]，但在语义上被视为一种单独的[const 泛型参数][const generic argument]。
+> 在数组表达式中，[推断常量][inferred const]被解析为[表达式][Expression]，但在语义上被视为一种单独的[const 泛型参数][const generic argument]。
 
 r[expr.array.repeat-behavior]
 这种形式的数组表达式创建一个数组，长度等于长度操作数的值，每个元素都是重复操作数的副本。即 `[a; b]` 创建一个包含 `b` 个 `a` 值副本的数组。
 
 r[expr.array.repeat-copy]
-如果长度操作数的值大于 1，则要求重复操作数的类型实现 [`Copy`]，或是一个 [const 块表达式]，或是一个指向常量项的[路径]。
+如果长度操作数的值大于 1，则要求重复操作数的类型实现 [`Copy`]，或是一个 [const 块表达式][const block expression]，或是一个指向常量项的[路径][path]。
 
 r[expr.array.repeat-const-item]
 当重复操作数是 const 块或指向常量项的路径时，它会被求值长度操作数指定的次数。
@@ -81,10 +81,10 @@ IndexExpression -> Expression `[` Expression `]`
 ```
 
 r[expr.array.index.array]
-[数组][Array]和[切片][slice]类型的值可以通过在其后跟一个用方括号括起来的类型为 `usize` 的表达式（索引）来索引。当数组可变时，所产生的[内存位置]可以被赋值。
+[数组][Array]和[切片][slice]类型的值可以通过在其后跟一个用方括号括起来的类型为 `usize` 的表达式（索引）来索引。当数组可变时，所产生的[内存位置][memory location]可以被赋值。
 
 r[expr.array.index.trait]
-对于其他类型，索引表达式 `a[b]` 等价于 `*std::ops::Index::index(&a, b)`，或在可变位置表达式上下文中等价于 `*std::ops::IndexMut::index_mut(&mut a, b)`，不同之处在于当索引表达式经历[临时值生命周期延长]时，被索引的表达式 `a` 的[临时值作用域]也会被延长。与方法一样，Rust 也会在 `a` 上重复插入解引用操作以找到实现。
+对于其他类型，索引表达式 `a[b]` 等价于 `*std::ops::Index::index(&a, b)`，或在可变位置表达式上下文中等价于 `*std::ops::IndexMut::index_mut(&mut a, b)`，不同之处在于当索引表达式经历[临时值生命周期延长][temporary lifetime extension]时，被索引的表达式 `a` 的[临时值作用域][temporary scope]也会被延长。与方法一样，Rust 也会在 `a` 上重复插入解引用操作以找到实现。
 
 ```rust
 // 持有 `vec![()]` 结果的临时值被延长到块的末尾，
@@ -104,7 +104,7 @@ r[expr.array.index.zero-index]
 数组和切片的索引从零开始。
 
 r[expr.array.index.const]
-数组访问是[常量表达式]，因此可以在编译时使用常量索引值检查边界。否则将在运行时进行检查，如果失败将使线程进入[*panic 状态*][panic]。
+数组访问是[常量表达式][constant expression]，因此可以在编译时使用常量索引值检查边界。否则将在运行时进行检查，如果失败将使线程进入[*panic 状态*][panic]。
 
 ```rust,should_panic
 // lint 默认为 deny。

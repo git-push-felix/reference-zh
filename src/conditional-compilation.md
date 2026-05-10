@@ -506,6 +506,6 @@ r[cfg.cfg_select.well-formed]
 [attribute]: attributes.md
 [attributes]: attributes.md
 [cargo-feature]: ../cargo/reference/features.html
-[crate 类型]: linkage.md
+[crate type]: linkage.md
 [macros]: macros.md
 [static C runtime]: linkage.md#static-and-dynamic-c-runtimes
