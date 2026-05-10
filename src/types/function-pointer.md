@@ -1,5 +1,5 @@
 r[type.fn-pointer]
-# Function pointer types
+# 函数指针类型
 
 r[type.fn-pointer.syntax]
 ```grammar,types
@@ -25,9 +25,9 @@ MaybeNamedFunctionParametersVariadic ->
 ```
 
 r[type.fn-pointer.intro]
-A function pointer type, written using the `fn` keyword, refers to a function whose identity is not necessarily known at compile-time.
+函数指针类型使用 `fn` 关键字编写，指向一个在编译时不一定知道其标识的函数。
 
-An example where `Binop` is defined as a function pointer type:
+以下示例中 `Binop` 被定义为函数指针类型：
 
 ```rust
 fn add(x: i32, y: i32) -> i32 {
@@ -42,22 +42,22 @@ x = bo(5,7);
 ```
 
 r[type.fn-pointer.coercion]
-Function pointers can be created via a coercion from both [function items] and non-capturing, non-async [closures].
+函数指针可以通过从[函数项][function items]和非捕获、非异步[闭包][closures]强制转换来创建。
 
 r[type.fn-pointer.qualifiers]
-The `unsafe` qualifier indicates that the type's value is an [unsafe function], and the `extern` qualifier indicates it is an [extern function].
+`unsafe` 限定符表示该类型的值是一个[不安全函数]，`extern` 限定符表示它是一个[外部函数]。
 
 r[type.fn-pointer.constraint-variadic]
-For the function to be variadic, its `extern` ABI must be one of those listed in [items.extern.variadic.conventions].
+要使函数为可变参数函数，其 `extern` ABI 必须是 [items.extern.variadic.conventions] 中列出的之一。
 
 r[type.fn-pointer.attributes]
-## Attributes on function pointer parameters
+## 函数指针参数上的属性
 
-Attributes on function pointer parameters follow the same rules and restrictions as [regular function parameters].
+函数指针参数上的属性遵循与[常规函数参数]相同的规则和限制。
 
 [`extern`]: ../items/external-blocks.md
 [closures]: closure.md
-[extern function]: ../items/functions.md#extern-function-qualifier
+[外部函数]: ../items/functions.md#extern-function-qualifier
 [function items]: function-item.md
-[unsafe function]: ../unsafe-keyword.md
-[regular function parameters]: ../items/functions.md#attributes-on-function-parameters
+[不安全函数]: ../unsafe-keyword.md
+[常规函数参数]: ../items/functions.md#attributes-on-function-parameters

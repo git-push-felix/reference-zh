@@ -1,38 +1,38 @@
 r[coerce]
-# Type coercions
+# 类型自动强转
 
 r[coerce.intro]
-**Type coercions** are implicit operations that change the type of a value. They happen automatically at specific locations and are highly restricted in what types actually coerce.
+**类型自动强转**是更改值的类型的隐式操作。它们在特定位置自动发生，并且对实际强转的类型有高度限制。
 
 r[coerce.as]
-Any conversions allowed by coercion can also be explicitly performed by the [type cast operator], `as`.
+自动强转允许的任何转换也可以通过[类型转换运算符][type cast operator] `as` 显式执行。
 
-Coercions are originally defined in [RFC 401] and expanded upon in [RFC 1558].
+自动强转最初在 [RFC 401] 中定义，并在 [RFC 1558] 中扩展。
 
 r[coerce.site]
-## Coercion sites
+## 强转位置
 
 r[coerce.site.intro]
-A coercion can only occur at certain coercion sites in a program; these are typically places where the desired type is explicit or can be derived by propagation from explicit types (without type inference). Possible coercion sites are:
+自动强转只能在程序的特定强转位置发生；这些通常是期望的类型是显式的或可以通过显式类型推导出来的位置（不需要类型推断）。可能的强转位置包括：
 
 r[coerce.site.let]
-* `let` statements where an explicit type is given.
+* 给出了显式类型的 `let` 语句。
 
-   For example, `&mut 42` is coerced to have type `&i8` in the following:
+   例如，在以下代码中 `&mut 42` 被强转为类型 `&i8`：
 
    ```rust
    let _: &i8 = &mut 42;
    ```
 
 r[coerce.site.value]
-* `static` and `const` item declarations (similar to `let` statements).
+* `static` 和 `const` 项声明（类似于 `let` 语句）。
 
 r[coerce.site.argument]
-* Arguments for function calls
+* 函数调用的参数
 
-  The value being coerced is the actual parameter, and it is coerced to the type of the formal parameter.
+  被强转的值是实际参数，它被强转为形式参数的类型。
 
-  For example, `&mut 42` is coerced to have type `&i8` in the following:
+  例如，在以下代码中 `&mut 42` 被强转为类型 `&i8`：
 
   ```rust
   fn bar(_: &i8) { }
@@ -42,12 +42,12 @@ r[coerce.site.argument]
   }
   ```
 
-  For method calls, the receiver (`self` parameter) type is coerced differently, see the documentation on [method-call expressions] for details.
+  对于方法调用，接收者（`self` 参数）类型的强转方式不同，详情请参阅[方法调用表达式][method-call expressions]的文档。
 
 r[coerce.site.constructor]
-* Instantiations of struct, union, or enum variant fields
+* 结构体、联合体或枚举变体字段的实例化
 
-  For example, `&mut 42` is coerced to have type `&i8` in the following:
+  例如，在以下代码中 `&mut 42` 被强转为类型 `&i8`：
 
   ```rust
   struct Foo<'a> { x: &'a i8 }
@@ -58,9 +58,9 @@ r[coerce.site.constructor]
   ```
 
 r[coerce.site.return]
-* Function results&mdash;either the final line of a block if it is not semicolon-terminated or any expression in a `return` statement
+* 函数结果——要么是块的最后一行（如果没有用分号结束），要么是 `return` 语句中的任何表达式
 
-  For example, `x` is coerced to have type `&dyn Display` in the following:
+  例如，在以下代码中 `x` 被强转为类型 `&dyn Display`：
 
   ```rust
   use std::fmt::Display;
@@ -70,9 +70,9 @@ r[coerce.site.return]
   ```
 
 r[coerce.site.assignment]
-* Assigned value operands in assignment expressions
+* 赋值表达式中被赋值的操作数
 
-  For example, `y` is coerced to have type `&i8` in the following:
+  例如，在以下代码中 `y` 被强转为类型 `&i8`：
   ```rust
   let mut x = &0i8;
   let y = &mut 42i8;
@@ -80,51 +80,51 @@ r[coerce.site.assignment]
   ```
 
 r[coerce.site.subexpr]
-If the expression in one of these coercion sites is a coercion-propagating expression, then the relevant sub-expressions in that expression are also coercion sites. Propagation recurses from these new coercion sites. Propagating expressions and their relevant sub-expressions are:
+如果这些强转位置之一的表达式是强转传播表达式，则该表达式中的相关子表达式也是强转位置。从这些新的强转位置开始递归传播。传播表达式及其相关子表达式包括：
 
 r[coerce.site.array]
-* Array literals, where the array has type `[U; n]`. Each sub-expression in the array literal is a coercion site for coercion to type `U`.
+* 数组字面量，其中数组的类型为 `[U; n]`。数组字面量中的每个子表达式都是到类型 `U` 的强转位置。
 
 r[coerce.site.repeat]
-* Array literals with repeating syntax, where the array has type `[U; n]`. The repeated sub-expression is a coercion site for coercion to type `U`.
+* 带有重复语法的数组字面量，其中数组的类型为 `[U; n]`。重复的子表达式是到类型 `U` 的强转位置。
 
 r[coerce.site.tuple]
-* Tuples, where a tuple is a coercion site to type `(U_0, U_1, ..., U_n)`. Each sub-expression is a coercion site to the respective type, e.g. the zeroth sub-expression is a coercion site to type `U_0`.
+* 元组，其中元组是到类型 `(U_0, U_1, ..., U_n)` 的强转位置。每个子表达式是到各自类型的强转位置，例如第零个子表达式是到类型 `U_0` 的强转位置。
 
 r[coerce.site.parenthesis]
-* Parenthesized sub-expressions (`(e)`): if the expression has type `U`, then the sub-expression is a coercion site to `U`.
+* 括号子表达式 (`(e)`)：如果表达式的类型为 `U`，则子表达式是到 `U` 的强转位置。
 
 r[coerce.site.block]
-* Blocks: if a block has type `U`, then the last expression in the block (if it is not semicolon-terminated) is a coercion site to `U`. This includes blocks which are part of control flow statements, such as `if`/`else`, if the block has a known type.
+* 块：如果块的类型为 `U`，则块中的最后一个表达式（如果没有用分号结束）是到 `U` 的强转位置。这包括作为控制流语句一部分的块，如 `if`/`else`，如果该块具有已知类型的话。
 
 r[coerce.types]
-## Coercion types
+## 强转类型
 
 r[coerce.types.intro]
-Coercion is allowed between the following types:
+允许在以下类型之间进行自动强转：
 
 r[coerce.types.reflexive]
-* `T` to `U` if `T` is a [subtype] of `U` (*reflexive case*)
+* `T` 到 `U`，如果 `T` 是 `U` 的[子类型][subtype]（*自反情况*）
 
 r[coerce.types.transitive]
-* `T_1` to `T_3` where `T_1` coerces to `T_2` and `T_2` coerces to `T_3` (*transitive case*)
+* `T_1` 到 `T_3`，其中 `T_1` 可以强转为 `T_2`，且 `T_2` 可以强转为 `T_3`（*传递情况*）
 
-    Note that this is not fully supported yet.
+    注意，这尚未完全支持。
 
 r[coerce.types.mut-reborrow]
-* `&mut T` to `&T`
+* `&mut T` 到 `&T`
 
 r[coerce.types.mut-pointer]
-* `*mut T` to `*const T`
+* `*mut T` 到 `*const T`
 
 r[coerce.types.ref-to-pointer]
-* `&T` to `*const T`
+* `&T` 到 `*const T`
 
 r[coerce.types.mut-to-pointer]
-* `&mut T` to `*mut T`
+* `&mut T` 到 `*mut T`
 
 r[coerce.types.deref]
-* `&T` or `&mut T` to `&U` if `T` implements `Deref<Target = U>`. For example:
+* `&T` 或 `&mut T` 到 `&U`，如果 `T` 实现了 `Deref<Target = U>`。例如：
 
   ```rust
   use std::ops::Deref;
@@ -145,104 +145,102 @@ r[coerce.types.deref]
 
   fn main() {
       let x = &mut CharContainer { value: 'y' };
-      foo(x); //&mut CharContainer is coerced to &char.
+      foo(x); // &mut CharContainer 被强转为 &char。
   }
   ```
 
 r[coerce.types.deref-mut]
-* `&mut T` to `&mut U` if `T` implements `DerefMut<Target = U>`.
+* `&mut T` 到 `&mut U`，如果 `T` 实现了 `DerefMut<Target = U>`。
 
 r[coerce.types.unsize]
-* TyCtor(`T`) to TyCtor(`U`), where TyCtor(`T`) is one of
+* TyCtor(`T`) 到 TyCtor(`U`)，其中 TyCtor(`T`) 是以下之一
     - `&T`
     - `&mut T`
     - `*const T`
     - `*mut T`
     - `Box<T>`
 
-    and where `U` can be obtained from `T` by [unsized coercion](#unsized-coercions).
+    并且 `U` 可以通过[非固定大小强转](#unsized-coercions)由 `T` 获得。
 
-    <!--In the future, coerce_inner will be recursively extended to tuples and
-    structs. In addition, coercions from subtraits to supertraits will be
-    added. See [RFC 401] for more details.-->
+    <!--未来，coerce_inner 将递归扩展到元组和结构体。此外，从子 trait 到超 trait 的强转也将被添加。更多细节请参见 [RFC 401]。-->
 
 r[coerce.types.fn]
-* Function item types to `fn` pointers
+* 函数项类型到 `fn` 指针
 
 r[coerce.types.closure]
-* Non capturing closures to `fn` pointers
+* 非捕获闭包到 `fn` 指针
 
 r[coerce.types.never]
-* `!` to any `T`
+* `!` 到任何 `T`
 
 r[coerce.unsize]
-### Unsized coercions
+### 非固定大小强转
 
 r[coerce.unsize.intro]
-The following coercions are called `unsized coercions`, since they relate to converting types to unsized types, and are permitted in a few cases where other coercions are not, as described above. They can still happen anywhere else a coercion can occur.
+以下强转称为*非固定大小强转*，因为它们涉及将类型转换为非固定大小类型（unsized types），并且在上文描述的其他强转不被允许的少数情况下也是被允许的。它们仍然可以在任何允许强转的地方发生。
 
 r[coerce.unsize.trait]
-Two traits, [`Unsize`] and [`CoerceUnsized`], are used to assist in this process and expose it for library use. The following coercions are built-ins and, if `T` can be coerced to `U` with one of them, then an implementation of `Unsize<U>` for `T` will be provided:
+两个 trait，[`Unsize`] 和 [`CoerceUnsized`]，用于辅助此过程并在库使用中暴露它。以下强转是内置的，如果 `T` 可以通过其中之一强转为 `U`，则将提供 `T` 对 `Unsize<U>` 的实现：
 
 r[coerce.unsize.slice]
-* `[T; n]` to `[T]`.
+* `[T; n]` 到 `[T]`。
 
 r[coerce.unsize.trait-object]
-* `T` to `dyn U`, when `T` implements `U + Sized`, and `U` is [dyn compatible].
+* `T` 到 `dyn U`，当 `T` 实现 `U + Sized`，且 `U` 是 [dyn 兼容][dyn compatible]的。
 
 r[coerce.unsize.trait-upcast]
-* `dyn T` to `dyn U`, when `U` is one of `T`'s [supertraits].
-    * This allows dropping auto traits, i.e. `dyn T + Auto` to `dyn U` is allowed.
-    * This allows adding auto traits if the principal trait has the auto trait as a super trait, i.e. given `trait T: U + Send {}`, `dyn T` to `dyn T + Send` or to `dyn U + Send` coercions are allowed.
+* `dyn T` 到 `dyn U`，当 `U` 是 `T` 的[超 trait][supertraits]之一时。
+    * 这允许丢弃 auto trait，即 `dyn T + Auto` 到 `dyn U` 是允许的。
+    * 如果主 trait 具有 auto trait 作为超 trait，这允许添加 auto trait，即给定 `trait T: U + Send {}`，则允许 `dyn T` 到 `dyn T + Send` 或到 `dyn U + Send` 的强转。
 
-r[coerce.unsized.composite]
-* `Foo<..., T, ...>` to `Foo<..., U, ...>`, when:
-    * `Foo` is a struct.
-    * `T` implements `Unsize<U>`.
-    * The last field of `Foo` has a type involving `T`.
-    * If that field has type `Bar<T>`, then `Bar<T>` implements `Unsize<Bar<U>>`.
-    * T is not part of the type of any other fields.
+r[coerce.unsize.composite]
+* `Foo<..., T, ...>` 到 `Foo<..., U, ...>`，当：
+    * `Foo` 是一个结构体。
+    * `T` 实现了 `Unsize<U>`。
+    * `Foo` 的最后一个字段具有涉及 `T` 的类型。
+    * 如果该字段的类型为 `Bar<T>`，则 `Bar<T>` 实现了 `Unsize<Bar<U>>`。
+    * T 不是任何其他字段类型的一部分。
 
-r[coerce.unsized.pointer]
-Additionally, a type `Foo<T>` can implement `CoerceUnsized<Foo<U>>` when `T` implements `Unsize<U>` or `CoerceUnsized<Foo<U>>`. This allows it to provide an unsized coercion to `Foo<U>`.
+r[coerce.unsize.pointer]
+此外，当 `T` 实现 `Unsize<U>` 或 `CoerceUnsized<Foo<U>>` 时，类型 `Foo<T>` 可以实现 `CoerceUnsized<Foo<U>>`。这允许其提供到 `Foo<U>` 的非固定大小强转。
 
 > [!NOTE]
-> While the definition of the unsized coercions and their implementation has been stabilized, the traits themselves are not yet stable and therefore can't be used directly in stable Rust.
+> 虽然非固定大小强转的定义及其实现已经稳定，但这些 trait 本身尚未稳定，因此不能在稳定的 Rust 中直接使用。
 
 r[coerce.least-upper-bound]
-## Least upper bound coercions
+## 最小上界强转
 
 r[coerce.least-upper-bound.intro]
-In some contexts, the compiler must coerce together multiple types to try and find the most general type. This is called a "Least Upper Bound" coercion. LUB coercion is used and only used in the following situations:
+在某些上下文中，编译器必须将多个类型一起强转以尝试找到最通用的类型。这称为"最小上界"（Least Upper Bound）强转。LUB 强转仅用于以下情况：
 
-+ To find the common type for a series of if branches.
-+ To find the common type for a series of match arms.
-+ To find the common type for array elements.
-+ To find the common type for a [labeled block expression] among the break operands and the final block operand.
-+ To find the common type for an [`loop` expression with break expressions] among the break operands.
-+ To find the type for the return type of a closure with multiple return statements.
-+ To check the type for the return type of a function with multiple return statements.
++ 为一系列 if 分支找到公共类型。
++ 为一系列 match 分支找到公共类型。
++ 为数组元素找到公共类型。
++ 为[带标签块表达式][labeled block expression]在 break 操作数和最终块操作数之间找到公共类型。
++ 为[带有 break 表达式的 `loop` 表达式][`loop` expression with break expressions]在 break 操作数之间找到公共类型。
++ 为具有多个 return 语句的闭包找到返回类型。
++ 检查具有多个 return 语句的函数的返回类型。
 
 r[coerce.least-upper-bound.target]
-In each such case, there are a set of types `T0..Tn` to be mutually coerced to some target type `T_t`, which is unknown to start.
+在每种情况下，有一组类型 `T0..Tn` 需要相互强转到某个目标类型 `T_t`，该目标类型开始时是未知的。
 
 r[coerce.least-upper-bound.computation]
-Computing the LUB coercion is done iteratively. The target type `T_t` begins as the type `T0`. For each new type `Ti`, we consider whether
+LUB 强转的计算是迭代进行的。目标类型 `T_t` 从类型 `T0` 开始。对于每个新类型 `Ti`，我们考虑：
 
 r[coerce.least-upper-bound.computation-identity]
-+ If `Ti` can be coerced to the current target type `T_t`, then no change is made.
++ 如果 `Ti` 可以强转到当前目标类型 `T_t`，则不做更改。
 
 r[coerce.least-upper-bound.computation-replace]
-+ Otherwise, check whether `T_t` can be coerced to `Ti`; if so, the `T_t` is changed to `Ti`. (This check is also conditioned on whether all of the source expressions considered thus far have implicit coercions.)
++ 否则，检查 `T_t` 是否可以强转到 `Ti`；如果可以，则 `T_t` 被更改为 `Ti`。（此检查还取决于到目前为止考虑的所有源表达式是否具有隐式强转。）
 
 r[coerce.least-upper-bound.computation-unify]
-+ If not, try to compute a mutual supertype of `T_t` and `Ti`, which will become the new target type.
++ 如果不能，则尝试计算 `T_t` 和 `Ti` 的公共超类型，该类型将成为新的目标类型。
 
-### Examples:
+### 示例：
 
 ```rust
 # let (a, b, c) = (0, 1, 2);
-// For if branches
+// 对于 if 分支
 let bar = if true {
     a
 } else if false {
@@ -251,17 +249,17 @@ let bar = if true {
     c
 };
 
-// For match arms
+// 对于 match 分支
 let baw = match 42 {
     0 => a,
     1 => b,
     _ => c,
 };
 
-// For array elements
+// 对于数组元素
 let bax = [a, b, c];
 
-// For closure with multiple return statements
+// 对于具有多个 return 语句的闭包
 let clo = || {
     if true {
         a
@@ -273,7 +271,7 @@ let clo = || {
 };
 let baz = clo();
 
-// For type checking of function with multiple return statements
+// 对于具有多个 return 语句的函数的类型检查
 fn foo() -> i32 {
     let (a, b, c) = (0, 1, 2);
     match 42 {
@@ -284,11 +282,11 @@ fn foo() -> i32 {
 }
 ```
 
-In these examples, types of the `ba*` are found by LUB coercion. And the compiler checks whether LUB coercion result of `a`, `b`, `c` is `i32` in the processing of the function `foo`.
+在这些示例中，`ba*` 的类型是通过 LUB 强转找到的。编译器在处理函数 `foo` 时检查 `a`、`b`、`c` 的 LUB 强转结果是否为 `i32`。
 
-### Caveat
+### 注意事项
 
-This description is obviously informal. Making it more precise is expected to proceed as part of a general effort to specify the Rust type checker more precisely.
+此描述显然是非形式化的。使其更精确的工作预期将作为更精确地规范化 Rust 类型检查器的一般努力的一部分进行。
 
 [RFC 401]: https://github.com/rust-lang/rfcs/blob/master/text/0401-coercions.md
 [RFC 1558]: https://github.com/rust-lang/rfcs/blob/master/text/1558-closure-to-fn-coercion.md

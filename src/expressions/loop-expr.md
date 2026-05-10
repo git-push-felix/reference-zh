@@ -1,5 +1,5 @@
 r[expr.loop]
-# Loops and other breakable expressions
+# 循环和其他可中断表达式
 
 r[expr.loop.syntax]
 ```grammar,expressions
@@ -13,24 +13,24 @@ LoopExpression ->
 ```
 
 r[expr.loop.intro]
-Rust supports four loop expressions:
+Rust 支持四种循环表达式：
 
-*   A [`loop` expression](#infinite-loops) denotes an infinite loop.
-*   A [`while` expression](#predicate-loops) loops until a predicate is false.
-*   A [`for` expression](#iterator-loops) extracts values from an iterator, looping until the iterator is empty.
-*   A [labeled block expression][expr.loop.block-labels] runs a loop exactly once, but allows exiting the loop early with `break`.
+*   [`loop` 表达式](#infinite-loops)表示无限循环。
+*   [`while` 表达式](#predicate-loops)在谓词为 false 之前循环。
+*   [`for` 表达式](#iterator-loops)从迭代器中提取值，循环直到迭代器为空。
+*   [带标签的块表达式][expr.loop.block-labels]恰好运行循环一次，但允许使用 `break` 提前退出循环。
 
 r[expr.loop.break-label]
-All four types of loop support [`break` expressions](#break-expressions), and [labels](#loop-labels).
+所有四种循环类型都支持 [`break` 表达式](#break-expressions)和[标签](#loop-labels)。
 
 r[expr.loop.continue-label]
-All except labeled block expressions support [`continue` expressions](#continue-expressions).
+除带标签的块表达式之外，所有类型都支持 [`continue` 表达式](#continue-expressions)。
 
 r[expr.loop.explicit-result]
-Only `loop` and labeled block expressions support [evaluation to non-trivial values](#break-and-loop-values).
+只有 `loop` 和带标签的块表达式支持[求值为非平凡值](#break-and-loop-values)。
 
 r[expr.loop.infinite]
-## Infinite loops
+## 无限循环
 
 r[expr.loop.infinite.syntax]
 ```grammar,expressions
@@ -38,16 +38,16 @@ InfiniteLoopExpression -> `loop` BlockExpression
 ```
 
 r[expr.loop.infinite.intro]
-A `loop` expression repeats execution of its body continuously: `loop { println!("I live."); }`.
+`loop` 表达式持续重复执行其主体：`loop { println!("I live."); }`。
 
 r[expr.loop.infinite.diverging]
-A `loop` expression without an associated `break` expression is [diverging] and has type [`!`].
+没有关联 `break` 表达式的 `loop` 表达式是[发散][diverging]的，具有类型 [`!`]。
 
 r[expr.loop.infinite.break]
-A `loop` expression containing associated [`break` expression(s)](#break-expressions) may terminate, and must have type compatible with the value of the `break` expression(s).
+包含关联 [`break` 表达式](#break-expressions)的 `loop` 表达式可能终止，并且必须具有与 `break` 表达式的值兼容的类型。
 
 r[expr.loop.while]
-## Predicate loops
+## 谓词循环
 
 r[expr.loop.while.syntax]
 ```grammar,expressions
@@ -55,21 +55,21 @@ PredicateLoopExpression -> `while` Conditions BlockExpression
 ```
 
 r[expr.loop.while.intro]
-A `while` loop expression allows repeating the evaluation of a block while a set of conditions remain true.
+`while` 循环表达式允许在一组条件保持为 true 时重复求值一个块。
 
 r[expr.loop.while.condition]
-Condition operands must be either an [Expression] with a [boolean type] or a conditional `let` match. If all of the condition operands evaluate to `true` and all of the `let` patterns successfully match their [scrutinee]s, then the loop body block executes.
+条件操作数必须是一个具有[布尔类型]的[表达式][Expression]或一个条件 `let` 匹配。如果所有条件操作数都求值为 `true` 且所有 `let` 模式都成功匹配其[受检者]，则执行循环体块。
 
 r[expr.loop.while.repeat]
-After the loop body successfully executes, the condition operands are re-evaluated to determine if the body should be executed again.
+循环体成功执行后，重新求值条件操作数以确定是否应再次执行循环体。
 
 r[expr.loop.while.exit]
-If any condition operand evaluates to `false` or any `let` pattern does not match its scrutinee, the body is not executed and execution continues after the `while` expression.
+如果任何条件操作数求值为 `false` 或任何 `let` 模式未匹配其受检者，循环体不被执行，执行继续到 `while` 表达式之后。
 
 r[expr.loop.while.eval]
-A `while` expression evaluates to `()`.
+`while` 表达式求值为 `()`。
 
-An example:
+示例：
 
 ```rust
 let mut i = 0;
@@ -81,10 +81,10 @@ while i < 10 {
 ```
 
 r[expr.loop.while.let]
-### `while let` patterns
+### `while let` 模式
 
 r[expr.loop.while.let.intro]
-`let` patterns in a `while` condition allow binding new variables into scope when the pattern matches successfully. The following examples illustrate bindings using `let` patterns:
+`while` 条件中的 `let` 模式允许在模式成功匹配时将新变量绑定到作用域中。以下示例展示了使用 `let` 模式的绑定：
 
 ```rust
 let mut x = vec![1, 2, 3];
@@ -100,7 +100,7 @@ while let _ = 5 {
 ```
 
 r[expr.loop.while.let.desugar]
-A `while let` loop is equivalent to a `loop` expression containing a [`match` expression] as follows.
+`while let` 循环等价于包含 [`match` 表达式]的 `loop` 表达式，如下所示。
 
 <!-- ignore: expansion example -->
 ```rust,ignore
@@ -109,7 +109,7 @@ A `while let` loop is equivalent to a `loop` expression containing a [`match` ex
 }
 ```
 
-is equivalent to
+等价于
 
 <!-- ignore: expansion example -->
 ```rust,ignore
@@ -122,23 +122,23 @@ is equivalent to
 ```
 
 r[expr.loop.while.let.or-pattern]
-Multiple patterns may be specified with the `|` operator. This has the same semantics as with `|` in `match` expressions:
+可以使用 `|` 运算符指定多个模式。这与 `match` 表达式中的 `|` 具有相同的语义：
 
 ```rust
 let mut vals = vec![2, 3, 1, 2, 2];
 while let Some(v @ 1) | Some(v @ 2) = vals.pop() {
-    // Prints 2, 2, then 1
+    // 打印 2, 2, 然后是 1
     println!("{}", v);
 }
 ```
 
 r[expr.loop.while.chains]
-### `while` condition chains
+### `while` 条件链
 
 r[expr.loop.while.chains.intro]
-Multiple condition operands can be separated with `&&`. These have the same semantics and restrictions as [`if` condition chains].
+多个条件操作数可以用 `&&` 分隔。这些具有与 [`if` 条件链]相同的语义和限制。
 
-The following is an example of chaining multiple expressions, mixing `let` bindings and boolean expressions, and with expressions able to reference pattern bindings from previous expressions:
+以下是链式多个表达式的示例，混合了 `let` 绑定和布尔表达式，并且表达式可以引用先前表达式的模式绑定：
 
 ```rust
 fn main() {
@@ -155,22 +155,22 @@ fn main() {
 ```
 
 r[expr.loop.for]
-## Iterator loops
+## 迭代器循环
 
 r[expr.loop.for.syntax]
 ```grammar,expressions
 IteratorLoopExpression ->
     `for` Pattern `in` Expression _except [StructExpression]_ BlockExpression
 ```
-<!-- TODO: The exception above isn't accurate, see https://github.com/rust-lang/reference/issues/569 -->
+<!-- TODO: 上面的例外不准确，参见 https://github.com/rust-lang/reference/issues/569 -->
 
 r[expr.loop.for.intro]
-A `for` expression is a syntactic construct for looping over elements provided by an implementation of `std::iter::IntoIterator`.
+`for` 表达式是一种语法结构，用于遍历由 `std::iter::IntoIterator` 实现提供的元素。
 
 r[expr.loop.for.condition]
-If the iterator yields a value, that value is matched against the irrefutable pattern, the body of the loop is executed, and then control returns to the head of the `for` loop. If the iterator is empty, the `for` expression completes.
+如果迭代器产生一个值，该值与不可反驳的模式匹配，则执行循环体，然后控制返回到 `for` 循环的头部。如果迭代器为空，`for` 表达式完成。
 
-An example of a `for` loop over the contents of an array:
+对数组内容进行 `for` 循环的示例：
 
 ```rust
 let v = &["apples", "cake", "coffee"];
@@ -180,7 +180,7 @@ for text in v {
 }
 ```
 
-An example of a for loop over a series of integers:
+对一系列整数进行 for 循环的示例：
 
 ```rust
 let mut sum = 0;
@@ -191,7 +191,7 @@ assert_eq!(sum, 55);
 ```
 
 r[expr.loop.for.desugar]
-A `for` loop is equivalent to a `loop` expression containing a [`match` expression] as follows:
+`for` 循环等价于包含 [`match` 表达式]的 `loop` 表达式，如下所示：
 
 <!-- ignore: expansion example -->
 ```rust,ignore
@@ -200,7 +200,7 @@ A `for` loop is equivalent to a `loop` expression containing a [`match` expressi
 }
 ```
 
-is equivalent to
+等价于
 
 <!-- ignore: expansion example -->
 ```rust,ignore
@@ -221,15 +221,15 @@ is equivalent to
 ```
 
 r[expr.loop.for.lang-items]
-`IntoIterator`, `Iterator`, and `Option` are always the standard library items here, not whatever those names resolve to in the current scope.
+这里的 `IntoIterator`、`Iterator` 和 `Option` 始终是标准库中的项，而不是当前作用域中这些名称解析到的任何东西。
 
-The variable names `next`, `iter`, and `val` are for exposition only, they do not actually have names the user can type.
+变量名 `next`、`iter` 和 `val` 仅用于说明，它们实际上没有用户可以输入的名字。
 
 > [!NOTE]
-> The outer `match` is used to ensure that any [temporary values] in `iter_expr` don't get dropped before the loop is finished. `next` is declared before being assigned because it results in types being inferred correctly more often.
+> 外层的 `match` 用于确保 `iter_expr` 中的任何[临时值]不会在循环完成之前被丢弃。`next` 在被赋值之前声明，因为这更经常地使类型被正确推断。
 
 r[expr.loop.label]
-## Loop labels
+## 循环标签
 
 r[expr.loop.label.syntax]
 ```grammar,expressions
@@ -237,13 +237,13 @@ LoopLabel -> LIFETIME_OR_LABEL `:`
 ```
 
 r[expr.loop.label.intro]
-A loop expression may optionally have a _label_. The label is written as a lifetime preceding the loop expression, as in `'foo: loop { break 'foo; }`, `'bar: while false {}`, `'humbug: for _ in 0..0 {}`.
+循环表达式可以可选地具有一个*标签*。标签写为循环表达式前的一个生命周期，如 `'foo: loop { break 'foo; }`、`'bar: while false {}`、`'humbug: for _ in 0..0 {}`。
 
 r[expr.loop.label.control-flow]
-If a label is present, then labeled `break` and `continue` expressions nested within this loop may exit out of this loop or return control to its head. See [break expressions](#break-expressions) and [continue expressions](#continue-expressions).
+如果存在标签，则嵌套在此循环中的带标签的 `break` 和 `continue` 表达式可以退出此循环或将控制返回到其头部。参见 [break 表达式](#break-expressions)和 [continue 表达式](#continue-expressions)。
 
 r[expr.loop.label.ref]
-Labels follow the hygiene and shadowing rules of local variables. For example, this code will print "outer loop":
+标签遵循局部变量的卫生和遮蔽规则。例如，此代码将打印 "outer loop"：
 
 ```rust
 'a: loop {
@@ -255,10 +255,10 @@ Labels follow the hygiene and shadowing rules of local variables. For example, t
 }
 ```
 
-`'_` is not a valid loop label.
+`'_` 不是有效的循环标签。
 
 r[expr.loop.break]
-## `break` expressions
+## `break` 表达式
 
 r[expr.loop.break.syntax]
 ```grammar,expressions
@@ -266,7 +266,7 @@ BreakExpression -> `break` LIFETIME_OR_LABEL? Expression?
 ```
 
 r[expr.loop.break.intro]
-When `break` is encountered, execution of the associated loop body is immediately terminated, for example:
+当遇到 `break` 时，关联循环体的执行立即终止，例如：
 
 ```rust
 let mut last = 0;
@@ -280,10 +280,10 @@ assert_eq!(last, 12);
 ```
 
 r[expr.loop.break.diverging]
-A `break` expression is [diverging] and has a type of [`!`].
+`break` 表达式是[发散][diverging]的，具有类型 [`!`]。
 
 r[expr.loop.break.label]
-A `break` expression is normally associated with the innermost `loop`, `for` or `while` loop enclosing the `break` expression, but a [label](#loop-labels) can be used to specify which enclosing loop is affected. Example:
+`break` 表达式通常与包围 `break` 表达式的最内层 `loop`、`for` 或 `while` 循环关联，但可以使用[标签](#loop-labels)来指定影响哪个外围循环。示例：
 
 ```rust
 'outer: loop {
@@ -294,13 +294,13 @@ A `break` expression is normally associated with the innermost `loop`, `for` or 
 ```
 
 r[expr.loop.break.value]
-A `break` expression is only permitted in the body of a loop, and has one of the forms `break`, `break 'label` or ([see below](#break-and-loop-values)) `break EXPR` or `break 'label EXPR`.
+`break` 表达式仅允许在循环体内部，并具有以下形式之一：`break`、`break 'label` 或（[见下文](#break-and-loop-values)）`break EXPR` 或 `break 'label EXPR`。
 
 r[expr.loop.break-value.implicit-value]
-In a [`loop` with break expressions][expr.loop.break-value] or a [labeled block expression], a `break` without an expression is equivalent to `break ()`.
+在[带有 break 表达式的 `loop`][expr.loop.break-value] 或[带标签的块表达式]中，不含表达式的 `break` 等价于 `break ()`。
 
 r[expr.loop.block-labels]
-## Labeled block expressions
+## 带标签的块表达式
 
 r[expr.loop.block-labels.syntax]
 ```grammar,expressions
@@ -308,13 +308,13 @@ LabelBlockExpression -> BlockExpression
 ```
 
 r[expr.loop.block-labels.intro]
-Labeled block expressions are exactly like block expressions, except that they allow using `break` expressions within the block.
+带标签的块表达式与块表达式完全相同，不同之处在于它们允许在块内使用 `break` 表达式。
 
 r[expr.loop.block-labels.break]
-Unlike loops, `break` expressions within a labeled block expression *must* have a label (i.e. the label is not optional).
+与循环不同，带标签的块表达式中的 `break` 表达式*必须*具有标签（即标签不是可选的）。
 
 r[expr.loop.block-labels.label-required]
-Similarly, labeled block expressions *must* begin with a label.
+类似地，带标签的块表达式*必须*以标签开头。
 
 ```rust
 # fn do_thing() {}
@@ -336,7 +336,7 @@ let result = 'block: {
 ```
 
 r[expr.loop.block-labels.type]
-The type of a labeled block expression is the [least upper bound] of all of the break operands and the final operand. If the final operand is omitted, the type of the final operand defaults to the [unit type], unless the block [diverges][expr.block.diverging], in which case it is the [never type].
+带标签的块表达式的类型是所有 break 操作数和最终操作数的[最小上界]。如果省略了最终操作数，则最终操作数的类型默认为[单元类型]，除非块[发散][expr.block.diverging]，在这种情况下它是[永不类型]。
 
 > [!EXAMPLE]
 > ```rust
@@ -345,15 +345,15 @@ The type of a labeled block expression is the [least upper bound] of all of the 
 >
 >     let _: &str = 'block: {
 >         if condition {
->             break 'block &s;  // &String coerced to &str via Deref
+>             break 'block &s;  // &String 通过 Deref 强制为 &str
 >         }
->         break 'block "literal";  // &'static str coerced to &str
+>         break 'block "literal";  // &'static str 强制为 &str
 >     };
 > }
 > ```
 
 r[expr.loop.continue]
-## `continue` expressions
+## `continue` 表达式
 
 r[expr.loop.continue.syntax]
 ```grammar,expressions
@@ -361,28 +361,28 @@ ContinueExpression -> `continue` LIFETIME_OR_LABEL?
 ```
 
 r[expr.loop.continue.intro]
-When `continue` is encountered, the current iteration of the associated loop body is immediately terminated, returning control to the loop *head*.
+当遇到 `continue` 时，关联循环体的当前迭代立即终止，将控制返回到循环*头部*。
 
 r[expr.loop.continue.diverging]
-A `continue` expression is [diverging] and has a type of [`!`].
+`continue` 表达式是[发散][diverging]的，具有类型 [`!`]。
 
 r[expr.loop.continue.while]
-In the case of a `while` loop, the head is the conditional operands controlling the loop.
+对于 `while` 循环，头部是控制循环的条件操作数。
 
 r[expr.loop.continue.for]
-In the case of a `for` loop, the head is the call-expression controlling the loop.
+对于 `for` 循环，头部是控制循环的调用表达式。
 
 r[expr.loop.continue.label]
-Like `break`, `continue` is normally associated with the innermost enclosing loop, but `continue 'label` may be used to specify the loop affected.
+与 `break` 类似，`continue` 通常与最内层的外围循环关联，但可以使用 `continue 'label` 来指定受影响的循环。
 
 r[expr.loop.continue.in-loop-only]
-A `continue` expression is only permitted in the body of a loop.
+`continue` 表达式仅允许在循环体内部。
 
 r[expr.loop.break-value]
-## `break` and loop values
+## `break` 和循环值
 
 r[expr.loop.break-value.intro]
-When associated with a `loop`, a break expression may be used to return a value from that loop, via one of the forms `break EXPR` or `break 'label EXPR`, where `EXPR` is an expression whose result is returned from the `loop`. For example:
+当与 `loop` 关联时，可以使用 break 表达式从该循环返回值，通过 `break EXPR` 或 `break 'label EXPR` 形式，其中 `EXPR` 是其结果从 `loop` 返回的表达式。例如：
 
 ```rust
 let (mut a, mut b) = (1, 1);
@@ -394,12 +394,12 @@ let result = loop {
     a = b;
     b = c;
 };
-// first number in Fibonacci sequence over 10:
+// 斐波那契数列中第一个大于 10 的数：
 assert_eq!(result, 13);
 ```
 
 r[expr.loop.break-value.type]
-The type of a `loop` with associated `break` expressions is the [least upper bound] of all of the break operands.
+具有关联 `break` 表达式的 `loop` 的类型是所有 break 操作数的[最小上界]。
 
 > [!EXAMPLE]
 > ```rust
@@ -408,20 +408,20 @@ The type of a `loop` with associated `break` expressions is the [least upper bou
 >
 >     let _: &str = loop {
 >         if condition {
->             break &s; // &String coerced to &str via Deref
+>             break &s; // &String 通过 Deref 强制为 &str
 >         }
->         break "literal"; // &'static str coerced to &str
+>         break "literal"; // &'static str 强制为 &str
 >     };
 > }
 > ```
 
 r[expr.loop.break-value.diverging]
-A `loop` with associated `break` expressions does not [diverge] if any of the break operands do not diverge. If all of the `break` operands diverge, then the `loop` expression also diverges.
+如果所有 break 操作数中没有任何一个是不发散的，则具有关联 `break` 表达式的 `loop` 不[发散][diverge]。如果所有 `break` 操作数都发散，则 `loop` 表达式也发散。
 
 > [!EXAMPLE]
 > ```rust
 > fn diverging_loop_with_break(condition: bool) -> ! {
->     // This loop is diverging because all `break` operands are diverging.
+>     // 此循环是发散的，因为所有 `break` 操作数都是发散的。
 >     loop {
 >         if condition {
 >             break loop {};
@@ -434,15 +434,14 @@ A `loop` with associated `break` expressions does not [diverge] if any of the br
 >
 > ```rust,compile_fail,E0308
 > fn loop_with_non_diverging_break(condition: bool) -> ! {
->     // The type of this loop is i32 even though one of the breaks is
->     // diverging.
+>     // 此循环的类型是 i32，即使其中一个 break 是发散的。
 >     loop {
 >         if condition {
 >             break loop {};
 >         } else {
 >             break 123i32;
 >         }
->     } // ERROR: expected `!`, found `i32`
+>     } // 错误：期望 `!`，找到 `i32`
 > }
 > ```
 

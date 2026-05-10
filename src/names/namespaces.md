@@ -1,108 +1,107 @@
 r[names.namespaces]
-# Namespaces
+# 命名空间
 
 r[names.namespaces.intro]
-A *namespace* is a logical grouping of declared [names]. Names are segregated into separate namespaces based on the kind of entity the name refers to. Namespaces allow the occurrence of a name in one namespace to not conflict with the same name in another namespace.
+*命名空间*是已声明[名称][names]的逻辑分组。名称根据其引用的实体类型被隔离到不同的命名空间中。命名空间允许一个命名空间中的名称出现不会与另一个命名空间中的相同名称冲突。
 
-There are several different namespaces that each contain different kinds of entities. The use of a name will look for the declaration of that name in different namespaces, based on the context, as described in the [name resolution] chapter.
+存在多个不同的命名空间，每个命名空间包含不同类型的实体。名称的使用将根据上下文在不同的命名空间中查找该名称的声明，如[名称解析][name resolution]章节所述。
 
 r[names.namespaces.kinds]
-The following is a list of namespaces, with their corresponding entities:
+以下是命名空间及其对应实体的列表：
 
-* Type Namespace
-    * [Module declarations]
-    * [External crate declarations]
-    * [External crate prelude] items
-    * [Struct], [union], [enum], enum variant declarations
-    * [Trait item declarations]
-    * [Type aliases]
-    * [Associated type declarations]
-    * Built-in types: [boolean], [numeric], [`char`], and [`str`]
-    * [Generic type parameters]
-    * [`Self` type]
-    * [Tool attribute modules]
-* Value Namespace
-    * [Function declarations]
-    * [Constant item declarations]
-    * [Static item declarations]
-    * [Struct constructors]
-    * [Enum variant constructors]
-    * [`Self` constructors]
-    * [Generic const parameters]
-    * [Associated const declarations]
-    * [Associated function declarations]
-    * Local bindings --- [`let`], [`if let`], [`while let`], [`for`], [`match`] arms, [function parameters], [closure parameters]
-    * Captured [closure] variables
-* Macro Namespace
-    * [`macro_rules` declarations]
-    * [Built-in attributes]
-    * [Tool attributes]
-    * [Function-like procedural macros]
-    * [Derive macros]
-    * [Derive macro helpers]
-    * [Attribute macros]
-* Lifetime Namespace
-    * [Generic lifetime parameters]
-* Label Namespace
-    * [Loop labels]
-    * [Block labels]
+* 类型命名空间
+    * [模块声明][Module declarations]
+    * [外部 crate 声明][External crate declarations]
+    * [外部 crate 预导入][External crate prelude]项
+    * [Struct]、[union]、[enum]、enum 变体声明
+    * [Trait 项声明][Trait item declarations]
+    * [类型别名][Type aliases]
+    * [关联类型声明][Associated type declarations]
+    * 内置类型：[布尔][boolean]、[数值][numeric]、[`char`] 和 [`str`]
+    * [泛型类型参数][Generic type parameters]
+    * [`Self` 类型][`Self` type]
+    * [工具属性模块][Tool attribute modules]
+* 值命名空间
+    * [函数声明][Function declarations]
+    * [常量项声明][Constant item declarations]
+    * [静态项声明][Static item declarations]
+    * [结构体构造函数][Struct constructors]
+    * [枚举变体构造函数][Enum variant constructors]
+    * [`Self` 构造函数][`Self` constructors]
+    * [泛型常量参数][Generic const parameters]
+    * [关联常量声明][Associated const declarations]
+    * [关联函数声明][Associated function declarations]
+    * 局部绑定 --- [`let`]、[`if let`]、[`while let`]、[`for`]、[`match`] 分支、[函数参数][function parameters]、[闭包参数][closure parameters]
+    * 捕获的[闭包][closure]变量
+* 宏命名空间
+    * [`macro_rules` 声明][`macro_rules` declarations]
+    * [内置属性][Built-in attributes]
+    * [工具属性][Tool attributes]
+    * [类函数过程宏][Function-like procedural macros]
+    * [派生宏][Derive macros]
+    * [派生宏辅助属性][Derive macro helpers]
+    * [属性宏][Attribute macros]
+* 生命周期命名空间
+    * [泛型生命周期参数][Generic lifetime parameters]
+* 标签命名空间
+    * [循环标签][Loop labels]
+    * [块标签][Block labels]
 
-An example of how overlapping names in different namespaces can be used unambiguously:
+一个示例，展示不同命名空间中重叠的名称如何可以被无歧义地使用：
 
 ```rust
-// Foo introduces a type in the type namespace and a constructor in the value
-// namespace.
+// Foo 在类型命名空间中引入一个类型，在值命名空间中引入一个构造函数。
 struct Foo(u32);
 
-// The `Foo` macro is declared in the macro namespace.
+// `Foo` 宏声明在宏命名空间中。
 macro_rules! Foo {
     () => {};
 }
 
-// `Foo` in the `f` parameter type refers to `Foo` in the type namespace.
-// `'Foo` introduces a new lifetime in the lifetime namespace.
+// `f` 参数类型中的 `Foo` 引用类型命名空间中的 `Foo`。
+// `'Foo` 在生命周期命名空间中引入一个新的生命周期。
 fn example<'Foo>(f: Foo) {
-    // `Foo` refers to the `Foo` constructor in the value namespace.
+    // `Foo` 引用值命名空间中的 `Foo` 构造函数。
     let ctor = Foo;
-    // `Foo` refers to the `Foo` macro in the macro namespace.
+    // `Foo` 引用宏命名空间中的 `Foo` 宏。
     Foo!{}
-    // `'Foo` introduces a label in the label namespace.
+    // `'Foo` 在标签命名空间中引入一个标签。
     'Foo: loop {
-        // `'Foo` refers to the `'Foo` lifetime parameter, and `Foo`
-        // refers to the type namespace.
+        // `'Foo` 引用 `'Foo` 生命周期参数，`Foo`
+        // 引用类型命名空间。
         let x: &'Foo Foo;
-        // `'Foo` refers to the label.
+        // `'Foo` 引用标签。
         break 'Foo;
     }
 }
 ```
 
 r[names.namespaces.without]
-## Named entities without a namespace
+## 没有命名空间的命名实体
 
-The following entities have explicit names, but the names are not a part of any specific namespace.
+以下实体具有显式名称，但这些名称不属于任何特定的命名空间。
 
-### Fields
+### 字段
 
 r[names.namespaces.without.fields]
-Even though struct, enum, and union fields are named, the named fields do not live in an explicit namespace. They can only be accessed via a [field expression], which only inspects the field names of the specific type being accessed.
+尽管结构体、枚举和联合体字段是有名称的，但这些命名字段不存在于显式的命名空间中。它们只能通过[字段表达式][field expression]访问，该表达式仅检查所访问特定类型的字段名称。
 
-### Use declarations
+### Use 声明
 
 r[names.namespaces.without.use]
-A [use declaration] has named aliases that it imports into scope, but the `use` item itself does not belong to a specific namespace. Instead, it can introduce aliases into multiple namespaces, depending on the item kind being imported.
+[use 声明][use declaration]具有它导入作用域的命名别名，但 `use` 项本身不属于特定命名空间。相反，它可以根据导入的项类型将别名引入多个命名空间。
 
 r[names.namespaces.sub-namespaces]
-## Sub-namespaces
+## 子命名空间
 
 r[names.namespaces.sub-namespaces.intro]
-The macro namespace is split into two sub-namespaces: one for [bang-style macros] and one for [attributes]. When an attribute is resolved, any bang-style macros in scope will be ignored. And conversely resolving a bang-style macro will ignore attribute macros in scope. This prevents one style from shadowing another.
+宏命名空间分为两个子命名空间：一个用于[叹号风格宏][bang-style macros]，一个用于[属性][attributes]。解析属性时，作用域中的任何叹号风格宏将被忽略。反之，解析叹号风格宏时，将忽略作用域中的属性宏。这防止了一种风格遮蔽另一种风格。
 
-For example, the [`cfg` attribute] and the [`cfg` macro] are two different entities with the same name in the macro namespace, but they can still be used in their respective context.
+例如，[`cfg` 属性][`cfg` attribute]和 [`cfg` 宏][`cfg` macro]是宏命名空间中两个具有相同名称的不同实体，但它们仍可在各自的上下文中使用。
 
 <!-- ignore: requires external crates -->
 > [!NOTE]
-> `use` imports still cannot create duplicate bindings of the same name in a module or block, regardless of sub-namespace.
+> `use` 导入仍不能在模块或块中创建相同名称的重复绑定，无论子命名空间如何。
 >
 > ```rust,ignore
 > #[macro_export]
@@ -110,7 +109,7 @@ For example, the [`cfg` attribute] and the [`cfg` macro] are two different entit
 >     () => {};
 > }
 >
-> use myattr::mymac; // error[E0252]: the name `mymac` is defined multiple times.
+> use myattr::mymac; // error[E0252]: 名称 `mymac` 被多次定义。
 > ```
 
 [`cfg` attribute]: ../conditional-compilation.md#the-cfg-attribute

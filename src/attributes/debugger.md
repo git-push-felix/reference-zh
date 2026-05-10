@@ -1,14 +1,14 @@
 r[attributes.debugger]
-# Debugger attributes
+# 调试器属性
 
-The following [attributes] are used for enhancing the debugging experience when using third-party debuggers like GDB or WinDbg.
+以下[属性][attributes]用于增强使用第三方调试器（如 GDB 或 WinDbg）时的调试体验。
 
 <!-- template:attributes -->
 r[attributes.debugger.debugger_visualizer]
-## The `debugger_visualizer` attribute
+## `debugger_visualizer` 属性
 
 r[attributes.debugger.debugger_visualizer.intro]
-The *`debugger_visualizer` [attribute][attributes]* can be used to embed a debugger visualizer file into the debug information. This improves the debugger experience when displaying values.
+*`debugger_visualizer` [属性][attributes]* 可用于将调试器可视化文件嵌入到调试信息中。这改善了显示值时的调试器体验。
 
 > [!EXAMPLE]
 > <!-- ignore: requires external files-->
@@ -18,28 +18,28 @@ The *`debugger_visualizer` [attribute][attributes]* can be used to embed a debug
 > ```
 
 r[attributes.debugger.debugger_visualizer.syntax]
-The `debugger_visualizer` attribute uses the [MetaListNameValueStr] syntax to specify its inputs. One of the following keys must be specified:
+`debugger_visualizer` 属性使用 [MetaListNameValueStr] 语法来指定其输入。必须指定以下键之一：
 
 - [`natvis_file`][attributes.debugger.debugger_visualizer.natvis]
 - [`gdb_script_file`][attributes.debugger.debugger_visualizer.gdb]
 
 r[attributes.debugger.debugger_visualizer.allowed-positions]
-The `debugger_visualizer` attribute may only be applied to a [module] or to the crate root.
+`debugger_visualizer` 属性只能应用于[模块][module]或 crate 根。
 
 r[attributes.debugger.debugger_visualizer.duplicates]
-The `debugger_visualizer` attribute may be used any number of times on a form. All specified visualizer files will be loaded.
+`debugger_visualizer` 属性可以在一个形式上使用任意次数。所有指定的可视化文件都将被加载。
 
 r[attributes.debugger.debugger_visualizer.natvis]
-### Using `debugger_visualizer` with Natvis
+### 将 `debugger_visualizer` 与 Natvis 一起使用
 
 r[attributes.debugger.debugger_visualizer.natvis.intro]
-Natvis is an XML-based framework for Microsoft debuggers (such as Visual Studio and WinDbg) that uses declarative rules to customize the display of types. For detailed information on the Natvis format, refer to Microsoft's [Natvis documentation].
+Natvis 是一个基于 XML 的框架，适用于微软调试器（如 Visual Studio 和 WinDbg），使用声明式规则来自定义类型的显示。有关 Natvis 格式的详细信息，请参考微软的 [Natvis 文档][Natvis documentation]。
 
 r[attributes.debugger.debugger_visualizer.natvis.msvc]
-This attribute only supports embedding Natvis files on `-windows-msvc` targets.
+此属性仅支持在 `-windows-msvc` 目标上嵌入 Natvis 文件。
 
 r[attributes.debugger.debugger_visualizer.natvis.path]
-The path to the Natvis file is specified with the `natvis_file` key, which is a path relative to the source file.
+Natvis 文件的路径通过 `natvis_file` 键指定，该路径是相对于源文件的路径。
 
 > [!EXAMPLE]
 > <!-- ignore: requires external files and msvc -->
@@ -59,7 +59,7 @@ The path to the Natvis file is specified with the `natvis_file` key, which is a 
 > }
 > ```
 >
-> `Rectangle.natvis` contains:
+> `Rectangle.natvis` 包含：
 >
 > ```xml
 > <?xml version="1.0" encoding="utf-8"?>
@@ -84,7 +84,7 @@ The path to the Natvis file is specified with the `natvis_file` key, which is a 
 > </AutoVisualizer>
 > ```
 >
-> When viewed under WinDbg, the `fancy_rect` variable would be shown as follows:
+> 在 WinDbg 下查看时，`fancy_rect` 变量将显示如下：
 >
 > ```text
 > > Variables:
@@ -96,21 +96,21 @@ The path to the Natvis file is specified with the `natvis_file` key, which is a 
 > ```
 
 r[attributes.debugger.debugger_visualizer.gdb]
-### Using `debugger_visualizer` with GDB
+### 将 `debugger_visualizer` 与 GDB 一起使用
 
 r[attributes.debugger.debugger_visualizer.gdb.pretty]
-GDB supports the use of a structured Python script, called a *pretty printer*, that describes how a type should be visualized in the debugger view. For detailed information on pretty printers, refer to GDB's [pretty printing documentation].
+GDB 支持使用结构化 Python 脚本，称为*美化打印器*（pretty printer），来描述类型在调试器视图中应该如何显示。有关美化打印器的详细信息，请参考 GDB 的[美化打印文档][pretty printing documentation]。
 
 > [!NOTE]
-> Embedded pretty printers are not automatically loaded when debugging a binary under GDB.
+> 在 GDB 下调试二进制文件时，嵌入的美化打印器不会自动加载。
 >
-> There are two ways to enable auto-loading embedded pretty printers:
+> 有两种方法可以启用自动加载嵌入的美化打印器：
 >
-> 1. Launch GDB with extra arguments to explicitly add a directory or binary to the auto-load safe path: `gdb -iex "add-auto-load-safe-path safe-path path/to/binary" path/to/binary` For more information, see GDB's [auto-loading documentation].
-> 1. Create a file named `gdbinit` under `$HOME/.config/gdb` (you may need to create the directory if it doesn't already exist). Add the following line to that file: `add-auto-load-safe-path path/to/binary`.
+> 1. 使用额外参数启动 GDB，显式地将目录或二进制文件添加到自动加载安全路径：`gdb -iex "add-auto-load-safe-path safe-path path/to/binary" path/to/binary`。有关更多信息，请参见 GDB 的[自动加载文档][auto-loading documentation]。
+> 1. 在 `$HOME/.config/gdb` 下创建一个名为 `gdbinit` 的文件（如果目录尚不存在，可能需要创建）。将以下行添加到该文件：`add-auto-load-safe-path path/to/binary`。
 
 r[attributes.debugger.debugger_visualizer.gdb.path]
-These scripts are embedded using the `gdb_script_file` key, which is a path relative to the source file.
+这些脚本使用 `gdb_script_file` 键嵌入，该路径是相对于源文件的路径。
 
 > [!EXAMPLE]
 > <!-- ignore: requires external files -->
@@ -128,7 +128,7 @@ These scripts are embedded using the `gdb_script_file` key, which is a path rela
 > }
 > ```
 >
-> `printer.py` contains:
+> `printer.py` 包含：
 >
 > ```python
 > import gdb
@@ -156,13 +156,13 @@ These scripts are embedded using the `gdb_script_file` key, which is a path rela
 > gdb.current_objfile().pretty_printers.append(lookup)
 > ```
 >
-> When the crate's debug executable is passed into GDB[^rust-gdb], `print bob` will display:
+> 当 crate 的调试可执行文件传递给 GDB[^rust-gdb] 时，`print bob` 将显示：
 >
 > ```text
 > "Bob" is 10 years old.
 > ```
 >
-> [^rust-gdb]: Note: This assumes you are using the `rust-gdb` script which configures pretty-printers for standard library types like `String`.
+> [^rust-gdb]: 注意：这假设你使用 `rust-gdb` 脚本，该脚本为像 `String` 这样的标准库类型配置了美化打印器。
 
 [auto-loading documentation]: https://sourceware.org/gdb/onlinedocs/gdb/Auto_002dloading-safe-path.html
 [attributes]: ../attributes.md
@@ -171,10 +171,10 @@ These scripts are embedded using the `gdb_script_file` key, which is a path rela
 
 <!-- template:attributes -->
 r[attributes.debugger.collapse_debuginfo]
-## The `collapse_debuginfo` attribute
+## `collapse_debuginfo` 属性
 
 r[attributes.debugger.collapse_debuginfo.intro]
-The *`collapse_debuginfo` [attribute]* controls whether code locations from a macro definition are collapsed into a single location associated with the macro's call site when generating debuginfo for code calling this macro.
+*`collapse_debuginfo` [属性][attribute]* 控制在为调用此宏的代码生成调试信息时，是否将宏定义中的代码位置折叠为与宏调用点关联的单个位置。
 
 > [!EXAMPLE]
 > ```rust
@@ -186,12 +186,12 @@ The *`collapse_debuginfo` [attribute]* controls whether code locations from a ma
 > }
 > ```
 >
-> When using a debugger, invoking the `example` macro may appear as though it is calling a function. That is, when you step to the invocation site, it may show the macro invocation rather than the expanded code.
+> 在使用调试器时，调用 `example` 宏可能看起来像是调用一个函数。也就是说，当你步进到调用点时，它可能显示宏调用而不是展开的代码。
 
-<!-- TODO: I think it would be nice to extend this to explain a little more about why this is useful, and the kinds of scenarios where you would want one vs the other. See https://github.com/rust-lang/rfcs/pull/2117 for some guidance. -->
+<!-- TODO -->
 
 r[attributes.debugger.collapse_debuginfo.syntax]
-The syntax for the `collapse_debuginfo` attribute is:
+`collapse_debuginfo` 属性的语法如下：
 
 ```grammar,attributes
 @root CollapseDebuginfoAttribute -> `collapse_debuginfo` `(` CollapseDebuginfoOption `)`
@@ -203,23 +203,23 @@ CollapseDebuginfoOption ->
 ```
 
 r[attributes.debugger.collapse_debuginfo.allowed-positions]
-The `collapse_debuginfo` attribute may only be applied to a [`macro_rules` definition].
+`collapse_debuginfo` 属性只能应用于 [`macro_rules` 定义][`macro_rules` definition]。
 
 r[attributes.debugger.collapse_debuginfo.duplicates]
-The `collapse_debuginfo` attribute may used only once on a macro.
+`collapse_debuginfo` 属性在一个宏上只能使用一次。
 
 r[attributes.debugger.collapse_debuginfo.options]
-The `collapse_debuginfo` attribute accepts these options:
+`collapse_debuginfo` 属性接受以下选项：
 
-- `#[collapse_debuginfo(yes)]` --- Code locations in debuginfo are collapsed.
-- `#[collapse_debuginfo(no)]` --- Code locations in debuginfo are not collapsed.
-- `#[collapse_debuginfo(external)]` --- Code locations in debuginfo are collapsed only if the macro comes from a different crate.
+- `#[collapse_debuginfo(yes)]` --- 调试信息中的代码位置被折叠。
+- `#[collapse_debuginfo(no)]` --- 调试信息中的代码位置不被折叠。
+- `#[collapse_debuginfo(external)]` --- 仅当宏来自不同的 crate 时，调试信息中的代码位置才被折叠。
 
 r[attributes.debugger.collapse_debuginfo.default]
-The `external` behavior is the default for macros that don't have this attribute unless they are built-in macros. For built-in macros the default is `yes`.
+对于没有此属性的宏，`external` 行为是默认的，除非它们是内置宏。对于内置宏，默认是 `yes`。
 
 > [!NOTE]
-> `rustc` has a [`-C collapse-macro-debuginfo`] CLI option to override both the default behavior and the values of any `#[collapse_debuginfo]` attributes.
+> `rustc` 有一个 [`-C collapse-macro-debuginfo`] CLI 选项，可以覆盖默认行为以及任何 `#[collapse_debuginfo]` 属性的值。
 
 [`-C collapse-macro-debuginfo`]: ../../rustc/codegen-options/index.html#collapse-macro-debuginfo
 [`macro_rules` definition]: ../macros-by-example.md

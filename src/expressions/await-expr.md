@@ -1,5 +1,5 @@
 r[expr.await]
-# Await expressions
+# Await 表达式
 
 r[expr.await.syntax]
 ```grammar,expressions
@@ -7,37 +7,37 @@ AwaitExpression -> Expression `.` `await`
 ```
 
 r[expr.await.intro]
-An `await` expression is a syntactic construct for suspending a computation provided by an implementation of `std::future::IntoFuture` until the given future is ready to produce a value.
+`await` 表达式是一种语法结构，用于挂起由 `std::future::IntoFuture` 实现提供的计算，直到给定的 future 准备好产生一个值。
 
 r[expr.await.construct]
-The syntax for an await expression is an expression with a type that implements the [`IntoFuture`] trait, called the *future operand*, then the token `.`, and then the `await` keyword.
+await 表达式的语法是一个类型实现了 [`IntoFuture`] trait 的表达式（称为*future 操作数*），然后是 `.` 记号，再然后是 `await` 关键字。
 
 r[expr.await.allowed-positions]
-Await expressions are legal only within an [async context], like an [`async fn`], [`async` closure], or [`async` block].
+Await 表达式仅在[异步上下文]（如 [`async fn`]、[`async` 闭包]或 [`async` 块]）中合法。
 
 r[expr.await.effects]
-More specifically, an await expression has the following effect.
+更具体地说，await 表达式具有以下效果。
 
-1. Create a future by calling [`IntoFuture::into_future`] on the future operand.
-2. Evaluate the future to a [future] `tmp`;
-3. Pin `tmp` using [`Pin::new_unchecked`];
-4. This pinned future is then polled by calling the [`Future::poll`] method and passing it the current [task context](#task-context);
-5. If the call to `poll` returns [`Poll::Pending`], then the future returns `Poll::Pending`, suspending its state so that, when the surrounding async context is re-polled, execution returns to step 3;
-6. Otherwise the call to `poll` must have returned [`Poll::Ready`], in which case the value contained in the [`Poll::Ready`] variant is used as the result of the `await` expression itself.
+1. 通过在 future 操作数上调用 [`IntoFuture::into_future`] 来创建 future。
+2. 将该 future 求值为一个 [future] `tmp`；
+3. 使用 [`Pin::new_unchecked`] 固定 `tmp`；
+4. 然后通过调用 [`Future::poll`] 方法并将当前的[任务上下文](#task-context)传入来对此固定的 future 进行轮询；
+5. 如果对 `poll` 的调用返回 [`Poll::Pending`]，则 future 返回 `Poll::Pending`，挂起其状态，以便当外围异步上下文被重新轮询时，执行回到第 3 步；
+6. 否则对 `poll` 的调用必定返回了 [`Poll::Ready`]，在这种情况下，包含在 [`Poll::Ready`] 变体中的值被用作 `await` 表达式本身的结果。
 
 r[expr.await.edition2018]
 > [!EDITION-2018]
-> Await expressions are only available beginning with Rust 2018.
+> Await 表达式仅从 Rust 2018 起可用。
 
 r[expr.await.task]
-## Task context
+## 任务上下文
 
-The task context refers to the [`Context`] which was supplied to the current [async context] when the async context itself was polled. Because `await` expressions are only legal in an async context, there must be some task context available.
+任务上下文指的是当异步上下文本身被轮询时提供给当前[异步上下文]的 [`Context`]。因为 `await` 表达式仅在异步上下文中合法，所以必须有某个任务上下文可用。
 
 r[expr.await.desugar]
-## Approximate desugaring
+## 近似脱糖
 
-Effectively, an await expression is roughly equivalent to the following non-normative desugaring:
+实际上，await 表达式大致等价于以下非规范性脱糖：
 
 <!-- ignore: example expansion -->
 ```rust,ignore
@@ -52,7 +52,7 @@ match operand.into_future() {
 }
 ```
 
-where the `yield` pseudo-code returns `Poll::Pending` and, when re-invoked, resumes execution from that point. The variable `current_context` refers to the context taken from the async environment.
+其中 `yield` 伪代码返回 `Poll::Pending`，当被重新调用时，从该点恢复执行。变量 `current_context` 引用从异步环境中获取的上下文。
 
 [`async fn`]: ../items/functions.md#async-functions
 [`async` closure]: closure-expr.md#async-closures

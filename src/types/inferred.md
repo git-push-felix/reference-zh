@@ -1,5 +1,5 @@
 r[type.inferred]
-# Inferred type
+# 推断类型
 
 r[type.inferred.syntax]
 ```grammar,types
@@ -7,20 +7,20 @@ InferredType -> `_`
 ```
 
 r[type.inferred.intro]
-The inferred type asks the compiler to infer the type if possible based on the surrounding information available.
+推断类型要求编译器在可能的情况下根据可用的周围信息来推断类型。
 
 > [!EXAMPLE]
-> The inferred type is often used in generic arguments:
+> 推断类型常用于泛型参数中：
 >
 > ```rust
 > let x: Vec<_> = (0..10).collect();
 > ```
 
 r[type.inferred.constraint]
-The inferred type cannot be used in item signatures.
+推断类型不能用于项签名中。
 
 <!--
-  What else should be said here?
-  The only documentation I am aware of is https://rustc-dev-guide.rust-lang.org/type-inference.html
-  There should be a broader discussion of type inference somewhere.
+  这里还应写些什么？
+  我所知的唯一文档是 https://rustc-dev-guide.rust-lang.org/type-inference.html
+  应该在某个地方对类型推断有更广泛的讨论。
 -->

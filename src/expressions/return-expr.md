@@ -1,5 +1,5 @@
 r[expr.return]
-# `return` expressions
+# `return` 表达式
 
 r[expr.return.syntax]
 ```grammar,expressions
@@ -7,15 +7,15 @@ ReturnExpression -> `return` Expression?
 ```
 
 r[expr.return.intro]
-Return expressions are denoted with the keyword `return`.
+`return` 表达式用关键字 `return` 表示。
 
 r[expr.return.behavior]
-Evaluating a `return` expression moves its argument into the designated output location for the current function call, destroys the current function activation frame, and transfers control to the caller frame.
+求值 `return` 表达式将其参数移动到当前函数调用的指定输出位置，销毁当前函数激活帧，并将控制转移到调用者帧。
 
 r[expr.return.diverging]
-A `return` expression is [diverging] and has a type of [`!`].
+`return` 表达式是[发散][diverging]的，具有类型 [`!`]。
 
-An example of a `return` expression:
+`return` 表达式示例：
 
 ```rust
 fn max(a: i32, b: i32) -> i32 {

@@ -1,13 +1,13 @@
 r[type.numeric]
-# Numeric types
+# 数值类型
 
 r[type.numeric.int]
-## Integer types
+## 整数类型
 
 r[type.numeric.int.unsigned]
-The unsigned integer types consist of:
+无符号整数类型包括：
 
-Type   | Minimum | Maximum
+类型    | 最小值 | 最大值
 -------|---------|-------------------
 `u8`   | 0       | 2<sup>8</sup>-1
 `u16`  | 0       | 2<sup>16</sup>-1
@@ -16,9 +16,9 @@ Type   | Minimum | Maximum
 `u128` | 0       | 2<sup>128</sup>-1
 
 r[type.numeric.int.signed]
-The signed two's complement integer types consist of:
+有符号二进制补码整数类型包括：
 
-Type   | Minimum            | Maximum
+类型    | 最小值              | 最大值
 -------|--------------------|-------------------
 `i8`   | -(2<sup>7</sup>)   | 2<sup>7</sup>-1
 `i16`  | -(2<sup>15</sup>)  | 2<sup>15</sup>-1
@@ -27,31 +27,31 @@ Type   | Minimum            | Maximum
 `i128` | -(2<sup>127</sup>) | 2<sup>127</sup>-1
 
 r[type.numeric.float]
-## Floating-point types
+## 浮点类型
 
-The IEEE 754-2008 "binary32" and "binary64" floating-point types are `f32` and `f64`, respectively.
+IEEE 754-2008 "binary32" 和 "binary64" 浮点类型分别为 `f32` 和 `f64`。
 
 r[type.numeric.int.size]
-## Machine-dependent integer types
+## 依赖机器的整数类型
 
 r[type.numeric.int.size.usize]
-The `usize` type is an unsigned integer type with the same number of bits as the platform's pointer type. It can represent every memory address in the process.
+`usize` 类型是一种无符号整数类型，其位数与平台的指针类型相同。它可以表示进程中的每个内存地址。
 
 > [!NOTE]
-> While a `usize` can represent every *address*, converting a *pointer* to a `usize` is not necessarily a reversible operation. For more information, see the documentation for [type cast expressions], [`std::ptr`], and [provenance][std::ptr#provenance] in particular.
+> 虽然 `usize` 可以表示每个*地址*，但将*指针*转换为 `usize` 不一定是可逆操作。有关更多信息，请参阅[类型转换表达式]、[`std::ptr`] 以及特别是[来源][std::ptr#provenance]的文档。
 
 r[type.numeric.int.size.isize]
-The `isize` type is a signed two's complement integer type with the same number of bits as the platform's pointer type. The theoretical upper bound on object and array size is the maximum `isize` value. This ensures that `isize` can be used to calculate differences between pointers into an object or array and can address every byte within an object along with one byte past the end.
+`isize` 类型是一种有符号二进制补码整数类型，其位数与平台的指针类型相同。对象和数组大小的理论上限是最大 `isize` 值。这确保了 `isize` 可用于计算指向同一对象或数组的指针之间的差值，并且可以寻址对象内的每个字节以及对象末尾之后一个字节。
 
 r[type.numeric.int.size.minimum]
-`usize` and `isize` are at least 16-bits wide.
+`usize` 和 `isize` 至少为 16 位宽。
 
 > [!NOTE]
-> Many pieces of Rust code may assume that pointers, `usize`, and `isize` are either 32-bit or 64-bit. As a consequence, 16-bit pointer support is limited and may require explicit care and acknowledgment from a library to support.
+> Rust 代码的许多部分可能假定指针、`usize` 和 `isize` 是 32 位或 64 位。因此，16 位指针的支持是有限的，可能需要库显式注意和确认才能支持。
 
 r[type.numeric.validity]
-## Bit validity
+## 位有效性
 
-For every numeric type, `T`, the bit validity of `T` is equivalent to the bit validity of `[u8; size_of::<T>()]`. An uninitialized byte is not a valid `u8`.
+对于每个数值类型 `T`，`T` 的位有效性等价于 `[u8; size_of::<T>()]` 的位有效性。未初始化的字节不是有效的 `u8`。
 
-[type cast expressions]: ../expressions/operator-expr.md#type-cast-expressions
+[类型转换表达式]: ../expressions/operator-expr.md#type-cast-expressions

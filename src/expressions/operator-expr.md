@@ -1,5 +1,5 @@
 r[expr.operator]
-# Operator expressions
+# 运算符表达式
 
 r[expr.operator.syntax]
 ```grammar,expressions
@@ -17,40 +17,40 @@ OperatorExpression ->
 ```
 
 r[expr.operator.intro]
-Operators are defined for built in types by the Rust language.
+运算符由 Rust 语言为内置类型定义。
 
 r[expr.operator.trait]
-Many of the following operators can also be overloaded using traits in `std::ops` or `std::cmp`.
+以下许多运算符也可以通过使用 `std::ops` 或 `std::cmp` 中的 trait 进行重载。
 
 r[expr.operator.int-overflow]
-## Overflow
+## 溢出
 
 r[expr.operator.int-overflow.intro]
-Integer operators will panic when they overflow when compiled in debug mode. The `-C debug-assertions` and `-C overflow-checks` compiler flags can be used to control this more directly. The following things are considered to be overflow:
+整数运算符在调试模式下编译时，溢出时会 panic。`-C debug-assertions` 和 `-C overflow-checks` 编译器标志可用于更直接地控制此行为。以下情况被视为溢出：
 
 r[expr.operator.int-overflow.binary-arith]
-* When `+`, `*` or binary `-` create a value greater than the maximum value, or less than the minimum value that can be stored.
+* 当 `+`、`*` 或二元 `-` 创建的值大于可存储的最大值，或小于可存储的最小值时。
 
 r[expr.operator.int-overflow.unary-neg]
-* Applying unary `-` to the most negative value of any signed integer type, unless the operand is a [literal expression] (or a literal expression standing alone inside one or more [grouped expressions][grouped expression]).
+* 将一元 `-` 应用于任何有符号整数类型的最负值，除非操作数是[字面量表达式]（或单独出现在一个或多个[分组表达式]内部的字面量表达式）。
 
 r[expr.operator.int-overflow.div]
-* Using `/` or `%`, where the left-hand argument is the smallest integer of a signed integer type and the right-hand argument is `-1`. These checks occur even when `-C overflow-checks` is disabled, for legacy reasons.
+* 使用 `/` 或 `%`，其中左侧参数是有符号整数类型的最小整数，右侧参数是 `-1`。由于历史原因，即使禁用 `-C overflow-checks` 也会执行这些检查。
 
 r[expr.operator.int-overflow.shift]
-* Using `<<` or `>>` where the right-hand argument is greater than or equal to the number of bits in the type of the left-hand argument, or is negative.
+* 使用 `<<` 或 `>>`，其中右侧参数大于或等于左侧参数类型中的位数，或者为负数。
 
 > [!NOTE]
-> The exception for literal expressions behind unary `-` means that forms such as `-128_i8` or `let j: i8 = -(128)` never cause a panic and have the expected value of -128.
+> 一元 `-` 后字面量表达式的例外意味着像 `-128_i8` 或 `let j: i8 = -(128)` 这样的形式永远不会导致 panic，并且具有预期的值 -128。
 >
-> In these cases, the literal expression already has the most negative value for its type (for example, `128_i8` has the value -128) because integer literals are truncated to their type per the description in [Integer literal expressions][literal expression].
+> 在这些情况下，字面量表达式已经具有其类型的最负值（例如，`128_i8` 的值为 -128），因为根据[整数字面量表达式][literal expression]中的描述，整数字面量会被截断到其类型。
 >
-> Negation of these most negative values leaves the value unchanged due to two's complement overflow conventions.
+> 由于二进制补码溢出惯例，对这些最负值的取反操作保持值不变。
 >
-> In `rustc`, these most negative expressions are also ignored by the `overflowing_literals` lint check.
+> 在 `rustc` 中，这些最负表达式也会被 `overflowing_literals` lint 检查忽略。
 
 r[expr.operator.borrow]
-## Borrow operators
+## 借用运算符
 
 r[expr.operator.borrow.syntax]
 ```grammar,expressions
@@ -62,65 +62,65 @@ BorrowExpression ->
 ```
 
 r[expr.operator.borrow.intro]
-The `&` (shared borrow) and `&mut` (mutable borrow) operators are unary prefix operators.
+`&`（共享借用）和 `&mut`（可变借用）运算符是一元前缀运算符。
 
 r[expr.operator.borrow.result]
-When applied to a [place expression], this expressions produces a reference (pointer) to the location that the value refers to.
+当应用于[位置表达式]时，此表达式产生一个指向该值所指位置的引用（指针）。
 
 r[expr.operator.borrow.lifetime]
-The memory location is also placed into a borrowed state for the duration of the reference. For a shared borrow (`&`), this implies that the place may not be mutated, but it may be read or shared again. For a mutable borrow (`&mut`), the place may not be accessed in any way until the borrow expires.
+该内存位置也被置于借用状态，持续时间为引用的生命周期。对于共享借用（`&`），这意味着该位置不能被修改，但可以被读取或再次共享。对于可变借用（`&mut`），在借用到期之前，不能以任何方式访问该位置。
 
 r[expr.operator.borrow.mut]
-`&mut` evaluates its operand in a mutable place expression context.
+`&mut` 在可变位置表达式上下文中求值其操作数。
 
 r[expr.operator.borrow.temporary]
-If the `&` or `&mut` operators are applied to a [value expression], then a [temporary value] is created.
+如果 `&` 或 `&mut` 运算符应用于[值表达式]，则会创建[临时值]。
 
-These operators cannot be overloaded.
+这些运算符不能被重载。
 
 ```rust
 {
-    // a temporary with value 7 is created that lasts for this scope.
+    // 创建一个值为 7 的临时值，其生命周期为此作用域。
     let shared_reference = &7;
 }
 let mut array = [-2, 3, 9];
 {
-    // Mutably borrows `array` for this scope.
-    // `array` may only be used through `mutable_reference`.
+    // 在此作用域内可变借用 `array`。
+    // `array` 只能通过 `mutable_reference` 使用。
     let mutable_reference = &mut array;
 }
 ```
 
 r[expr.borrow.and-and-syntax]
-Even though `&&` is a single token ([the lazy 'and' operator](#lazy-boolean-operators)), when used in the context of borrow expressions it works as two borrows:
+尽管 `&&` 是单个记号（[惰性 'and' 运算符](#lazy-boolean-operators)），但在借用表达式的上下文中使用时，它相当于两次借用：
 
 ```rust
-// same meanings:
+// 相同的含义：
 let a = &&  10;
 let a = & & 10;
 
-// same meanings:
+// 相同的含义：
 let a = &&&&  mut 10;
 let a = && && mut 10;
 let a = & & & & mut 10;
 ```
 
 r[expr.borrow.raw]
-### Raw borrow operators
+### 裸借用运算符
 
 r[expr.borrow.raw.intro]
-`&raw const` and `&raw mut` are the *raw borrow operators*.
+`&raw const` 和 `&raw mut` 是*裸借用运算符*。
 
 r[expr.borrow.raw.place]
-The operand expression of these operators is evaluated in place expression context.
+这些运算符的操作数表达式在位置表达式上下文中求值。
 
 r[expr.borrow.raw.result]
-`&raw const expr` then creates a const raw pointer of type `*const T` to the given place, and `&raw mut expr` creates a mutable raw pointer of type `*mut T`.
+`&raw const expr` 创建一个类型为 `*const T` 的指向给定位置的 const 裸指针，`&raw mut expr` 创建一个类型为 `*mut T` 的可变裸指针。
 
 r[expr.borrow.raw.invalid-ref]
-The raw borrow operators must be used instead of a borrow operator whenever the place expression could evaluate to a place that is not properly aligned or does not store a valid value as determined by its type, or whenever creating a reference would introduce incorrect aliasing assumptions. In those situations, using a borrow operator would cause [undefined behavior] by creating an invalid reference, but a raw pointer may still be constructed.
+每当位置表达式可能求值为未正确对齐的位置或未按类型存储有效值的位置时，或者每当创建引用会引入不正确的别名假设时，必须使用裸借用运算符而不是借用运算符。在这些情况下，使用借用运算符会因创建无效引用而导致[未定义行为]，但裸指针仍然可以被构造。
 
-The following is an example of creating a raw pointer to an unaligned place through a `packed` struct:
+以下是通过 `packed` 结构体创建指向未对齐位置的裸指针的示例：
 
 ```rust
 #[repr(packed)]
@@ -130,12 +130,12 @@ struct Packed {
 }
 
 let packed = Packed { f1: 1, f2: 2 };
-// `&packed.f2` would create an unaligned reference, and thus be undefined behavior!
+// `&packed.f2` 会创建一个未对齐的引用，因此是未定义行为！
 let raw_f2 = &raw const packed.f2;
 assert_eq!(unsafe { raw_f2.read_unaligned() }, 2);
 ```
 
-The following is an example of creating a raw pointer to a place that does not contain a valid value:
+以下是创建指向不包含有效值的位置的裸指针的示例：
 
 ```rust
 use std::mem::MaybeUninit;
@@ -145,15 +145,15 @@ struct Demo {
 }
 
 let mut uninit = MaybeUninit::<Demo>::uninit();
-// `&uninit.as_mut().field` would create a reference to an uninitialized `bool`,
-// and thus be undefined behavior!
+// `&uninit.as_mut().field` 会创建一个指向未初始化 `bool` 的引用，
+// 因此是未定义行为！
 let f1_ptr = unsafe { &raw mut (*uninit.as_mut_ptr()).field };
 unsafe { f1_ptr.write(true); }
 let init = unsafe { uninit.assume_init() };
 ```
 
 r[expr.deref]
-## The dereference operator
+## 解引用运算符
 
 r[expr.deref.syntax]
 ```grammar,expressions
@@ -161,22 +161,22 @@ DereferenceExpression -> `*` Expression
 ```
 
 r[expr.deref.intro]
-The `*` (dereference) operator is also a unary prefix operator.
+`*`（解引用）运算符也是一元前缀运算符。
 
 r[expr.deref.result]
-When applied to a [pointer](../types/pointer.md) or [`Box`], it denotes the pointed-to location.
+当应用于[指针](../types/pointer.md)或 [`Box`] 时，它表示指向的位置。
 
 r[expr.deref.mut]
-If the expression is of type `&mut T`, `*mut T`, or `Box<T>`, and is either a local variable, a (nested) field of a local variable or is a mutable [place expression], then the resulting memory location can be assigned to.
+如果表达式的类型为 `&mut T`、`*mut T` 或 `Box<T>`，并且是局部变量、局部变量的（嵌套）字段或可变的[位置表达式]，则可以赋值给结果内存位置。
 
 r[expr.deref.box]
-When applied to a [`Box`], the resultant place may be [moved from].
+当应用于 [`Box`] 时，结果位置可以被[移出]。
 
 r[expr.deref.safety]
-Dereferencing a raw pointer requires `unsafe`.
+解引用裸指针需要 `unsafe`。
 
 r[expr.deref.traits]
-On non-pointer types `*x` is equivalent to `*std::ops::Deref::deref(&x)` in an [immutable place expression context](../expressions.md#mutability) and `*std::ops::DerefMut::deref_mut(&mut x)` in a mutable place expression context, except that when `*x` undergoes [temporary lifetime extension], the dereferenced expression `x` also has its [temporary scope] extended.
+对于非指针类型，`*x` 等价于[不可变位置表达式上下文](../expressions.md#mutability)中的 `*std::ops::Deref::deref(&x)` 和可变位置表达式上下文中的 `*std::ops::DerefMut::deref_mut(&mut x)`，不同之处在于当 `*x` 经历[临时值生命周期延长]时，被解引用的表达式 `x` 的[临时值作用域]也会被延长。
 
 ```rust
 # struct NoCopy;
@@ -190,22 +190,21 @@ let d: NoCopy = *c;
 ```
 
 ```rust
-// The temporary holding the result of `String::new()` is extended
-// to live to the end of the block, so `x` may be used in subsequent
-// statements.
+// 持有 `String::new()` 结果的临时值被延长到块的末尾，
+// 因此 `x` 可以在后续语句中使用。
 let x = &*String::new();
 # x;
 ```
 
 ```rust,compile_fail,E0716
-// The temporary holding the result of `String::new()` is dropped at
-// the end of the statement, so it's an error to use `y` after.
-let y = &*std::ops::Deref::deref(&String::new()); // ERROR
+// 持有 `String::new()` 结果的临时值在语句末尾被丢弃，
+// 因此之后使用 `y` 是错误的。
+let y = &*std::ops::Deref::deref(&String::new()); // 错误
 # y;
 ```
 
 r[expr.try]
-## The try propagation expression
+## try 传播表达式
 
 r[expr.try.syntax]
 ```grammar,expressions
@@ -213,15 +212,15 @@ TryPropagationExpression -> Expression `?`
 ```
 
 r[expr.try.intro]
-The try propagation expression uses the value of the inner expression and the [`Try`] trait to decide whether to produce a value, and if so, what value to produce, or whether to return a value to the caller, and if so, what value to return.
+try 传播表达式使用内部表达式的值和 [`Try`] trait 来决定是否产生一个值，如果要产生，则产生什么值，或者是否向调用者返回一个值，如果要返回，则返回什么值。
 
 > [!EXAMPLE]
 > ```rust
 > # use std::num::ParseIntError;
 > fn try_to_parse() -> Result<i32, ParseIntError> {
->     let x: i32 = "123".parse()?; // `x` is `123`.
->     let y: i32 = "24a".parse()?; // Returns an `Err()` immediately.
->     Ok(x + y)                    // Doesn't run.
+>     let x: i32 = "123".parse()?; // `x` 是 `123`。
+>     let y: i32 = "24a".parse()?; // 立即返回 `Err()`。
+>     Ok(x + y)                    // 不会运行。
 > }
 >
 > let res = try_to_parse();
@@ -283,9 +282,9 @@ The try propagation expression uses the value of the inner expression and the [`
 > ```
 
 > [!NOTE]
-> The [`Try`] trait is currently unstable, and thus cannot be implemented for user types.
+> [`Try`] trait 目前是不稳定的，因此不能为用户类型实现。
 >
-> The try propagation expression is currently roughly equivalent to:
+> try 传播表达式目前大致等价于：
 >
 > ```rust
 > # #![ feature(try_trait_v2) ]
@@ -301,32 +300,32 @@ The try propagation expression uses the value of the inner expression and the [`
 > ```
 
 > [!NOTE]
-> The try propagation operator is sometimes called *the question mark operator*, *the `?` operator*, or *the try operator*.
+> try 传播运算符有时被称为*问号运算符*、*`?` 运算符*或*try 运算符*。
 
 r[expr.try.restricted-types]
-The try propagation operator can be applied to expressions with the type of:
+try 传播运算符可以应用于以下类型的表达式：
 
 - [`Result<T, E>`]
-    - `Result::Ok(val)` evaluates to `val`.
-    - `Result::Err(e)` returns `Result::Err(From::from(e))`.
+    - `Result::Ok(val)` 求值为 `val`。
+    - `Result::Err(e)` 返回 `Result::Err(From::from(e))`。
 - [`Option<T>`]
-    - `Option::Some(val)` evaluates to `val`.
-    - `Option::None` returns `Option::None`.
+    - `Option::Some(val)` 求值为 `val`。
+    - `Option::None` 返回 `Option::None`。
 - [`ControlFlow<B, C>`][core::ops::ControlFlow]
-    - `ControlFlow::Continue(c)` evaluates to `c`.
-    - `ControlFlow::Break(b)` returns `ControlFlow::Break(b)`.
+    - `ControlFlow::Continue(c)` 求值为 `c`。
+    - `ControlFlow::Break(b)` 返回 `ControlFlow::Break(b)`。
 - [`Poll<Result<T, E>>`][core::task::Poll]
-    - `Poll::Ready(Ok(val))` evaluates to `Poll::Ready(val)`.
-    - `Poll::Ready(Err(e))` returns `Poll::Ready(Err(From::from(e)))`.
-    - `Poll::Pending` evaluates to `Poll::Pending`.
+    - `Poll::Ready(Ok(val))` 求值为 `Poll::Ready(val)`。
+    - `Poll::Ready(Err(e))` 返回 `Poll::Ready(Err(From::from(e)))`。
+    - `Poll::Pending` 求值为 `Poll::Pending`。
 - [`Poll<Option<Result<T, E>>>`][`core::task::Poll`]
-    - `Poll::Ready(Some(Ok(val)))` evaluates to `Poll::Ready(Some(val))`.
-    - `Poll::Ready(Some(Err(e)))` returns `Poll::Ready(Some(Err(From::from(e))))`.
-    - `Poll::Ready(None)` evaluates to `Poll::Ready(None)`.
-    - `Poll::Pending` evaluates to `Poll::Pending`.
+    - `Poll::Ready(Some(Ok(val)))` 求值为 `Poll::Ready(Some(val))`。
+    - `Poll::Ready(Some(Err(e)))` 返回 `Poll::Ready(Some(Err(From::from(e))))`。
+    - `Poll::Ready(None)` 求值为 `Poll::Ready(None)`。
+    - `Poll::Pending` 求值为 `Poll::Pending`。
 
 r[expr.negate]
-## Negation operators
+## 取反运算符
 
 r[expr.negate.syntax]
 ```grammar,expressions
@@ -336,19 +335,19 @@ NegationExpression ->
 ```
 
 r[expr.negate.intro]
-These are the last two unary operators.
+这是最后两个一元运算符。
 
 r[expr.negate.results]
-This table summarizes the behavior of them on primitive types and which traits are used to overload these operators for other types. Remember that signed integers are always represented using two's complement. The operands of all of these operators are evaluated in [value expression context][value expression] so are moved or copied.
+此表总结了它们在原始类型上的行为以及用于为其他类型重载这些运算符的 trait。请记住，有符号整数始终使用二进制补码表示。所有这些运算符的操作数都在[值表达式上下文][value expression]中求值，因此会被移动或复制。
 
-| Symbol | Integer     | `bool`        | Floating Point | Overloading Trait  |
-|--------|-------------|-------------- |----------------|--------------------|
-| `-`    | Negation*   |               | Negation       | `std::ops::Neg`    |
-| `!`    | Bitwise NOT | [Logical NOT] |                | `std::ops::Not`    |
+| 符号 | 整数           | `bool`         | 浮点数       | 重载 Trait         |
+|------|----------------|----------------|--------------|--------------------|
+| `-`  | 取反*          |                | 取反         | `std::ops::Neg`    |
+| `!`  | 按位 NOT       | [逻辑 NOT][Logical NOT] |         | `std::ops::Not`    |
 
-\* Only for signed integer types.
+\* 仅对有符号整数类型。
 
-Here are some example of these operators
+以下是这些运算符的一些示例
 
 ```rust
 let x = 6;
@@ -358,7 +357,7 @@ assert_eq!(true, !false);
 ```
 
 r[expr.arith-logic]
-## Arithmetic and logical binary operators
+## 算术和逻辑二元运算符
 
 r[expr.arith-logic.syntax]
 ```grammar,expressions
@@ -376,33 +375,33 @@ ArithmeticOrLogicalExpression ->
 ```
 
 r[expr.arith-logic.intro]
-Binary operators expressions are all written with infix notation.
+二元运算符表达式都使用中缀表示法书写。
 
 r[expr.arith-logic.behavior]
-This table summarizes the behavior of arithmetic and logical binary operators on primitive types and which traits are used to overload these operators for other types. Remember that signed integers are always represented using two's complement. The operands of all of these operators are evaluated in [value expression context][value expression] so are moved or copied.
+此表总结了算术和逻辑二元运算符在原始类型上的行为以及用于为其他类型重载这些运算符的 trait。请记住，有符号整数始终使用二进制补码表示。所有这些运算符的操作数都在[值表达式上下文][value expression]中求值，因此会被移动或复制。
 
-| Symbol | Integer                 | `bool`        | Floating Point | Overloading Trait  | Overloading Compound Assignment Trait |
-|--------|-------------------------|---------------|----------------|--------------------| ------------------------------------- |
-| `+`    | Addition                |               | Addition       | `std::ops::Add`    | `std::ops::AddAssign`                 |
-| `-`    | Subtraction             |               | Subtraction    | `std::ops::Sub`    | `std::ops::SubAssign`                 |
-| `*`    | Multiplication          |               | Multiplication | `std::ops::Mul`    | `std::ops::MulAssign`                 |
-| `/`    | Division*†              |               | Division       | `std::ops::Div`    | `std::ops::DivAssign`                 |
-| `%`    | Remainder**†            |               | Remainder      | `std::ops::Rem`    | `std::ops::RemAssign`                 |
-| `&`    | Bitwise AND             | [Logical AND] |                | `std::ops::BitAnd` | `std::ops::BitAndAssign`              |
-| `\|` | Bitwise OR | [Logical OR]  |                | `std::ops::BitOr`  | `std::ops::BitOrAssign`               |
-| `^`    | Bitwise XOR             | [Logical XOR] |                | `std::ops::BitXor` | `std::ops::BitXorAssign`              |
-| `<<`   | Left Shift              |               |                | `std::ops::Shl`    | `std::ops::ShlAssign`                 |
-| `>>`   | Right Shift***          |               |                | `std::ops::Shr`    |  `std::ops::ShrAssign`                |
+| 符号 | 整数                       | `bool`         | 浮点数       | 重载 Trait           | 重载复合赋值 Trait                    |
+|------|----------------------------|----------------|--------------|----------------------| ------------------------------------- |
+| `+`  | 加法                       |                | 加法         | `std::ops::Add`      | `std::ops::AddAssign`                 |
+| `-`  | 减法                       |                | 减法         | `std::ops::Sub`      | `std::ops::SubAssign`                 |
+| `*`  | 乘法                       |                | 乘法         | `std::ops::Mul`      | `std::ops::MulAssign`                 |
+| `/`  | 除法*†                     |                | 除法         | `std::ops::Div`      | `std::ops::DivAssign`                 |
+| `%`  | 取余**†                    |                | 取余         | `std::ops::Rem`      | `std::ops::RemAssign`                 |
+| `&`  | 按位 AND                   | [逻辑 AND][Logical AND]  |         | `std::ops::BitAnd`   | `std::ops::BitAndAssign`              |
+| `\|` | 按位 OR                    | [逻辑 OR][Logical OR]   |         | `std::ops::BitOr`    | `std::ops::BitOrAssign`               |
+| `^`  | 按位 XOR                   | [逻辑 XOR][Logical XOR]  |         | `std::ops::BitXor`   | `std::ops::BitXorAssign`              |
+| `<<` | 左移                       |                |              | `std::ops::Shl`      | `std::ops::ShlAssign`                 |
+| `>>` | 右移***                    |                |              | `std::ops::Shr`      |  `std::ops::ShrAssign`                |
 
-\* Integer division rounds towards zero.
+\* 整数除法向零舍入。
 
-\*\* Rust uses a remainder defined with [truncating division](https://en.wikipedia.org/wiki/Modulo_operation#Variants_of_the_definition). Given `remainder = dividend % divisor`, the remainder will have the same sign as the dividend.
+\*\* Rust 使用的取余定义为[截断除法](https://en.wikipedia.org/wiki/Modulo_operation#Variants_of_the_definition)。给定 `remainder = dividend % divisor`，余数将与被除数具有相同的符号。
 
-\*\*\* Arithmetic right shift on signed integer types, logical right shift on unsigned integer types.
+\*\*\* 对有符号整数类型进行算术右移，对无符号整数类型进行逻辑右移。
 
-† For integer types, division by zero panics.
+† 对于整数类型，除以零会 panic。
 
-Here are examples of these operators being used.
+以下是在使用这些运算符的示例。
 
 ```rust
 assert_eq!(3 + 6, 9);
@@ -418,7 +417,7 @@ assert_eq!(-10 >> 2, -3);
 ```
 
 r[expr.cmp]
-## Comparison operators
+## 比较运算符
 
 r[expr.cmp.syntax]
 ```grammar,expressions
@@ -432,39 +431,39 @@ ComparisonExpression ->
 ```
 
 r[expr.cmp.intro]
-Comparison operators are also defined both for primitive types and many types in the standard library.
+比较运算符也是既为原始类型定义，也为标准库中的许多类型定义。
 
 r[expr.cmp.paren-chaining]
-Parentheses are required when chaining comparison operators. For example, the expression `a == b == c` is invalid and may be written as `(a == b) == c`.
+链接比较运算符时需要使用括号。例如，表达式 `a == b == c` 无效，可以写为 `(a == b) == c`。
 
 r[expr.cmp.trait]
-Unlike arithmetic and logical operators, the traits for overloading these operators are used more generally to show how a type may be compared and will likely be assumed to define actual comparisons by functions that use these traits as bounds. Many functions and macros in the standard library can then use that assumption (although not to ensure safety).
+与算术和逻辑运算符不同，用于重载这些运算符的 trait 更普遍地用于展示类型之间如何进行比较，并且很可能被使用这些 trait 作为约束的函数假定为定义了实际的比较操作。标准库中的许多函数和宏可以利用该假设（尽管不能确保安全性）。
 
 r[expr.cmp.place]
-Unlike the arithmetic and logical operators above, these operators implicitly take shared borrows of their operands, evaluating them in [place expression context][place expression]:
+与上面的算术和逻辑运算符不同，这些运算符隐式获取其操作数的共享借用，在[位置表达式上下文][place expression]中求值它们：
 
 ```rust
 # let a = 1;
 # let b = 1;
 a == b;
-// is equivalent to
+// 等价于
 ::std::cmp::PartialEq::eq(&a, &b);
 ```
 
-This means that the operands don't have to be moved out of.
+这意味着操作数不必被移出。
 
 r[expr.cmp.behavior]
 
-| Symbol | Meaning                  | Overloading method         |
-|--------|--------------------------|----------------------------|
-| `==`   | Equal                    | `std::cmp::PartialEq::eq`  |
-| `!=`   | Not equal                | `std::cmp::PartialEq::ne`  |
-| `>`    | Greater than             | `std::cmp::PartialOrd::gt` |
-| `<`    | Less than                | `std::cmp::PartialOrd::lt` |
-| `>=`   | Greater than or equal to | `std::cmp::PartialOrd::ge` |
-| `<=`   | Less than or equal to    | `std::cmp::PartialOrd::le` |
+| 符号 | 含义          | 重载方法                    |
+|------|---------------|-----------------------------|
+| `==` | 等于          | `std::cmp::PartialEq::eq`   |
+| `!=` | 不等于        | `std::cmp::PartialEq::ne`   |
+| `>`  | 大于          | `std::cmp::PartialOrd::gt`  |
+| `<`  | 小于          | `std::cmp::PartialOrd::lt`  |
+| `>=` | 大于等于      | `std::cmp::PartialOrd::ge`  |
+| `<=` | 小于等于      | `std::cmp::PartialOrd::le`  |
 
-Here are examples of the comparison operators being used.
+以下是在使用比较运算符的示例。
 
 ```rust
 assert!(123 == 123);
@@ -476,7 +475,7 @@ assert!("World" >= "Hello");
 ```
 
 r[expr.bool-logic]
-## Lazy boolean operators
+## 惰性布尔运算符
 
 r[expr.bool-logic.syntax]
 ```grammar,expressions
@@ -486,18 +485,18 @@ LazyBooleanExpression ->
 ```
 
 r[expr.bool-logic.intro]
-The operators `||` and `&&` may be applied to operands of boolean type. The `||` operator denotes logical 'or', and the `&&` operator denotes logical 'and'.
+运算符 `||` 和 `&&` 可以应用于布尔类型的操作数。`||` 运算符表示逻辑"或"，`&&` 运算符表示逻辑"与"。
 
 r[expr.bool-logic.conditional-evaluation]
-They differ from `|` and `&` in that the right-hand operand is only evaluated when the left-hand operand does not already determine the result of the expression. That is, `||` only evaluates its right-hand operand when the left-hand operand evaluates to `false`, and `&&` only when it evaluates to `true`.
+它们与 `|` 和 `&` 的不同之处在于，只有当左侧操作数尚未确定表达式的结果时，才求值右侧操作数。即，只有当左侧操作数求值为 `false` 时，`||` 才求值其右侧操作数；只有当左侧操作数求值为 `true` 时，`&&` 才求值其右侧操作数。
 
 ```rust
 let x = false || true; // true
-let y = false && panic!(); // false, doesn't evaluate `panic!()`
+let y = false && panic!(); // false，不求值 `panic!()`
 ```
 
 r[expr.as]
-## Type cast expressions
+## 类型转换表达式
 
 r[expr.as.syntax]
 ```grammar,expressions
@@ -505,12 +504,12 @@ TypeCastExpression -> Expression `as` TypeNoBounds
 ```
 
 r[expr.as.intro]
-A type cast expression is denoted with the binary operator `as`.
+类型转换表达式用二元运算符 `as` 表示。
 
 r[expr.as.result]
-Executing an `as` expression casts the value on the left-hand side to the type on the right-hand side.
+执行 `as` 表达式将左侧的值转换为右侧的类型。
 
-An example of an `as` expression:
+`as` 表达式示例：
 
 ```rust
 # fn sum(values: &[f64]) -> f64 { 0.0 }
@@ -523,37 +522,37 @@ fn average(values: &[f64]) -> f64 {
 ```
 
 r[expr.as.coercions]
-`as` can be used to explicitly perform [coercions](../type-coercions.md), as well as the following additional casts. Any cast that does not fit either a coercion rule or an entry in the table is a compiler error. Here `*T` means either `*const T` or `*mut T`. `m` stands for optional `mut` in reference types and `mut` or `const` in pointer types.
+`as` 可用于显式执行[强制转换](../type-coercions.md)，以及以下附加的转换。任何不符合强制转换规则或表中条目的转换都是编译错误。此处 `*T` 表示 `*const T` 或 `*mut T`。`m` 表示引用类型中的可选 `mut` 以及指针类型中的 `mut` 或 `const`。
 
-| Type of `e`           | `U`                   | Cast performed by `e as U`                            |
-|-----------------------|-----------------------|-------------------------------------------------------|
-| Integer or Float type | Integer or Float type | [Numeric cast][expr.as.numeric]                       |
-| Enumeration           | Integer type          | [Enum cast][expr.as.enum]                             |
-| `bool` or `char`      | Integer type          | [Primitive to integer cast][expr.as.bool-char-as-int] |
-| `u8`                  | `char`                | [`u8` to `char` cast][expr.as.u8-as-char]             |
-| `*T`                  | `*V` (when [compatible][expr.as.pointer]) | [Pointer to pointer cast][expr.as.pointer] |
-| `*T` where `T: Sized` | Integer type          | [Pointer to address cast][expr.as.pointer-as-int]     |
-| Integer type          | `*V` where `V: Sized` | [Address to pointer cast][expr.as.int-as-pointer]     |
-| `&m₁ [T; n]`          | `*m₂ T` [^lessmut]    | Array to pointer cast                                 |
-| `*m₁ [T; n]`          | `*m₂ T` [^lessmut]    | Array to pointer cast                                 |
-| [Function item]       | [Function pointer]    | Function item to function pointer cast                |
-| [Function item]       | `*V` where `V: Sized` | Function item to pointer cast                         |
-| [Function item]       | Integer               | Function item to address cast                         |
-| [Function pointer]    | `*V` where `V: Sized` | Function pointer to pointer cast                      |
-| [Function pointer]    | Integer               | Function pointer to address cast                      |
-| Closure [^no-capture] | Function pointer      | Closure to function pointer cast                      |
+| `e` 的类型            | `U`                        | `e as U` 执行的转换                               |
+|-----------------------|----------------------------|---------------------------------------------------|
+| 整数或浮点类型        | 整数或浮点类型             | [数值转换][expr.as.numeric]                       |
+| 枚举                  | 整数类型                   | [枚举转换][expr.as.enum]                          |
+| `bool` 或 `char`      | 整数类型                   | [原始类型到整数转换][expr.as.bool-char-as-int]    |
+| `u8`                  | `char`                     | [`u8` 到 `char` 转换][expr.as.u8-as-char]         |
+| `*T`                  | `*V`（当[兼容][expr.as.pointer]时） | [指针到指针转换][expr.as.pointer]         |
+| `*T`，其中 `T: Sized` | 整数类型                   | [指针到地址转换][expr.as.pointer-as-int]          |
+| 整数类型              | `*V`，其中 `V: Sized`      | [地址到指针转换][expr.as.int-as-pointer]          |
+| `&m₁ [T; n]`          | `*m₂ T` [^lessmut]         | 数组到指针转换                                    |
+| `*m₁ [T; n]`          | `*m₂ T` [^lessmut]         | 数组到指针转换                                    |
+| [函数项]              | [函数指针]                 | 函数项到函数指针转换                              |
+| [函数项]              | `*V`，其中 `V: Sized`      | 函数项到指针转换                                  |
+| [函数项]              | 整数                       | 函数项到地址转换                                  |
+| [函数指针]            | `*V`，其中 `V: Sized`      | 函数指针到指针转换                                |
+| [函数指针]            | 整数                       | 函数指针到地址转换                                |
+| 闭包 [^no-capture]    | 函数指针                   | 闭包到函数指针转换                                |
 
-[^lessmut]: Only when `m₁` is `mut` or `m₂` is `const`. Casting `mut` reference/pointer to `const` pointer is allowed.
+[^lessmut]: 仅当 `m₁` 为 `mut` 或 `m₂` 为 `const` 时。允许将 `mut` 引用/指针转换为 `const` 指针。
 
-[^no-capture]: Only closures that do not capture (close over) any local variables can be cast to function pointers.
+[^no-capture]: 只有不捕获（封闭）任何局部变量的闭包才能转换为函数指针。
 
-### Semantics
+### 语义
 
 r[expr.as.numeric]
-#### Numeric cast
+#### 数值转换
 
 r[expr.as.numeric.int-same-size]
-* Casting between two integers of the same size (e.g. i32 -> u32) is a no-op (Rust uses 2's complement for negative values of fixed integers)
+* 相同大小的两个整数之间的转换（例如 i32 -> u32）是无操作（Rust 使用二进制补码处理固定整数的负值）
 
   ```rust
   assert_eq!(42i8 as u8, 42u8);
@@ -563,7 +562,7 @@ r[expr.as.numeric.int-same-size]
   ```
 
 r[expr.as.numeric.int-truncation]
-* Casting from a larger integer to a smaller integer (e.g. u32 -> u8) will truncate
+* 从较大整数到较小整数的转换（例如 u32 -> u8）将截断
 
   ```rust
   assert_eq!(42u16 as u8, 42u8);
@@ -576,23 +575,23 @@ r[expr.as.numeric.int-truncation]
   ```
 
 r[expr.as.numeric.int-extension]
-* Casting from a smaller integer to a larger integer (e.g. u8 -> u32) will
-    * zero-extend if the source is unsigned
-    * sign-extend if the source is signed
+* 从较小整数到较大整数的转换（例如 u8 -> u32）将
+    * 如果源是无符号的，则零扩展
+    * 如果源是有符号的，则符号扩展
 
   ```rust
   assert_eq!(42i8 as i16, 42i16);
   assert_eq!(-17i8 as i16, -17i16);
-  assert_eq!(0b1000_1010u8 as u16, 0b0000_0000_1000_1010u16, "Zero-extend");
-  assert_eq!(0b0000_1010i8 as i16, 0b0000_0000_0000_1010i16, "Sign-extend 0");
-  assert_eq!(0b1000_1010u8 as i8 as i16, 0b1111_1111_1000_1010u16 as i16, "Sign-extend 1");
+  assert_eq!(0b1000_1010u8 as u16, 0b0000_0000_1000_1010u16, "零扩展");
+  assert_eq!(0b0000_1010i8 as i16, 0b0000_0000_0000_1010i16, "符号扩展 0");
+  assert_eq!(0b1000_1010u8 as i8 as i16, 0b1111_1111_1000_1010u16 as i16, "符号扩展 1");
   ```
 
 r[expr.as.numeric.float-as-int]
-* Casting from a float to an integer will round the float towards zero
-    * `NaN` will return `0`
-    * Values larger than the maximum integer value, including `INFINITY`, will saturate to the maximum value of the integer type.
-    * Values smaller than the minimum integer value, including `NEG_INFINITY`, will saturate to the minimum value of the integer type.
+* 从浮点数到整数的转换将向零舍入
+    * `NaN` 将返回 `0`
+    * 大于最大整数值的值（包括 `INFINITY`）将饱和到整数类型的最大值。
+    * 小于最小整数值的值（包括 `NEG_INFINITY`）将饱和到整数类型的最小值。
 
   ```rust
   assert_eq!(42.9f32 as i32, 42);
@@ -604,19 +603,19 @@ r[expr.as.numeric.float-as-int]
   ```
 
 r[expr.as.numeric.int-as-float]
-* Casting from an integer to float will produce the closest possible float \*
-    * if necessary, rounding is according to `roundTiesToEven` mode \*\*\*
-    * on overflow, infinity (of the same sign as the input) is produced
-    * note: with the current set of numeric types, overflow can only happen on `u128 as f32` for values greater or equal to `f32::MAX + (0.5 ULP)`
+* 从整数到浮点数的转换将产生最接近的可能浮点数 \*
+    * 如有必要，舍入根据 `roundTiesToEven` 模式进行 \*\*\*
+    * 溢出时，产生无穷大（与输入符号相同）
+    * 注意：在当前数值类型集合中，溢出仅在 `u128 as f32` 中发生，当值大于或等于 `f32::MAX + (0.5 ULP)` 时
 
   ```rust
   assert_eq!(1337i32 as f32, 1337f32);
-  assert_eq!(123_456_789i32 as f32, 123_456_790f32, "Rounded");
+  assert_eq!(123_456_789i32 as f32, 123_456_790f32, "已舍入");
   assert_eq!(0xffffffff_ffffffff_ffffffff_ffffffff_u128 as f32, std::f32::INFINITY);
   ```
 
 r[expr.as.numeric.float-widening]
-* Casting from an f32 to an f64 is perfect and lossless
+* 从 f32 到 f64 的转换是完美且无损失的
 
   ```rust
   assert_eq!(1_234.5f32 as f64, 1_234.5f64);
@@ -625,31 +624,31 @@ r[expr.as.numeric.float-widening]
   ```
 
 r[expr.as.numeric.float-narrowing]
-* Casting from an f64 to an f32 will produce the closest possible f32 \*\*
-    * if necessary, rounding is according to `roundTiesToEven` mode \*\*\*
-    * on overflow, infinity (of the same sign as the input) is produced
+* 从 f64 到 f32 的转换将产生最接近的可能 f32 \*\*
+    * 如有必要，舍入根据 `roundTiesToEven` 模式进行 \*\*\*
+    * 溢出时，产生无穷大（与输入符号相同）
 
   ```rust
   assert_eq!(1_234.5f64 as f32, 1_234.5f32);
-  assert_eq!(1_234_567_891.123f64 as f32, 1_234_567_890f32, "Rounded");
+  assert_eq!(1_234_567_891.123f64 as f32, 1_234_567_890f32, "已舍入");
   assert_eq!(std::f64::INFINITY as f32, std::f32::INFINITY);
   assert!((std::f64::NAN as f32).is_nan());
   ```
 
-\* if integer-to-float casts with this rounding mode and overflow behavior are not supported natively by the hardware, these casts will likely be slower than expected.
+\* 如果硬件本身不支持具有此舍入模式和溢出行为的整数到浮点数转换，这些转换可能会比预期慢。
 
-\*\* if f64-to-f32 casts with this rounding mode and overflow behavior are not supported natively by the hardware, these casts will likely be slower than expected.
+\*\* 如果硬件本身不支持具有此舍入模式和溢出行为的 f64 到 f32 转换，这些转换可能会比预期慢。
 
-\*\*\* as defined in IEEE 754-2008 &sect;4.3.1: pick the nearest floating point number, preferring the one with an even least significant digit if exactly halfway between two floating point numbers.
+\*\*\* 如 IEEE 754-2008 §4.3.1 定义：选择最接近的浮点数，如果恰好处于两个浮点数中间，则选择最低有效位为偶数的那个。
 
 r[expr.as.enum]
-#### Enum cast
+#### 枚举转换
 
 r[expr.as.enum.discriminant]
-Casts an enum to its discriminant, then uses a numeric cast if needed. Casting is limited to the following kinds of enumerations:
+将枚举转换为其判别值，然后根据需要应用数值转换。转换仅限于以下类型的枚举：
 
-* [Unit-only enums]
-* [Field-less enums] without [explicit discriminants], or where only unit-variants have explicit discriminants
+* [仅单元变体枚举]
+* 没有[显式判别值]的[无字段枚举]，或其中仅有单元变体具有显式判别值
 
 ```rust
 enum Enum { A, B, C }
@@ -659,13 +658,13 @@ assert_eq!(Enum::C as i32, 2);
 ```
 
 r[expr.as.enum.no-drop]
-Casting is not allowed if the enum implements [`Drop`].
+如果枚举实现了 [`Drop`]，则不允许转换。
 
 r[expr.as.bool-char-as-int]
-#### Primitive to integer cast
+#### 原始类型到整数转换
 
-* `false` casts to `0`, `true` casts to `1`
-* `char` casts to the value of the code point, then uses a numeric cast if needed.
+* `false` 转换为 `0`，`true` 转换为 `1`
+* `char` 转换为码点值，然后根据需要应用数值转换。
 
 ```rust
 assert_eq!(false as i32, 0);
@@ -675,9 +674,9 @@ assert_eq!('Ö' as i32, 214);
 ```
 
 r[expr.as.u8-as-char]
-#### `u8` to `char` cast
+#### `u8` 到 `char` 转换
 
-Casts to the `char` with the corresponding code point.
+转换为具有对应码点的 `char`。
 
 ```rust
 assert_eq!(65u8 as char, 'A');
@@ -685,21 +684,21 @@ assert_eq!(214u8 as char, 'Ö');
 ```
 
 r[expr.as.pointer-as-int]
-#### Pointer to address cast
+#### 指针到地址转换
 
-Casting from a raw pointer to an integer produces the machine address of the referenced memory. If the integer type is smaller than the pointer type, the address may be truncated; using `usize` avoids this.
+从裸指针到整数的转换产生所引用内存的机器地址。如果整数类型小于指针类型，地址可能被截断；使用 `usize` 可避免此问题。
 
 r[expr.as.int-as-pointer]
-#### Address to pointer cast
+#### 地址到指针转换
 
-Casting from an integer to a raw pointer interprets the integer as a memory address and produces a pointer referencing that memory.
+从整数到裸指针的转换将整数解释为内存地址，并产生一个引用该内存的指针。
 
 > [!WARNING]
-> This interacts with the Rust memory model, which is still under development.
-> A pointer obtained from this cast may suffer additional restrictions even if it is bitwise equal to a valid pointer.
-> Dereferencing such a pointer may be [undefined behavior] if aliasing rules are not followed.
+> 这与 Rust 内存模型交互，该模型仍在开发中。
+> 从此转换获得的指针可能受到额外限制，即使它在位级别上与有效指针相等。
+> 如果不遵循别名规则，解引用此类指针可能是[未定义行为]。
 
-A trivial example of sound address arithmetic:
+一个合理的地址算术简单示例：
 
 ```rust
 let mut values: [i32; 2] = [1, 2];
@@ -714,41 +713,41 @@ assert_eq!(values[1], 3);
 ```
 
 r[expr.as.pointer]
-#### Pointer-to-pointer cast
+#### 指针到指针转换
 
 r[expr.as.pointer.behavior]
-`*const T` / `*mut T` can be cast to `*const U` / `*mut U` with the following behavior:
+`*const T` / `*mut T` 可以转换为 `*const U` / `*mut U`，具有以下行为：
 
 r[expr.as.pointer.sized]
-- If `T` and `U` are both sized, the pointer is returned unchanged.
+- 如果 `T` 和 `U` 都是固定大小的，则指针原样返回不变。
 
   > [!EXAMPLE]
   > ```rust
   > let x: i32 = 42;
   > let p1: *const i32 = &x;
   > let p2: *const u8 = p1 as *const u8;
-  > // The pointer address remains the same.
+  > // 指针地址保持不变。
   > assert_eq!(p1 as usize, p2 as usize);
   > ```
 
 r[expr.as.pointer.discard-metadata]
-- If `T` is unsized and `U` is sized, the cast discards all metadata that completes the wide pointer `T` and produces a thin pointer `U` consisting of the data part of the unsized pointer.
+- 如果 `T` 是非固定大小的而 `U` 是固定大小的，该转换会丢弃完成宽指针 `T` 的所有元数据，并产生一个由非固定大小指针的数据部分组成的瘦指针 `U`。
 
   > [!EXAMPLE]
   > ```rust
   > let slice: &[i32] = &[1, 2, 3];
   > let ptr: *const [i32] = slice as *const [i32];
-  > // Cast from wide pointer (*const [i32]) to thin pointer (*const i32)
-  > // discarding the length metadata.
+  > // 从宽指针 (*const [i32]) 到瘦指针 (*const i32) 的转换
+  > // 丢弃长度元数据。
   > let data_ptr: *const i32 = ptr as *const i32;
   > assert_eq!(unsafe { *data_ptr }, 1);
   > ```
 
 r[expr.as.pointer.unsized.unchanged]
-- If `T` and `U` are both unsized, the pointer is also returned unchanged. In particular, the metadata is preserved exactly. The cast can only be performed if the metadata is compatible according to the below rules:
+- 如果 `T` 和 `U` 都是非固定大小的，指针也原样返回不变。特别地，元数据被精确保留。只有根据以下规则元数据兼容时才能执行转换：
 
 r[expr.as.pointer.unsized.slice]
-- When `T` and `U` are unsized with slice metadata, they are always compatible. The metadata of a slice is the number of elements, so casting `*[u16] -> *[u8]` is legal but will result in reducing the number of bytes by half.
+- 当 `T` 和 `U` 是具有切片元数据的非固定大小类型时，它们始终兼容。切片的元数据是元素数量，因此将 `*[u16] -> *[u8]` 转换是合法的，但会导致字节数减半。
 
   > [!EXAMPLE]
   > ```rust
@@ -759,8 +758,8 @@ r[expr.as.pointer.unsized.slice]
   > ```
 
 r[expr.as.pointer.unsized.trait]
-- When `T` and `U` are unsized with trait object metadata, the metadata is compatible only when all of the following holds:
-  1. The principal trait must be the same.
+- 当 `T` 和 `U` 是具有 trait 对象元数据的非固定大小类型时，仅当满足以下所有条件时元数据才兼容：
+  1. 主 trait 必须相同。
 
      > [!EXAMPLE]
      > ```rust,compile_fail,E0606
@@ -771,12 +770,12 @@ r[expr.as.pointer.unsized.trait]
      >
      > let x: i32 = 42;
      > let ptr_foo: *const dyn Foo = &x as *const dyn Foo;
-     > // You can't cast to a different principal trait.
-     > let ptr_bar: *const dyn Bar = ptr_foo as *const dyn Bar; // ERROR
+     > // 不能转换到不同的主 trait。
+     > let ptr_bar: *const dyn Bar = ptr_foo as *const dyn Bar; // 错误
      > ```
 
 
-  2. Auto traits may be removed.
+  2. 自动 trait 可以被移除。
 
      > [!EXAMPLE]
      > ```rust
@@ -787,12 +786,12 @@ r[expr.as.pointer.unsized.trait]
      >
      > let s = S;
      > let ptr_send: *const (dyn Foo + Send) = &s;
-     > // Removing an auto trait.
+     > // 移除自动 trait。
      > let ptr_no_send: *const dyn Foo = ptr_send as *const dyn Foo;
      > ```
 
 
-  3. Auto traits may be added only if they are a super trait of the principal trait.
+  3. 自动 trait 仅当它们是主 trait 的超级 trait 时才可以被添加。
 
      > [!EXAMPLE]
      > ```rust
@@ -803,7 +802,7 @@ r[expr.as.pointer.unsized.trait]
      >
      > let s = S;
      > let ptr_no_send: *const dyn Foo = &s;
-     > // Adding an auto trait.
+     > // 添加自动 trait。
      > let ptr_send: *const (dyn Foo + Send) = ptr_no_send as *const (dyn Foo + Send);
      > ```
      >
@@ -815,12 +814,12 @@ r[expr.as.pointer.unsized.trait]
      > #
      > # let s = S;
      > # let ptr_no_send: *const dyn Foo = &s;
-     > // Same as above, except trait Foo does not have Send as a super trait.
-     > let ptr_send: *const (dyn Foo + Send) = ptr_no_send as *const (dyn Foo + Send); // ERROR
+     > // 同上，除了 trait Foo 没有 Send 作为超级 trait。
+     > let ptr_send: *const (dyn Foo + Send) = ptr_no_send as *const (dyn Foo + Send); // 错误
      > ```
 
 
-  4. Trailing lifetimes may only be shortened.
+  4. 尾部生命周期只能被缩短。
 
      > [!EXAMPLE]
      > ```rust
@@ -829,7 +828,7 @@ r[expr.as.pointer.unsized.trait]
      > fn shorten_lifetime<'long: 'short, 'short>(
      >     ptr: *const (dyn Foo + 'long),
      > ) -> *const (dyn Foo + 'short) {
-     >     // Shortening the lifetime is allowed.
+     >     // 缩短生命周期是允许的。
      >     ptr as *const (dyn Foo + 'short)
      > }
      > ```
@@ -840,12 +839,12 @@ r[expr.as.pointer.unsized.trait]
      > fn lengthen_lifetime<'long: 'short, 'short>(
      >     ptr: *const (dyn Foo + 'short),
      > ) -> *const (dyn Foo + 'long) {
-     >     // It is not allowed to cast to a longer lifetime.
-     >     ptr as *const (dyn Foo + 'long) // ERROR
+     >     // 不允许转换到更长的生命周期。
+     >     ptr as *const (dyn Foo + 'long) // 错误
      > }
      > ```
 
-  5. Generics (including lifetimes) and associated types must match exactly.
+  5. 泛型（包括生命周期）和关联类型必须完全匹配。
 
      > [!EXAMPLE]
      > ```rust,compile_fail,E0606
@@ -855,8 +854,8 @@ r[expr.as.pointer.unsized.trait]
      >
      > let x = ();
      > let ptr_i32: *const dyn Generic<i32> = &x;
-     > // You can't cast to a different generic parameter.
-     > let ptr_u32: *const dyn Generic<u32> = ptr_i32 as *const dyn Generic<u32>; // ERROR
+     > // 不能转换到不同的泛型参数。
+     > let ptr_u32: *const dyn Generic<u32> = ptr_i32 as *const dyn Generic<u32>; // 错误
      > ```
      >
      > ```rust
@@ -873,7 +872,7 @@ r[expr.as.pointer.unsized.trait]
      >     'a: 'b,
      >     'b: 'a,
      >     A: HasType,
-     >     B: HasType<Output = A::Output>, // Forces equality
+     >     B: HasType<Output = A::Output>, // 强制相等
      > {
      >     ptr as *const dyn Generic<'b, B::Output>
      > }
@@ -882,7 +881,7 @@ r[expr.as.pointer.unsized.trait]
 
 
 r[expr.as.pointer.unsized.compound]
-- When `T` or `U` is a struct or tuple type whose last field is unsized, it has the same metadata and compatibility rules as its last field.
+- 当 `T` 或 `U` 是其最后一个字段为非固定大小的结构体或元组类型时，它具有与其最后一个字段相同的元数据和兼容性规则。
 
   > [!EXAMPLE]
   > ```rust
@@ -891,17 +890,17 @@ r[expr.as.pointer.unsized.compound]
   > let slice: &[u8] = &[1, 2, 3];
   > let ptr: *const [u8] = slice;
   >
-  > // The metadata (length 3) is preserved when casting to a struct
-  > // where the last field is the unsized type `[u8]`.
+  > // 转换为最后一个字段为非固定大小类型 `[u8]` 的
+  > // 结构体时，元数据（长度 3）被保留。
   > let wrapper_ptr: *const Wrapper = ptr as *const Wrapper;
   >
-  > // And preserved when casting back.
+  > // 转换回来时也被保留。
   > let ptr_back: *const [u8] = wrapper_ptr as *const [u8];
   > assert_eq!(ptr_back.len(), 3);
   > ```
 
 r[expr.assign]
-## Assignment expressions
+## 赋值表达式
 
 r[expr.assign.syntax]
 ```grammar,expressions
@@ -909,39 +908,39 @@ AssignmentExpression -> Expression `=` Expression
 ```
 
 r[expr.assign.intro]
-An *assignment expression* moves a value into a specified place.
+*赋值表达式*将一个值移动到指定位置。
 
 r[expr.assign.assignee]
-An assignment expression consists of a [mutable] [assignee expression], the *assignee operand*, followed by an equals sign (`=`) and a [value expression], the *assigned value operand*.
+赋值表达式由一个[可变][mutable]的[赋值目标表达式]（*赋值目标操作数*）、后跟一个等号（`=`）和一个[值表达式]（*所赋值的值操作数*）组成。
 
 r[expr.assign.behavior-basic]
-In its most basic form, an assignee expression is a [place expression], and we discuss this case first.
+在其最基本的形式中，赋值目标表达式是[位置表达式]，我们首先讨论这种情况。
 
 r[expr.assign.behavior-destructuring]
-The more general case of destructuring assignment is discussed below, but this case always decomposes into sequential assignments to place expressions, which may be considered the more fundamental case.
+下面将讨论解构赋值的更通用情况，但这种情况下总是分解为对位置表达式的顺序赋值，后者可以被视为更基本的情况。
 
 r[expr.assign.basic]
-### Basic assignments
+### 基本赋值
 
 r[expr.assign.evaluation-order]
-Evaluating assignment expressions begins by evaluating its operands. The assigned value operand is evaluated first, followed by the assignee expression.
+求值赋值表达式从求值其操作数开始。所赋值的值操作数首先被求值，然后求值赋值目标表达式。
 
 r[expr.assign.destructuring-order]
-For destructuring assignment, subexpressions of the assignee expression are evaluated left-to-right.
+对于解构赋值，赋值目标表达式的子表达式从左到右求值。
 
 > [!NOTE]
-> This is different than other expressions in that the right operand is evaluated before the left one.
+> 这与其他表达式不同，因为右侧操作数在左侧之前求值。
 
 r[expr.assign.drop-target]
-It then has the effect of first [dropping] the value at the assigned place, unless the place is an uninitialized local variable or an uninitialized field of a local variable.
+然后它的效果是首先[丢弃]赋值位置上的值，除非该位置是未初始化的局部变量或局部变量的未初始化字段。
 
 r[expr.assign.behavior]
-Next it either [copies or moves] the assigned value to the assigned place.
+接下来它将所赋值的值[复制或移动]到赋值位置。
 
 r[expr.assign.result]
-An assignment expression always produces [the unit value][unit].
+赋值表达式始终产生[单元值][unit]。
 
-Example:
+示例：
 
 ```rust
 let mut x = 0;
@@ -950,24 +949,24 @@ x = y;
 ```
 
 r[expr.assign.destructure]
-### Destructuring assignments
+### 解构赋值
 
 r[expr.assign.destructure.intro]
-Destructuring assignment is a counterpart to destructuring pattern matches for variable declaration, permitting assignment to complex values, such as tuples or structs. For instance, we may swap two mutable variables:
+解构赋值是变量声明的解构模式匹配的对应物，允许赋值给复杂值，例如元组或结构体。例如，我们可以交换两个可变变量：
 
 ```rust
 let (mut a, mut b) = (0, 1);
-// Swap `a` and `b` using destructuring assignment.
+// 使用解构赋值交换 `a` 和 `b`。
 (b, a) = (a, b);
 ```
 
 r[expr.assign.destructure.assignee]
-In contrast to destructuring declarations using `let`, patterns may not appear on the left-hand side of an assignment due to syntactic ambiguities. Instead, a group of expressions that correspond to patterns are designated to be [assignee expressions][assignee expression], and permitted on the left-hand side of an assignment. Assignee expressions are then desugared to pattern matches followed by sequential assignment.
+与使用 `let` 的解构声明不同，由于语法歧义，模式不能出现在赋值的左侧。相反，一组对应于模式的表达式被指定为[赋值目标表达式][assignee expression]，并允许出现在赋值的左侧。赋值目标表达式随后被脱糖为模式匹配后跟顺序赋值。
 
 r[expr.assign.destructure.irrefutable]
-The desugared patterns must be irrefutable: in particular, this means that only slice patterns whose length is known at compile-time, and the trivial slice `[..]`, are permitted for destructuring assignment.
+脱糖后的模式必须是不可反驳的：特别是，这意味着只有长度在编译时已知的切片模式和简单切片 `[..]` 才允许用于解构赋值。
 
-The desugaring method is straightforward, and is illustrated best by example.
+脱糖方法很直接，最好通过示例来说明。
 
 ```rust
 # struct Struct { x: u32, y: u32 }
@@ -978,7 +977,7 @@ The desugaring method is straightforward, and is illustrated best by example.
 
 Struct { x: a, y: b } = Struct { x: 3, y: 4};
 
-// desugars to:
+// 脱糖为：
 
 {
     let (_a, _b) = (3, 4);
@@ -1000,19 +999,19 @@ Struct { x: a, y: b } = Struct { x: 3, y: 4};
 ```
 
 r[expr.assign.destructure.repeat-ident]
-Identifiers are not forbidden from being used multiple times in a single assignee expression.
+不禁止标识符在单个赋值目标表达式中多次使用。
 
 r[expr.assign.destructure.discard-value]
-[Underscore expressions] and empty [range expressions] may be used to ignore certain values, without binding them.
+[下划线表达式]和空[区间表达式]可用于忽略某些值，而不绑定它们。
 
 r[expr.assign.destructure.default-binding]
-Note that default binding modes do not apply for the desugared expression.
+注意，默认绑定模式不适用于脱糖后的表达式。
 
 r[expr.assign.destructure.tmp-scopes]
 > [!NOTE]
-> The desugaring restricts the [temporary scope] of the assigned value operand (the RHS) of a destructuring assignment.
+> 脱糖限制了赋值值操作数（RHS）的[临时值作用域]。
 >
-> In a basic assignment, the [temporary] is dropped at the end of the enclosing temporary scope. Below, that's the statement. Therefore, the assignment and use is allowed.
+> 在基本赋值中，[临时值]在外围临时值作用域的末尾被丢弃。下面是语句的末尾。因此，赋值和使用是允许的。
 >
 > ```rust
 > # fn temp() {}
@@ -1021,16 +1020,16 @@ r[expr.assign.destructure.tmp-scopes]
 > (x = f(&temp()), x); // OK
 > ```
 >
-> Conversely, in a destructuring assignment, the temporary is dropped at the end of the `let` statement in the desugaring. As that happens before we try to assign to `x`, below, it fails.
+> 反之，在解构赋值中，临时值在脱糖中 `let` 语句的末尾被丢弃。由于这发生在我们尝试赋值给 `x` 之前，以下代码失败。
 >
 > ```rust,compile_fail,E0716
 > # fn temp() {}
 > # fn f<T>(x: T) -> T { x }
 > # let x;
-> [x] = [f(&temp())]; // ERROR
+> [x] = [f(&temp())]; // 错误
 > ```
 >
-> This desugars to:
+> 这会脱糖为：
 >
 > ```rust,compile_fail,E0716
 > # fn temp() {}
@@ -1039,16 +1038,16 @@ r[expr.assign.destructure.tmp-scopes]
 > {
 >     let [_x] = [f(&temp())];
 >     //                     ^
->     //      The temporary is dropped here.
->     x = _x; // ERROR
+>     //      临时值在此处被丢弃。
+>     x = _x; // 错误
 > }
 > ```
 
 r[expr.assign.destructure.tmp-ext]
 > [!NOTE]
-> Due to the desugaring, the assigned value operand (the RHS) of a destructuring assignment is an [extending expression] within a newly-introduced block.
+> 由于脱糖，解构赋值的赋值值操作数（RHS）是新引入块内的一个[延长表达式]。
 >
-> Below, because the [temporary scope] is extended to the end of this introduced block, the assignment is allowed.
+> 下面，由于[临时值作用域]被延长到此引入块的末尾，赋值是允许的。
 >
 > ```rust
 > # fn temp() {}
@@ -1056,7 +1055,7 @@ r[expr.assign.destructure.tmp-ext]
 > [x] = [&temp()]; // OK
 > ```
 >
-> This desugars to:
+> 这会脱糖为：
 >
 > ```rust
 > # fn temp() {}
@@ -1064,15 +1063,15 @@ r[expr.assign.destructure.tmp-ext]
 > { let [_x] = [&temp()]; x = _x; } // OK
 > ```
 >
-> However, if we try to use `x`, even within the same statement, we'll get an error because the [temporary] is dropped at the end of this introduced block.
+> 然而，如果我们尝试使用 `x`，即使在同一条语句内，也会得到错误，因为[临时值]在此引入块的末尾被丢弃。
 >
 > ```rust,compile_fail,E0716
 > # fn temp() {}
 > # let x;
-> ([x] = [&temp()], x); // ERROR
+> ([x] = [&temp()], x); // 错误
 > ```
 >
-> This desugars to:
+> 这会脱糖为：
 >
 > ```rust,compile_fail,E0716
 > # fn temp() {}
@@ -1081,13 +1080,13 @@ r[expr.assign.destructure.tmp-ext]
 >     {
 >         let [_x] = [&temp()];
 >         x = _x;
->     }, // <-- The temporary is dropped here.
->     x, // ERROR
+>     }, // <-- 临时值在此处被丢弃。
+>     x, // 错误
 > );
 > ```
 
 r[expr.compound-assign]
-## Compound assignment expressions
+## 复合赋值表达式
 
 r[expr.compound-assign.syntax]
 ```grammar,expressions
@@ -1105,9 +1104,9 @@ CompoundAssignmentExpression ->
 ```
 
 r[expr.compound-assign.intro]
-*Compound assignment expressions* combine arithmetic and logical binary operators with assignment expressions.
+*复合赋值表达式*将算术和逻辑二元运算符与赋值表达式结合起来。
 
-For example:
+例如：
 
 ```rust
 let mut x = 5;
@@ -1115,19 +1114,19 @@ x += 1;
 assert!(x == 6);
 ```
 
-The syntax of compound assignment is a [mutable] [place expression], the *assigned operand*, then one of the operators followed by an `=` as a single token (no whitespace), and then a [value expression], the *modifying operand*.
+复合赋值的语法是一个[可变][mutable]的[位置表达式]（*被赋值操作数*），后跟一个运算符和一个 `=` 作为一个整体记号（无空白），再后跟一个[值表达式]（*修改操作数*）。
 
 r[expr.compound-assign.place]
-Unlike other place operands, the assigned place operand must be a place expression.
+与其他位置操作数不同，被赋值的位置操作数必须是位置表达式。
 
 r[expr.compound-assign.no-value]
-Attempting to use a value expression is a compiler error rather than promoting it to a temporary.
+尝试使用值表达式是编译错误，而不是将其提升为临时值。
 
 r[expr.compound-assign.operand-order]
-Evaluation of compound assignment expressions depends on the types of the operands.
+复合赋值表达式的求值取决于操作数的类型。
 
 r[expr.compound-assign.primitives]
-If the types of both operands are known, prior to monomorphization, to be primitive, the right hand side is evaluated first, the left hand side is evaluated next, and the place given by the evaluation of the left hand side is mutated by applying the operator to the values of both sides.
+如果在单态化之前已知两个操作数的类型都是原始类型，则首先求值右侧，然后求值左侧，通过将运算符应用于两侧的值来修改左侧求值给出的位置。
 
 ```rust
 # use core::{num::Wrapping, ops::AddAssign};
@@ -1137,25 +1136,22 @@ impl<T> Equate for (T, T) {}
 
 fn f1(x: (u8,)) {
     let mut order = vec![];
-    // The RHS is evaluated first as both operands are of primitive
-    // type.
+    // 先求值 RHS，因为两个操作数都是原始类型。
     { order.push(2); x }.0 += { order.push(1); x }.0;
     assert!(order.is_sorted());
 }
 
 fn f2(x: (Wrapping<u8>,)) {
     let mut order = vec![];
-    // The LHS is evaluated first as `Wrapping<_>` is not a primitive
-    // type.
+    // 先求值 LHS，因为 `Wrapping<_>` 不是原始类型。
     { order.push(1); x }.0 += { order.push(2); (0u8,) }.0;
     assert!(order.is_sorted());
 }
 
 fn f3<T: AddAssign<u8> + Copy>(x: (T,)) where (T, u8): Equate {
     let mut order = vec![];
-    // The LHS is evaluated first as one of the operands is a generic
-    // parameter, even though that generic parameter can be unified
-    // with a primitive type due to the where clause bound.
+    // 先求值 LHS，因为操作数之一是泛型参数，即使该泛型参数
+    // 可以因 where 子句约束而与原始类型统一。
     { order.push(1); x }.0 += { order.push(2); (0u8,) }.0;
     assert!(order.is_sorted());
 }
@@ -1163,40 +1159,38 @@ fn f3<T: AddAssign<u8> + Copy>(x: (T,)) where (T, u8): Equate {
 fn main() {
     f1((0u8,));
     f2((Wrapping(0u8),));
-    // We supply a primitive type as the generic argument, but this
-    // does not affect the evaluation order in `f3` when
-    // monomorphized.
+    // 我们提供原始类型作为泛型参数，但这不影响
+    // 单态化时 `f3` 中的求值顺序。
     f3::<u8>((0u8,));
 }
 ```
 
 > [!NOTE]
-> This is unusual. Elsewhere left to right evaluation is the norm.
+> 这是不寻常的。在其他地方，从左到右求值是常态。
 >
-> See the [eval order test] for more examples.
+> 有关更多示例，请参见[求值顺序测试]。
 
 r[expr.compound-assign.trait]
-Otherwise, this expression is syntactic sugar for using the corresponding trait for the operator (see [expr.arith-logic.behavior]) and calling its method with the left hand side as the [receiver] and the right hand side as the next argument.
+否则，此表达式是使用运算符对应 trait 的语法糖（参见 [expr.arith-logic.behavior]），并以左侧作为[接收者]、右侧作为下一个参数来调用其方法。
 
-For example, the following two statements are equivalent:
+例如，以下两条语句是等价的：
 
 ```rust
 # use std::ops::AddAssign;
 fn f<T: AddAssign + Copy>(mut x: T, y: T) {
-    x += y; // Statement 1.
-    x.add_assign(y); // Statement 2.
+    x += y; // 语句 1。
+    x.add_assign(y); // 语句 2。
 }
 ```
 
 > [!NOTE]
-> Surprisingly, desugaring this further to a fully qualified method call is not equivalent, as there is special borrow checker behavior when the mutable reference to the first operand is taken via [autoref].
+> 令人惊讶的是，将其进一步脱糖为完全限定方法调用是不等价的，因为当通过[自动引用]获取对第一个操作数的可变引用时，借检查器有特殊行为。
 >
 > ```rust
 > # use std::ops::AddAssign;
 > fn f<T: AddAssign + Copy>(mut x: T) {
->     // Here we used `x` as both the LHS and the RHS. Because the
->     // mutable borrow of the LHS needed to call the trait method
->     // is taken implicitly by autoref, this is OK.
+>     // 这里我们将 `x` 同时用作 LHS 和 RHS。因为调用 trait 方法
+>     // 所需的 LHS 可变引用是通过自动引用隐式获取的，所以这是可以的。
 >     x += x; //~ OK
 >     x.add_assign(x); //~ OK
 > }
@@ -1205,29 +1199,28 @@ fn f<T: AddAssign + Copy>(mut x: T, y: T) {
 > ```rust,compile_fail,E0503
 > # use std::ops::AddAssign;
 > fn f<T: AddAssign + Copy>(mut x: T) {
->     // We can't desugar the above to the below, as once we take the
->     // mutable borrow of `x` to pass the first argument, we can't
->     // pass `x` by value in the second argument because the mutable
->     // reference is still live.
+>     // 我们不能将上述代码脱糖为以下代码，因为一旦我们获取了 `x`
+>     // 的可变引用来传递第一个参数，我们就不能在第二个参数中
+>     // 按值传递 `x`，因为可变引用仍然存活。
 >     <T as AddAssign>::add_assign(&mut x, x);
->     //~^ ERROR cannot use `x` because it was mutably borrowed
+>     //~^ 错误：无法使用 `x`，因为它已被可变借用
 > }
 > ```
 >
 > ```rust,compile_fail,E0503
 > # use std::ops::AddAssign;
 > fn f<T: AddAssign + Copy>(mut x: T) {
->     // As above.
+>     // 同上。
 >     (&mut x).add_assign(x);
->     //~^ ERROR cannot use `x` because it was mutably borrowed
+>     //~^ 错误：无法使用 `x`，因为它已被可变借用
 > }
 > ```
 
 r[expr.compound-assign.result]
-As with normal assignment expressions, compound assignment expressions always produce [the unit value][unit].
+与普通赋值表达式一样，复合赋值表达式始终产生[单元值][unit]。
 
 > [!WARNING]
-> Avoid writing code that depends on the evaluation order of operands in compound assignments as it can be unusual and surprising.
+> 避免编写依赖于复合赋值中操作数求值顺序的代码，因为它可能不寻常且令人惊讶。
 
 [`Box`]: ../special-types-and-traits.md#boxt
 [`Try`]: core::ops::Try

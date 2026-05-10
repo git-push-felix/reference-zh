@@ -1,5 +1,5 @@
 r[expr.call]
-# Call expressions
+# 调用表达式
 
 r[expr.call.syntax]
 ```grammar,expressions
@@ -9,22 +9,22 @@ CallParams -> Expression ( `,` Expression )* `,`?
 ```
 
 r[expr.call.intro]
-A *call expression* calls a function. The syntax of a call expression is an expression, called the *function operand*, followed by a parenthesized comma-separated list of expression, called the *argument operands*.
+*调用表达式*调用一个函数。调用表达式的语法是一个表达式（称为*函数操作数*），后跟一个用括号括起来的、以逗号分隔的表达式列表（称为*参数操作数*）。
 
 r[expr.call.convergence]
-If the function eventually returns, then the expression completes.
+如果函数最终返回，则表达式完成。
 
 r[expr.call.trait]
-For [non-function types], the expression `f(...)` uses the method on one of the following traits based on the function operand:
+对于[非函数类型]，表达式 `f(...)` 根据函数操作数使用以下 trait 之一上的方法：
 
-- [`Fn`] or [`AsyncFn`] --- shared reference.
-- [`FnMut`] or [`AsyncFnMut`] --- mutable reference.
-- [`FnOnce`] or [`AsyncFnOnce`] --- value.
+- [`Fn`] 或 [`AsyncFn`] --- 共享引用。
+- [`FnMut`] 或 [`AsyncFnMut`] --- 可变引用。
+- [`FnOnce`] 或 [`AsyncFnOnce`] --- 值。
 
 r[expr.call.autoref-deref]
-An automatic borrow will be taken if needed. The function operand will also be [automatically dereferenced] as required.
+如果需要，会自动进行借用。函数操作数也会根据需要被[自动解引用]。
 
-Some examples of call expressions:
+一些调用表达式的示例：
 
 ```rust
 # fn add(x: i32, y: i32) -> i32 { 0 }
@@ -33,28 +33,28 @@ let name: &'static str = (|| "Rust")();
 ```
 
 r[expr.call.desugar]
-## Disambiguating function calls
+## 消歧函数调用
 
 r[expr.call.desugar.fully-qualified]
-All function calls are sugar for a more explicit [fully-qualified syntax].
+所有函数调用都是更显式的[完全限定语法]的语法糖。
 
 r[expr.call.desugar.ambiguity]
-Function calls may need to be fully qualified, depending on the ambiguity of a call in light of in-scope items.
+函数调用可能需要完全限定，这取决于调用的歧义性以及作用域内的项。
 
 > [!NOTE]
-> In the past, the terms "Unambiguous Function Call Syntax", "Universal Function Call Syntax", or "UFCS", have been used in documentation, issues, RFCs, and other community writings. However, these terms lack descriptive power and potentially confuse the issue at hand. We mention them here for searchability's sake.
+> 过去，术语"无歧义函数调用语法"、"通用函数调用语法"或"UFCS"曾被用于文档、议题、RFC 和其他社区著作中。然而，这些术语缺乏描述力，并且可能混淆手头的问题。我们在此提及它们是为了便于搜索。
 
 r[expr.call.desugar.limits]
-Several situations often occur which result in ambiguities about the receiver or referent of method or associated function calls. These situations may include:
+经常出现的一些情况会导致方法或关联函数调用的接收者或被引用者的歧义。这些情况可能包括：
 
-* Multiple in-scope traits define methods with the same name for the same types
-* Auto-`deref` is undesirable; for example, distinguishing between methods on a smart pointer itself and the pointer's referent
-* Methods which take no arguments, like [`default()`], and return properties of a type, like [`size_of()`]
+* 多个作用域内的 trait 为相同类型定义了同名方法
+* 不希望自动 `deref`；例如，区分智能指针本身的方法和指针所指对象的方法
+* 不接受参数的方法，如 [`default()`]，以及返回类型属性的方法，如 [`size_of()`]
 
 r[expr.call.desugar.explicit-path]
-To resolve the ambiguity, the programmer may refer to their desired method or function using more specific paths, types, or traits.
+为了解决歧义，程序员可以使用更具体的路径、类型或 trait 来引用所需的方法或函数。
 
-For example,
+例如：
 
 ```rust
 trait Pretty {
@@ -82,22 +82,22 @@ fn main() {
     let f = Foo;
     let b = Bar;
 
-    // we can do this because we only have one item called `print` for `Foo`s
+    // 我们可以这样做，因为对 `Foo` 只有一个名为 `print` 的项
     f.print();
-    // more explicit, and, in the case of `Foo`, not necessary
+    // 更显式，并且在 `Foo` 的情况下不必要
     Foo::print(&f);
-    // if you're not into the whole brevity thing
+    // 如果你不热衷于简洁性
     <Foo as Pretty>::print(&f);
 
-    // b.print(); // Error: multiple 'print' found
-    // Bar::print(&b); // Still an error: multiple `print` found
+    // b.print(); // 错误：找到多个 'print'
+    // Bar::print(&b); // 仍然是错误：找到多个 `print`
 
-    // necessary because of in-scope items defining `print`
+    // 由于作用域内的项定义了 `print`，这是必要的
     <Bar as Pretty>::print(&b);
 }
 ```
 
-Refer to [RFC 132] for further details and motivations.
+有关更多细节和动机，请参阅 [RFC 132]。
 
 [RFC 132]: https://github.com/rust-lang/rfcs/blob/master/text/0132-ufcs.md
 [`default()`]: std::default::Default::default

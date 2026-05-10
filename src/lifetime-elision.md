@@ -1,35 +1,35 @@
 r[lifetime-elision]
-# Lifetime elision
+# 生命周期省略
 
-Rust has rules that allow lifetimes to be elided in various places where the compiler can infer a sensible default choice.
+Rust 有规则允许在编译器可以推断出合理的默认选择的各种位置省略生命周期。
 
 r[lifetime-elision.function]
-## Lifetime elision in functions
+## 函数中的生命周期省略
 
 r[lifetime-elision.function.intro]
-In order to make common patterns more ergonomic, lifetime arguments can be *elided* in [function item], [function pointer], and [closure trait] signatures. The following rules are used to infer lifetime parameters for elided lifetimes.
+为了使常见模式更加符合人体工程学，生命周期参数可以在[函数项][function item]、[函数指针][function pointer]和[闭包 trait][closure trait] 签名中*省略*。以下规则用于推断省略的生命周期的生命周期参数。
 
 r[lifetime-elision.function.lifetimes-not-inferred]
-It is an error to elide lifetime parameters that cannot be inferred.
+省略无法推断的生命周期参数是错误的。
 
 r[lifetime-elision.function.explicit-placeholder]
-The placeholder lifetime, `'_`, can also be used to have a lifetime inferred in the same way. For lifetimes in paths, using `'_` is preferred.
+占位生命周期 `'_` 也可以用来以相同的方式推断生命周期。对于路径中的生命周期，首选使用 `'_`。
 
 r[lifetime-elision.function.only-functions]
-Trait object lifetimes follow different rules discussed [below](#default-trait-object-lifetimes).
+Trait 对象的生命周期遵循[下面](#默认-trait-对象生命周期)讨论的不同规则。
 
 r[lifetime-elision.function.implicit-lifetime-parameters]
-* Each elided lifetime in the parameters becomes a distinct lifetime parameter.
+* 参数中的每个省略的生命周期成为一个独立的生命周期参数。
 
 r[lifetime-elision.function.output-lifetime]
-* If there is exactly one lifetime used in the parameters (elided or not), that lifetime is assigned to *all* elided output lifetimes.
+* 如果参数中恰好使用了一个生命周期（省略或未省略），则该生命周期被分配给*所有*省略的输出生命周期。
 
 r[lifetime-elision.function.receiver-lifetime]
-In method signatures there is another rule
+在方法签名中还有另一条规则
 
-* If the receiver has type `&Self`  or `&mut Self`, then the lifetime of that reference to `Self` is assigned to all elided output lifetime parameters.
+* 如果接收者（receiver）的类型是 `&Self` 或 `&mut Self`，则对 `Self` 的该引用的生命周期被分配给所有省略的输出生命周期参数。
 
-Examples:
+示例：
 
 ```rust
 # trait T {}
@@ -38,106 +38,105 @@ Examples:
 # struct Command;
 #
 # trait Example {
-fn print1(s: &str);                                   // elided
-fn print2(s: &'_ str);                                // also elided
-fn print3<'a>(s: &'a str);                            // expanded
+fn print1(s: &str);                                   // 省略
+fn print2(s: &'_ str);                                // 同样省略
+fn print3<'a>(s: &'a str);                            // 展开
 
-fn debug1(lvl: usize, s: &str);                       // elided
-fn debug2<'a>(lvl: usize, s: &'a str);                // expanded
+fn debug1(lvl: usize, s: &str);                       // 省略
+fn debug2<'a>(lvl: usize, s: &'a str);                // 展开
 
-fn substr1(s: &str, until: usize) -> &str;            // elided
-fn substr2<'a>(s: &'a str, until: usize) -> &'a str;  // expanded
+fn substr1(s: &str, until: usize) -> &str;            // 省略
+fn substr2<'a>(s: &'a str, until: usize) -> &'a str;  // 展开
 
-fn get_mut1(&mut self) -> &mut dyn T;                 // elided
-fn get_mut2<'a>(&'a mut self) -> &'a mut dyn T;       // expanded
+fn get_mut1(&mut self) -> &mut dyn T;                 // 省略
+fn get_mut2<'a>(&'a mut self) -> &'a mut dyn T;       // 展开
 
-fn args1<T: ToCStr>(&mut self, args: &[T]) -> &mut Command;                  // elided
-fn args2<'a, 'b, T: ToCStr>(&'a mut self, args: &'b [T]) -> &'a mut Command; // expanded
+fn args1<T: ToCStr>(&mut self, args: &[T]) -> &mut Command;                  // 省略
+fn args2<'a, 'b, T: ToCStr>(&'a mut self, args: &'b [T]) -> &'a mut Command; // 展开
 
-fn other_args1<'a>(arg: &str) -> &'a str;             // elided
-fn other_args2<'a, 'b>(arg: &'b str) -> &'a str;      // expanded
+fn other_args1<'a>(arg: &str) -> &'a str;             // 省略
+fn other_args2<'a, 'b>(arg: &'b str) -> &'a str;      // 展开
 
-fn new1(buf: &mut [u8]) -> Thing<'_>;                 // elided - preferred
-fn new2(buf: &mut [u8]) -> Thing;                     // elided
-fn new3<'a>(buf: &'a mut [u8]) -> Thing<'a>;          // expanded
+fn new1(buf: &mut [u8]) -> Thing<'_>;                 // 省略 - 首选
+fn new2(buf: &mut [u8]) -> Thing;                     // 省略
+fn new3<'a>(buf: &'a mut [u8]) -> Thing<'a>;          // 展开
 # }
 
-type FunPtr1 = fn(&str) -> &str;                      // elided
-type FunPtr2 = for<'a> fn(&'a str) -> &'a str;        // expanded
+type FunPtr1 = fn(&str) -> &str;                      // 省略
+type FunPtr2 = for<'a> fn(&'a str) -> &'a str;        // 展开
 
-type FunTrait1 = dyn Fn(&str) -> &str;                // elided
-type FunTrait2 = dyn for<'a> Fn(&'a str) -> &'a str;  // expanded
+type FunTrait1 = dyn Fn(&str) -> &str;                // 省略
+type FunTrait2 = dyn for<'a> Fn(&'a str) -> &'a str;  // 展开
 ```
 
 ```rust,compile_fail
-// The following examples show situations where it is not allowed to elide the
-// lifetime parameter.
+// 以下示例展示了不允许省略生命周期参数的情况。
 
 # trait Example {
-// Cannot infer, because there are no parameters to infer from.
-fn get_str() -> &str;                                 // ILLEGAL
+// 无法推断，因为没有参数可以从中推断。
+fn get_str() -> &str;                                 // 非法
 
-// Cannot infer, ambiguous if it is borrowed from the first or second parameter.
-fn frob(s: &str, t: &str) -> &str;                    // ILLEGAL
+// 无法推断，有歧义：是从第一个参数还是第二个参数借用的。
+fn frob(s: &str, t: &str) -> &str;                    // 非法
 # }
 ```
 
 r[lifetime-elision.trait-object]
-## Default trait object lifetimes
+## 默认 trait 对象生命周期
 
 r[lifetime-elision.trait-object.intro]
-The assumed lifetime of references held by a [trait object] is called its _default object lifetime bound_. These were defined in [RFC 599] and amended in [RFC 1156].
+[trait 对象][trait object]持有的引用的假定生命周期称为其*默认对象生命周期约束*。这些定义在 [RFC 599] 中，并在 [RFC 1156] 中修订。
 
 r[lifetime-elision.trait-object.explicit-bound]
-These default object lifetime bounds are used instead of the lifetime parameter elision rules defined above when the lifetime bound is omitted entirely.
+当生命周期约束完全省略时，使用这些默认对象生命周期约束而不是上面定义的生命周期参数省略规则。
 
 r[lifetime-elision.trait-object.explicit-placeholder]
-If `'_` is used as the lifetime bound then the bound follows the usual elision rules.
+如果使用 `'_` 作为生命周期约束，则该约束遵循通常的省略规则。
 
 r[lifetime-elision.trait-object.containing-type]
-If the trait object is used as a type argument of a generic type then the containing type is first used to try to infer a bound.
+如果 trait 对象用作泛型类型的类型参数，则首先使用包含类型尝试推断约束。
 
 r[lifetime-elision.trait-object.containing-type-unique]
-* If there is a unique bound from the containing type then that is the default.
+* 如果从包含类型有唯一的约束，则使用该约束作为默认值。
 
 r[lifetime-elision.trait-object.containing-type-explicit]
-* If there is more than one bound from the containing type then an explicit bound must be specified.
+* 如果从包含类型有多个约束，则必须指定显式约束。
 
 r[lifetime-elision.trait-object.trait-bounds]
-If neither of those rules apply, then the bounds on the trait are used:
+如果上述规则都不适用，则使用 trait 上的约束：
 
 r[lifetime-elision.trait-object.trait-unique]
-* If the trait is defined with a single lifetime _bound_ then that bound is used.
+* 如果 trait 定义了单个生命周期*约束*，则使用该约束。
 
 r[lifetime-elision.trait-object.static-lifetime]
-* If `'static` is used for any lifetime bound then `'static` is used.
+* 如果任何生命周期约束使用了 `'static`，则使用 `'static`。
 
 r[lifetime-elision.trait-object.default]
-* If the trait has no lifetime bounds, then the lifetime is inferred in expressions and is `'static` outside of expressions.
+* 如果 trait 没有生命周期约束，则在表达式中推断生命周期，在表达式外部为 `'static`。
 
 ```rust
-// For the following trait...
+// 对于以下 trait……
 trait Foo { }
 
-// These two are the same because Box<T> has no lifetime bound on T
+// 这两个是相同的，因为 Box<T> 没有对 T 的生命周期约束
 type T1 = Box<dyn Foo>;
 type T2 = Box<dyn Foo + 'static>;
 
-// ...and so are these:
+// ……这些也是相同的：
 impl dyn Foo {}
 impl dyn Foo + 'static {}
 
-// ...so are these, because &'a T requires T: 'a
+// ……这些也是相同的，因为 &'a T 要求 T: 'a
 type T3<'a> = &'a dyn Foo;
 type T4<'a> = &'a (dyn Foo + 'a);
 
-// std::cell::Ref<'a, T> also requires T: 'a, so these are the same
+// std::cell::Ref<'a, T> 也要求 T: 'a，因此这些是相同的
 type T5<'a> = std::cell::Ref<'a, dyn Foo>;
 type T6<'a> = std::cell::Ref<'a, dyn Foo + 'a>;
 ```
 
 ```rust,compile_fail
-// This is an example of an error.
+// 这是一个错误示例。
 # trait Foo { }
 struct TwoBounds<'a, 'b, T: ?Sized + 'a + 'b> {
     f1: &'a i32,
@@ -146,30 +145,30 @@ struct TwoBounds<'a, 'b, T: ?Sized + 'a + 'b> {
 }
 type T7<'a, 'b> = TwoBounds<'a, 'b, dyn Foo>;
 //                                  ^^^^^^^
-// Error: the lifetime bound for this object type cannot be deduced from context
+// 错误：无法从上下文推断此对象类型的生命周期约束
 ```
 
 r[lifetime-elision.trait-object.innermost-type]
-Note that the innermost object sets the bound, so `&'a Box<dyn Foo>` is still `&'a Box<dyn Foo + 'static>`.
+请注意，最内层的对象设置约束，因此 `&'a Box<dyn Foo>` 仍然是 `&'a Box<dyn Foo + 'static>`。
 
 ```rust
-// For the following trait...
+// 对于以下 trait……
 trait Bar<'a>: 'a { }
 
-// ...these two are the same:
+// ……这两个是相同的：
 type T1<'a> = Box<dyn Bar<'a>>;
 type T2<'a> = Box<dyn Bar<'a> + 'a>;
 
-// ...and so are these:
+// ……这些也是相同的：
 impl<'a> dyn Bar<'a> {}
 impl<'a> dyn Bar<'a> + 'a {}
 ```
 
 r[lifetime-elision.const-static]
-## `const` and `static` elision
+## `const` 和 `static` 省略
 
 r[lifetime-elision.const-static.implicit-static]
-Both [constant] and [static] declarations of reference types have *implicit* `'static` lifetimes unless an explicit lifetime is specified. As such, the constant declarations involving `'static` above may be written without the lifetimes.
+引用类型的[常量][constant]和[静态][static]声明都具有*隐式*的 `'static` 生命周期，除非指定了显式生命周期。因此，上面涉及 `'static` 的常量声明可以在没有生命周期的情况下编写。
 
 ```rust
 // STRING: &'static str
@@ -188,17 +187,17 @@ const BITS_N_STRINGS: BitsNStrings<'_> = BitsNStrings {
 ```
 
 r[lifetime-elision.const-static.fn-references]
-Note that if the `static` or `const` items include function or closure references, which themselves include references, the compiler will first try the standard elision rules. If it is unable to resolve the lifetimes by its usual rules, then it will error. By way of example:
+请注意，如果 `static` 或 `const` 项包含函数或闭包引用，而这些引用本身包含引用，编译器将首先尝试标准省略规则。如果无法通过其通常规则解析生命周期，则会报错。举例说明：
 
 ```rust
 # struct Foo;
 # struct Bar;
 # struct Baz;
 # fn somefunc(a: &Foo, b: &Bar, c: &Baz) -> usize {42}
-// Resolved as `for<'a> fn(&'a str) -> &'a str`.
+// 解析为 `for<'a> fn(&'a str) -> &'a str`。
 const RESOLVED_SINGLE: fn(&str) -> &str = |x| x;
 
-// Resolved as `for<'a, 'b, 'c> Fn(&'a Foo, &'b Bar, &'c Baz) -> usize`.
+// 解析为 `for<'a, 'b, 'c> Fn(&'a Foo, &'b Bar, &'c Baz) -> usize`。
 const RESOLVED_MULTIPLE: &dyn Fn(&Foo, &Bar, &Baz) -> usize = &somefunc;
 ```
 
@@ -207,12 +206,12 @@ const RESOLVED_MULTIPLE: &dyn Fn(&Foo, &Bar, &Baz) -> usize = &somefunc;
 # struct Bar;
 # struct Baz;
 # fn somefunc<'a,'b>(a: &'a Foo, b: &'b Bar) -> &'a Baz {unimplemented!()}
-// There is insufficient information to bound the return reference lifetime
-// relative to the argument lifetimes, so this is an error.
+// 没有足够的信息来约束返回引用生命周期相对于参数生命周期，
+// 因此这是一个错误。
 const RESOLVED_STATIC: &dyn Fn(&Foo, &Bar) -> &Baz = &somefunc;
 //                                            ^
-// this function's return type contains a borrowed value, but the signature
-// does not say whether it is borrowed from argument 1 or argument 2
+// 此函数的返回类型包含一个借用的值，但签名未说明它
+// 是从参数 1 还是参数 2 借用的
 ```
 
 [closure trait]: types/closure.md

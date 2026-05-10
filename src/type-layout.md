@@ -1,35 +1,35 @@
 r[layout]
-# Type layout
+# 类型布局
 
 r[layout.intro]
-The layout of a type is its size, alignment, and the relative offsets of its fields. For enums, how the discriminant is laid out and interpreted is also part of type layout.
+类型的布局是指其大小、对齐方式以及其字段的相对偏移量。对于枚举，判别式的布局和解读方式也是类型布局的一部分。
 
 r[layout.guarantees]
-Type layout can be changed with each compilation. Instead of trying to document exactly what is done, we only document what is guaranteed today.
+类型布局可能随每次编译而改变。与其尝试详尽记录实现细节，我们只记录当前保证的部分。
 
-Note that even types with the same layout can still differ in how they are passed across function boundaries. For function call ABI compatibility of types, see [here][fn-abi-compatibility].
+注意，即使是具有相同布局的类型，其在跨函数边界的传递方式仍可能不同。关于类型的函数调用 ABI 兼容性，请参见[此处][fn-abi-compatibility]。
 
 r[layout.properties]
-## Size and alignment
+## 大小与对齐
 
-All values have an alignment and size.
+所有值都具有对齐方式和大小。
 
 r[layout.properties.align]
-The *alignment* of a value specifies what addresses are valid to store the value at. A value of alignment `n` must only be stored at an address that is a multiple of n. For example, a value with an alignment of 2 must be stored at an even address, while a value with an alignment of 1 can be stored at any address. Alignment is measured in bytes, and must be at least 1, and always a power of 2. The alignment of a value can be checked with the [`align_of_val`] function.
+值的*对齐方式*指定了哪些地址可以存储该值。对齐方式为 `n` 的值只能存储在地址为 n 的倍数的位置。例如，对齐方式为 2 的值必须存储在偶数地址，而对齐方式为 1 的值可以存储在任何地址。对齐方式以字节为单位，必须至少为 1，并且始终是 2 的幂。可以使用 [`align_of_val`] 函数检查值的对齐方式。
 
 r[layout.properties.size]
-The *size* of a value is the offset in bytes between successive elements in an array with that item type including alignment padding. The size of a value is always a multiple of its alignment. Note that some types are [zero-sized]; 0 is considered a multiple of any alignment (for example, on some platforms, the type `[u16; 0]` has size 0 and alignment 2). The size of a value can be checked with the [`size_of_val`] function.
+值的*大小*是包含该项类型的数组中连续元素之间的偏移量（以字节为单位，包括对齐填充）。值的大小始终是其对齐方式的倍数。注意，有些类型是[零大小][zero-sized]的；0 被认为是任何对齐方式的倍数（例如，在某些平台上，类型 `[u16; 0]` 的大小为 0，对齐方式为 2）。可以使用 [`size_of_val`] 函数检查值的大小。
 
 r[layout.properties.sized]
-Types where all values have the same size and alignment, and both are known at compile time, implement the [`Sized`] trait and can be checked with the [`size_of`] and [`align_of`] functions. Types that are not [`Sized`] are known as [dynamically sized types]. Since all values of a `Sized` type share the same size and alignment, we refer to those shared values as the size of the type and the alignment of the type respectively.
+所有值均具有相同大小和对齐方式，并且两者在编译时均已知的类型，实现了 [`Sized`] trait，并可以通过 [`size_of`] 和 [`align_of`] 函数进行检查。非 [`Sized`] 的类型称为[动态大小类型][dynamically sized types]。由于 `Sized` 类型的所有值共享相同的大小和对齐方式，我们分别将这些共享值称为该类型的大小和对齐方式。
 
 r[layout.primitive]
-## Primitive data layout
+## 原始数据类型布局
 
 r[layout.primitive.size]
-The size of most primitives is given in this table.
+大多数原始类型的大小如下表所示。
 
-| Type              | `size_of::<Type>()`|
+| 类型              | `size_of::<Type>()`|
 |--                 |--                  |
 | `bool`            | 1                  |
 | `u8` / `i8`       | 1                  |
@@ -37,94 +37,94 @@ The size of most primitives is given in this table.
 | `u32` / `i32`     | 4                  |
 | `u64` / `i64`     | 8                  |
 | `u128` / `i128`   | 16                 |
-| `usize` / `isize` | See below          |
+| `usize` / `isize` | 见下文             |
 | `f32`             | 4                  |
 | `f64`             | 8                  |
 | `char`            | 4                  |
 
 r[layout.primitive.size-minimum]
-`usize` and `isize` have a size big enough to contain every address on the target platform. For example, on a 32 bit target, this is 4 bytes, and on a 64 bit target, this is 8 bytes.
+`usize` 和 `isize` 的大小足以容纳目标平台上的每个地址。例如，在 32 位目标上为 4 字节，在 64 位目标上为 8 字节。
 
 r[layout.primitive.size-align]
-`usize` and `isize` have the same size and alignment.
+`usize` 和 `isize` 具有相同的大小和对齐方式。
 
 r[layout.primitive.platform-specific-alignment]
-The alignment of primitives is platform-specific. In most cases, their alignment is equal to their size, but it may be less. In particular, `i128` and `u128` are often aligned to 4 or 8 bytes even though their size is 16, and on many 32-bit platforms, `i64`, `u64`, and `f64` are only aligned to 4 bytes, not 8.
+原始类型的对齐方式是平台相关的。在大多数情况下，它们的对齐方式等于其大小，但也可能更小。特别地，`i128` 和 `u128` 通常对齐到 4 或 8 字节，尽管它们的大小为 16；在许多 32 位平台上，`i64`、`u64` 和 `f64` 仅对齐到 4 字节，而不是 8。
 
 r[layout.primitive.integer-alignment]
-Alignment is guaranteed to be the same for fixed-width signed and unsigned integer variants of the same indicated size --- that is, for a given size `N`, `align_of::<uN>() == align_of::<iN>()`.
+保证相同指示大小的定宽有符号和无符号整数变体的对齐方式相同——即，对于给定大小 `N`，`align_of::<uN>() == align_of::<iN>()`。
 
 r[layout.pointer]
-## Pointers and references layout
+## 指针与引用布局
 
 r[layout.pointer.intro]
-Pointers and references have the same layout. Mutability of the pointer or reference does not change the layout.
+指针和引用具有相同的布局。指针或引用的可变性不会改变布局。
 
 r[layout.pointer.thin]
-Pointers to sized types have the same size and alignment as `usize`.
+指向固定大小类型的指针具有与 `usize` 相同的大小和对齐方式。
 
 r[layout.pointer.unsized]
-Pointers to unsized types are sized. The size and alignment of a pointer to an unsized type are each guaranteed to be greater than or equal to those of a pointer to a sized type.
+指向非固定大小类型的指针是固定大小的。指向非固定大小类型的指针的大小和对齐方式保证大于或等于指向固定大小类型的指针的大小和对齐方式。
 
 > [!NOTE]
-> Though you should not rely on this, all pointers to <abbr title="Dynamically Sized Types">DSTs</abbr> are currently twice the size of the size of `usize` and have the same alignment.
+> 尽管你不应依赖于此，但目前所有指向 <abbr title="动态大小类型">DST</abbr> 的指针都是 `usize` 大小的两倍，并具有相同的对齐方式。
 
 r[layout.array]
-## Array layout
+## 数组布局
 
-An array of `[T; N]` has a size of `size_of::<T>() * N` and the same alignment of `T`. Arrays are laid out so that the zero-based `nth` element of the array is offset from the start of the array by `n * size_of::<T>()` bytes.
+`[T; N]` 数组的大小为 `size_of::<T>() * N`，与 `T` 具有相同的对齐方式。数组的布局使得其从零开始的第 `n` 个元素从数组开头偏移 `n * size_of::<T>()` 字节。
 
 r[layout.slice]
-## Slice layout
+## 切片布局
 
-Slices have the same layout as the section of the array they slice.
+切片与其所切片的数组段具有相同的布局。
 
 > [!NOTE]
-> This is about the raw `[T]` type, not pointers (`&[T]`, `Box<[T]>`, etc.) to slices.
+> 这里说的是原生 `[T]` 类型，而非指向切片的指针（`&[T]`、`Box<[T]>` 等）。
 
 r[layout.str]
-## `str` Layout
+## `str` 布局
 
-String slices are a UTF-8 representation of characters that have the same layout as slices of type `[u8]`. A reference `&str` has the same layout as a reference `&[u8]`.
+字符串切片是字符的 UTF-8 表示形式，与类型 `[u8]` 的切片具有相同的布局。引用 `&str` 与引用 `&[u8]` 具有相同的布局。
 
 r[layout.tuple]
-## Tuple layout
+## 元组布局
 
 r[layout.tuple.def]
-Tuples are laid out according to the [`Rust` representation][`Rust`].
+元组按照 [`Rust` 表示法]进行布局。
 
 r[layout.tuple.unit]
-The exception to this is the unit tuple (`()`), which is guaranteed as a [zero-sized type] to have a size of 0 and an alignment of 1.
+例外是单元元组（`()`），它被保证作为[零大小类型][zero-sized type]，大小为 0，对齐方式为 1。
 
 r[layout.trait-object]
-## Trait object layout
+## Trait 对象布局
 
-Trait objects have the same layout as the value the trait object is of.
+Trait 对象与 trait 对象所指的值具有相同的布局。
 
 > [!NOTE]
-> This is about the raw trait object types, not pointers (`&dyn Trait`, `Box<dyn Trait>`, etc.) to trait objects.
+> 这里说的是原生 trait 对象类型，而非指向 trait 对象的指针（`&dyn Trait`、`Box<dyn Trait>` 等）。
 
 r[layout.closure]
-## Closure layout
+## 闭包布局
 
-Closures have no layout guarantees.
+闭包没有布局保证。
 
 r[layout.repr]
-## Representations
+## 表示法
 
 r[layout.repr.intro]
-All user-defined composite types (`struct`s, `enum`s, and `union`s) have a *representation* that specifies what the layout is for the type.
+所有用户定义的复合类型（`struct`、`enum` 和 `union`）都有一个*表示法*，该表示法指定了该类型的布局。
 
 r[layout.repr.kinds]
-The possible representations for a type are:
+类型的可能表示法有：
 
-- [`Rust`] (default)
+- [`Rust`]（默认）
 - [`C`]
-- The [primitive representations]
+- [原始表示法][primitive representations]
 - [`transparent`]
 
 r[layout.repr.attribute]
-The representation of a type can be changed by applying the `repr` attribute to it. The following example shows a struct with a `C` representation.
+可以通过将 `repr` 属性应用于类型来更改其表示法。以下示例展示了一个带有 `C` 表示法的结构体。
 
 ```rust
 #[repr(C)]
@@ -136,10 +136,10 @@ struct ThreeInts {
 ```
 
 r[layout.repr.align-packed]
-The alignment may be raised or lowered with the `align` and `packed` modifiers respectively. They alter the representation specified in the attribute. If no representation is specified, the default one is altered.
+可以通过 `align` 和 `packed` 修饰符分别提高或降低对齐方式。它们会修改属性中指定的表示法。如果未指定表示法，则修改默认表示法。
 
 ```rust
-// Default representation, alignment lowered to 2.
+// 默认表示法，对齐方式降低到 2。
 #[repr(packed(2))]
 struct PackedStruct {
     first: i16,
@@ -147,7 +147,7 @@ struct PackedStruct {
     third: i32
 }
 
-// C representation, alignment raised to 8
+// C 表示法，对齐方式提高到 8
 #[repr(C, align(8))]
 struct AlignedStruct {
     first: i16,
@@ -157,59 +157,59 @@ struct AlignedStruct {
 ```
 
 > [!NOTE]
-> As a consequence of the representation being an attribute on the item, the representation does not depend on generic parameters. Any two types with the same name have the same representation. For example, `Foo<Bar>` and `Foo<Baz>` both have the same representation.
+> 作为项上的属性，表示法不依赖于泛型参数。任何两个同名的类型具有相同的表示法。例如，`Foo<Bar>` 和 `Foo<Baz>` 都具有相同的表示法。
 
 r[layout.repr.inter-field]
-The representation of a type can change the padding between fields, but does not change the layout of the fields themselves. For example, a struct with a `C` representation that contains a struct `Inner` with the `Rust` representation will not change the layout of `Inner`.
+类型的表示法可以更改字段之间的填充，但不会更改字段本身的布局。例如，一个具有 `C` 表示法的结构体包含了一个具有 `Rust` 表示法的结构体 `Inner`，这不会改变 `Inner` 的布局。
 
 <a id="the-default-representation"></a>
 r[layout.repr.rust]
-### The `Rust` representation
+### `Rust` 表示法
 
 r[layout.repr.rust.intro]
-The `Rust` representation is the default representation for nominal types without a `repr` attribute. Using this representation explicitly through a `repr` attribute is guaranteed to be the same as omitting the attribute entirely.
+`Rust` 表示法是未标注 `repr` 属性的名义类型的默认表示法。通过 `repr` 属性显式使用此表示法，保证与完全省略该属性时相同。
 
 r[layout.repr.rust.layout]
-The only data layout guarantees made by this representation are those required for soundness. These are:
+此表示法对数据布局的唯一保证是那些为语言健全性所需的保证。它们是：
 
- 1. The offset of a field is divisible by that field's alignment.
- 2. The alignment of the type is at least the maximum alignment of its fields.
+ 1. 字段的偏移量可以被该字段的对齐方式整除。
+ 2. 类型的对齐方式至少是其字段的最大对齐方式。
 
 r[layout.repr.rust.layout.struct]
-For [structs], it is further guaranteed that the fields do not overlap. That is, the fields can be ordered such that the offset plus the size of any field is less than or equal to the offset of the next field in the ordering. The ordering does not have to be the same as the order in which the fields are specified in the declaration of the type.
+对于 [structs]，进一步保证字段不会重叠。也就是说，字段可以排序，使得任何字段的偏移量加上其大小小于等于排序中下一个字段的偏移量。该排序不必须与类型声明中字段的指定顺序相同。
 
-Be aware that this guarantee does not imply that the fields have distinct addresses: [zero-sized types] may have the same address as other fields in the same struct.
+请注意，此保证并不意味着字段具有不同的地址：[零大小类型][zero-sized types]可能与同一结构体中的其他字段具有相同的地址。
 
 r[layout.repr.rust.unspecified]
-There are no other guarantees of data layout made by this representation.
+此表示法对数据布局没有其他保证。
 
 r[layout.repr.c]
-### The `C` representation
+### `C` 表示法
 
 r[layout.repr.c.intro]
-The `C` representation is designed for dual purposes. One purpose is for creating types that are interoperable with the C Language. The second purpose is to create types that you can soundly perform operations on that rely on data layout such as reinterpreting values as a different type.
+`C` 表示法设计用于双重目的。一个目的是创建与 C 语言可互操作的类型。第二个目的是创建可以安全地执行依赖于数据布局的操作的类型，例如将值重新解释为不同的类型。
 
-Because of this dual purpose, it is possible to create types that are not useful for interfacing with the C programming language.
+由于这种双重目的，可以创建对 C 编程语言接口无用的类型。
 
 r[layout.repr.c.constraint]
-This representation can be applied to structs, unions, and enums. The exception is [zero-variant enums] for which the `C` representation is an error.
+此表示法可以应用于结构体、联合体和枚举。[零变体枚举][zero-variant enums]为例外，对其使用 `C` 表示法会报错。
 
 r[layout.repr.c.struct]
-#### `#[repr(C)]` Structs
+#### `#[repr(C)]` 结构体
 
 r[layout.repr.c.struct.align]
-The alignment of the struct is the alignment of the most-aligned field in it.
+结构体的对齐方式是其内部对齐方式最大的字段的对齐方式。
 
 r[layout.repr.c.struct.size-field-offset]
-The size and offset of fields is determined by the following algorithm.
+字段的大小和偏移量由以下算法确定。
 
-Start with a current offset of 0 bytes.
+从当前偏移量 0 字节开始。
 
-For each field in declaration order in the struct, first determine the size and alignment of the field. If the current offset is not a multiple of the field's alignment, then add padding bytes to the current offset until it is a multiple of the field's alignment. The offset for the field is what the current offset is now. Then increase the current offset by the size of the field.
+对于结构体中按声明顺序的每个字段，首先确定该字段的大小和对齐方式。如果当前偏移量不是字段对齐方式的倍数，则向当前偏移量添加填充字节，直到其为字段对齐方式的倍数。字段的偏移量就是当前的偏移量数值。然后将当前偏移量增加该字段的大小。
 
-Finally, the size of the struct is the current offset rounded up to the nearest multiple of the struct's alignment.
+最后，结构体的大小为当前偏移量向上取整到结构体对齐方式的最近倍数。
 
-Here is this algorithm described in pseudocode.
+以下是此算法的伪代码描述。
 
 <!-- ignore: pseudocode -->
 ```rust,ignore
@@ -245,19 +245,19 @@ struct.size = current_offset + padding_needed_for(current_offset, struct.alignme
 ```
 
 > [!WARNING]
-> This pseudocode uses a naive algorithm that ignores overflow issues for the sake of clarity. To perform memory layout computations in actual code, use [`Layout`].
+> 此伪代码为清晰起见使用了忽略溢出问题的朴素算法。要在实际代码中执行内存布局计算，请使用 [`Layout`]。
 
 > [!NOTE]
-> This algorithm can produce [zero-sized] structs. In C, an empty struct declaration like `struct Foo { }` is illegal. However, both gcc and clang support options to enable such structs, and assign them size zero. C++, in contrast, gives empty structs a size of 1, unless they are inherited from or they are fields that have the `[[no_unique_address]]` attribute, in which case they do not increase the overall size of the struct.
+> 此算法可以产生[零大小][zero-sized]结构体。在 C 中，像 `struct Foo { }` 这样的空结构体声明是非法的。然而，gcc 和 clang 都支持启用此类结构体的选项，并为其分配大小零。相比之下，C++ 为空结构体赋予大小 1，除非它们来自继承或带有 `[[no_unique_address]]` 属性的字段，在这种情况下它们不会增加结构体的总大小。
 
 r[layout.repr.c.union]
-#### `#[repr(C)]` Unions
+#### `#[repr(C)]` 联合体
 
 r[layout.repr.c.union.intro]
-A union declared with `#[repr(C)]` will have the same size and alignment as an equivalent C union declaration in the C language for the target platform.
+用 `#[repr(C)]` 声明的联合体将具有与目标平台的 C 语言中等价 C 联合体声明相同的大小和对齐方式。
 
 r[layout.repr.c.union.size-align]
-The union will have a size of the maximum size of all of its fields rounded to its alignment, and an alignment of the maximum alignment of all of its fields. These maximums may come from different fields. Each field lives at byte offset 0 from the beginning of the union.
+联合体的大小为其所有字段的最大大小向上取整到其对齐方式，对齐方式为其所有字段的最大对齐方式。这些最大值可能来自不同的字段。每个字段都位于从联合体开头偏移 0 字节的位置。
 
 ```rust
 #[repr(C)]
@@ -266,8 +266,8 @@ union Union {
     f2: [u8; 4],
 }
 
-assert_eq!(std::mem::size_of::<Union>(), 4);  // From f2
-assert_eq!(std::mem::align_of::<Union>(), 2); // From f1
+assert_eq!(std::mem::size_of::<Union>(), 4);  // 来自 f2
+assert_eq!(std::mem::align_of::<Union>(), 2); // 来自 f1
 
 assert_eq!(std::mem::offset_of!(Union, f1), 0);
 assert_eq!(std::mem::offset_of!(Union, f2), 0);
@@ -278,43 +278,42 @@ union SizeRoundedUp {
    b: [u16; 3],
 }
 
-assert_eq!(std::mem::size_of::<SizeRoundedUp>(), 8);  // Size of 6 from b,
-                                                      // rounded up to 8 from
-                                                      // alignment of a.
-assert_eq!(std::mem::align_of::<SizeRoundedUp>(), 4); // From a
+assert_eq!(std::mem::size_of::<SizeRoundedUp>(), 8);  // 大小为 6，b 提供，
+                                                       // 向上取整为 8，来自 a 的对齐方式。
+assert_eq!(std::mem::align_of::<SizeRoundedUp>(), 4); // 来自 a
 
 assert_eq!(std::mem::offset_of!(SizeRoundedUp, a), 0);
 assert_eq!(std::mem::offset_of!(SizeRoundedUp, b), 0);
 ```
 
 r[layout.repr.c.enum]
-#### `#[repr(C)]` Field-less Enums
+#### `#[repr(C)]` 无字段枚举
 
-For [field-less enums], the `C` representation has the size and alignment of the default `enum` size and alignment for the target platform's C ABI.
+对于[无字段枚举][field-less enums]，`C` 表示法具有目标平台的 C ABI 下默认 `enum` 大小和对齐方式的大小和对齐方式。
 
 > [!NOTE]
-> The enum representation in C is implementation defined, so this is really a "best guess". In particular, this may be incorrect when the C code of interest is compiled with certain flags.
+> C 中的枚举表示法是实现定义的，因此这实际上是一个"最佳猜测"。特别是，当感兴趣的 C 代码使用某些标志编译时，这可能是不正确的。
 
 > [!WARNING]
-> There are crucial differences between an `enum` in the C language and Rust's [field-less enums] with this representation. An `enum` in C is mostly a `typedef` plus some named constants; in other words, an object of an `enum` type can hold any integer value. For example, this is often used for bitflags in `C`. In contrast, Rust’s [field-less enums] can only legally hold the discriminant values, everything else is [undefined behavior]. Therefore, using a field-less enum in FFI to model a C `enum` is often wrong.
+> C 语言中的 `enum` 与具有此表示法的 Rust [无字段枚举][field-less enums]之间存在关键差异。C 中的 `enum` 主要是一个 `typedef` 加上一些命名常量；换句话说，`enum` 类型的对象可以容纳任何整数值。例如，这常用于 C 中的位标志。相比之下，Rust 的[无字段枚举][field-less enums]只能合法地容纳判别值，其他任何值都是[未定义行为][undefined behavior]。因此，在 FFI 中使用无字段枚举来建模 C `enum` 通常是错误的。
 
 r[layout.repr.c.adt]
-#### `#[repr(C)]` Enums With Fields
+#### `#[repr(C)]` 带字段枚举
 
 r[layout.repr.c.adt.intro]
-The representation of a `repr(C)` enum with fields is a `repr(C)` struct with two fields, also called a "tagged union" in C:
+带有字段的 `repr(C)` 枚举的表示法是一个包含两个字段的 `repr(C)` 结构体，在 C 中也被称为"带标签联合体"：
 
 r[layout.repr.c.adt.tag]
-- a `repr(C)` version of the enum with all fields removed ("the tag")
+- 枚举的 `repr(C)` 版本，其所有字段被移除（"标签"）
 
 r[layout.repr.c.adt.fields]
-- a `repr(C)` union of `repr(C)` structs for the fields of each variant that had them ("the payload")
+- 一个 `repr(C)` 联合体，包含每个具有字段的变体的字段所对应的 `repr(C)` 结构体（"负载"）
 
 > [!NOTE]
-> Due to the representation of `repr(C)` structs and unions, if a variant has a single field there is no difference between putting that field directly in the union or wrapping it in a struct; any system which wishes to manipulate such an `enum`'s representation may therefore use whichever form is more convenient or consistent for them.
+> 由于 `repr(C)` 结构体和联合体的表示法，如果一个变体只有一个字段，将该字段直接放在联合体中或将其包装在结构体中是没有区别的；任何希望操作此类 `enum` 表示法的系统因此可以使用更方便或更一致的形式。
 
 ```rust
-// This Enum has the same representation as ...
+// 此枚举与...具有相同的表示法
 #[repr(C)]
 enum MyEnum {
     A(u32),
@@ -323,18 +322,18 @@ enum MyEnum {
     D,
  }
 
-// ... this struct.
+// ...这个结构体。
 #[repr(C)]
 struct MyEnumRepr {
     tag: MyEnumDiscriminant,
     payload: MyEnumFields,
 }
 
-// This is the discriminant enum.
+// 这是判别式枚举。
 #[repr(C)]
 enum MyEnumDiscriminant { A, B, C, D }
 
-// This is the variant union.
+// 这是变体联合体。
 #[repr(C)]
 union MyEnumFields {
     A: MyAFields,
@@ -355,37 +354,36 @@ struct MyBFields(f32, u64);
 #[derive(Copy, Clone)]
 struct MyCFields { x: u32, y: u8 }
 
-// This struct could be omitted (it is a zero-sized type), and it must be in
-// C/C++ headers.
+// 此结构体可以省略（它是一个零大小类型），且在 C/C++ 头文件中必须如此。
 #[repr(C)]
 #[derive(Copy, Clone)]
 struct MyDFields;
 ```
 
 r[layout.repr.primitive]
-### Primitive representations
+### 原始表示法
 
 r[layout.repr.primitive.intro]
-The *primitive representations* are the representations with the same names as the primitive integer types. That is: `u8`, `u16`, `u32`, `u64`, `u128`, `usize`, `i8`, `i16`, `i32`, `i64`, `i128`, and `isize`.
+*原始表示法*是与原始整数类型同名的表示法。即：`u8`、`u16`、`u32`、`u64`、`u128`、`usize`、`i8`、`i16`、`i32`、`i64`、`i128` 和 `isize`。
 
 r[layout.repr.primitive.constraint]
-Primitive representations can only be applied to enumerations and have different behavior whether the enum has fields or no fields. It is an error for [zero-variant enums] to have a primitive representation. Combining two primitive representations together is an error.
+原始表示法只能应用于枚举，并且根据枚举是否有字段而具有不同的行为。对[零变体枚举][zero-variant enums]使用原始表示法是错误的。将两种原始表示法组合在一起是错误的。
 
 r[layout.repr.primitive.enum]
-#### Primitive representation of field-less enums
+#### 无字段枚举的原始表示法
 
-For [field-less enums], primitive representations set the size and alignment to be the same as the primitive type of the same name. For example, a field-less enum with a `u8` representation can only have discriminants between 0 and 255 inclusive.
+对于[无字段枚举][field-less enums]，原始表示法设置大小和对齐方式与同名的原始类型相同。例如，带有 `u8` 表示法的无字段枚举只能具有 0 到 255（含）之间的判别值。
 
 r[layout.repr.primitive.adt]
-#### Primitive representation of enums with fields
+#### 带字段枚举的原始表示法
 
-The representation of a primitive representation enum is a `repr(C)` union of `repr(C)` structs for each variant with a field. The first field of each struct in the union is the primitive representation version of the enum with all fields removed ("the tag") and the remaining fields are the fields of that variant.
+原始表示法枚举的表示法是一个 `repr(C)` 联合体，包含每个具有字段变体的 `repr(C)` 结构体。联合体中每个结构体的第一个字段是带有原始表示法的枚举的（移除所有字段后的）版本（"标签"），其余字段是该变体的字段。
 
 > [!NOTE]
-> This representation is unchanged if the tag is given its own member in the union, should that make manipulation more clear for you (although to follow the C++ standard the tag member should be wrapped in a `struct`).
+> 如果标签在联合体中拥有自己的成员，此表示法不变，这或许能让你操作更清晰（尽管遵循 C++ 标准，标签成员应包装在一个 `struct` 中）。
 
 ```rust
-// This enum has the same representation as ...
+// 此枚举与...具有相同的表示法
 #[repr(u8)]
 enum MyEnum {
     A(u32),
@@ -394,7 +392,7 @@ enum MyEnum {
     D,
  }
 
-// ... this union.
+// ...这个联合体。
 #[repr(C)]
 union MyEnumRepr {
     A: MyVariantA,
@@ -403,7 +401,7 @@ union MyEnumRepr {
     D: MyVariantD,
 }
 
-// This is the discriminant enum.
+// 这是判别式枚举。
 #[repr(u8)]
 #[derive(Copy, Clone)]
 enum MyEnumDiscriminant { A, B, C, D }
@@ -426,14 +424,14 @@ struct MyVariantD(MyEnumDiscriminant);
 ```
 
 r[layout.repr.primitive-c]
-#### Combining primitive representations of enums with fields and `#[repr(C)]`
+#### 带有字段枚举的原始表示法与 `#[repr(C)]` 的组合
 
-For enums with fields, it is also possible to combine `repr(C)` and a primitive representation (e.g., `repr(C, u8)`). This modifies the [`repr(C)`] by changing the representation of the discriminant enum to the chosen primitive instead. So, if you chose the `u8` representation, then the discriminant enum would have a size and alignment of 1 byte.
+对于带有字段的枚举，还可以组合 `repr(C)` 和原始表示法（例如 `repr(C, u8)`）。这会修改 [`repr(C)`] 的表示法，将判别式枚举的表示法更改为所选的原始表示法。因此，如果你选择 `u8` 表示法，则判别式枚举的大小和对齐方式将为 1 字节。
 
-The discriminant enum from the example [earlier][`repr(C)`] then becomes:
+上面[更早][`repr(C)`]示例中的判别式枚举将变为：
 
 ```rust
-#[repr(C, u8)] // `u8` was added
+#[repr(C, u8)] // 添加了 `u8`
 enum MyEnum {
     A(u32),
     B(f32, u64),
@@ -443,15 +441,15 @@ enum MyEnum {
 
 // ...
 
-#[repr(u8)] // So `u8` is used here instead of `C`
+#[repr(u8)] // 所以这里使用 `u8` 而不是 `C`
 enum MyEnumDiscriminant { A, B, C, D }
 
 // ...
 ```
 
-For example, with a `repr(C, u8)` enum it is not possible to have 257 unique discriminants ("tags") whereas the same enum with only a `repr(C)` attribute will compile without any problems.
+例如，使用 `repr(C, u8)` 枚举不能有 257 个唯一的判别值（"标签"），而仅带有 `repr(C)` 属性的相同枚举可以没有任何问题地编译。
 
-Using a primitive representation in addition to `repr(C)` can change the size of an enum from the `repr(C)` form:
+在 `repr(C)` 之外还使用原始表示法可以改变枚举相对于 `repr(C)` 形式的大小：
 
 ```rust
 #[repr(C)]
@@ -472,46 +470,46 @@ enum Enum16 {
     Variant1,
 }
 
-// The size of the C representation is platform dependent
+// C 表示法的大小是平台相关的
 assert_eq!(std::mem::size_of::<EnumC>(), 8);
-// One byte for the discriminant and one byte for the value in Enum8::Variant0
+// 一个字节用于判别式，一个字节用于 Enum8::Variant0 中的值
 assert_eq!(std::mem::size_of::<Enum8>(), 2);
-// Two bytes for the discriminant and one byte for the value in Enum16::Variant0
-// plus one byte of padding.
+// 两个字节用于判别式，一个字节用于 Enum16::Variant0 中的值
+// 加上一个字节的填充。
 assert_eq!(std::mem::size_of::<Enum16>(), 4);
 ```
 
 [`repr(C)`]: #reprc-enums-with-fields
 
 r[layout.repr.alignment]
-### The alignment modifiers
+### 对齐修饰符
 
 r[layout.repr.alignment.intro]
-The `align` and `packed` modifiers can be used to respectively raise or lower the alignment of `struct`s and `union`s. `packed` may also alter the padding between fields (although it will not alter the padding inside of any field). On their own, `align` and `packed` do not provide guarantees about the order of fields in the layout of a struct or the layout of an enum variant, although they may be combined with representations (such as `C`) which do provide such guarantees.
+`align` 和 `packed` 修饰符可以分别用于提高或降低 `struct` 和 `union` 的对齐方式。`packed` 还可能改变字段之间的填充（尽管不会改变任何字段内部的填充）。单独使用时，`align` 和 `packed` 不提供关于结构体布局中字段顺序或枚举变体布局的保证，尽管它们可以与提供此类保证的表示法（如 `C`）组合使用。
 
 r[layout.repr.alignment.constraint-alignment]
-The alignment is specified as an integer parameter in the form of `#[repr(align(x))]` or `#[repr(packed(x))]`. The alignment value must be a power of two from 1 up to 2<sup>29</sup>. For `packed`, if no value is given, as in `#[repr(packed)]`, then the value is 1.
+对齐方式以整数参数的形式指定，格式为 `#[repr(align(x))]` 或 `#[repr(packed(x))]`。对齐值必须是 2 的幂，范围为 1 到 2<sup>29</sup>。对于 `packed`，如果未给出值，如 `#[repr(packed)]`，则值为 1。
 
 r[layout.repr.alignment.align]
-For `align`, if the specified alignment is less than the alignment of the type without the `align` modifier, then the alignment is unaffected.
+对于 `align`，如果指定的对齐方式小于没有 `align` 修饰符时类型的对齐方式，则对齐方式不受影响。
 
 r[layout.repr.alignment.packed]
-For `packed`, if the specified alignment is greater than the type's alignment without the `packed` modifier, then the alignment and layout is unaffected.
+对于 `packed`，如果指定的对齐方式大于没有 `packed` 修饰符时类型的对齐方式，则对齐方式和布局不受影响。
 
 r[layout.repr.alignment.packed-fields]
-The alignments of each field, for the purpose of positioning fields, is the smaller of the specified alignment and the alignment of the field's type.
+为了定位字段，每个字段的对齐方式取指定对齐方式和该字段类型对齐方式中的较小值。
 
 r[layout.repr.alignment.packed-padding]
-Inter-field padding is guaranteed to be the minimum required in order to satisfy each field's (possibly altered) alignment (although note that, on its own, `packed` does not provide any guarantee about field ordering). An important consequence of these rules is that a type with `#[repr(packed(1))]` (or `#[repr(packed)]`) will have no inter-field padding.
+保证字段间填充是满足每个字段（可能已更改）的对齐方式所需的最小值（尽管请注意，单独使用的 `packed` 不提供任何关于字段顺序的保证）。这些规则的一个重要结果是，带有 `#[repr(packed(1))]`（或 `#[repr(packed)]`）的类型将没有字段间填充。
 
 r[layout.repr.alignment.constraint-exclusive]
-The `align` and `packed` modifiers cannot be applied on the same type and a `packed` type cannot transitively contain another `align`ed type. `align` and `packed` may only be applied to the [`Rust`] and [`C`] representations.
+`align` 和 `packed` 修饰符不能应用于同一类型，且 `packed` 类型不能传递性地包含另一个 `align` 类型。`align` 和 `packed` 只能应用于 [`Rust`] 和 [`C`] 表示法。
 
 r[layout.repr.alignment.enum]
-The `align` modifier can also be applied on an `enum`. When it is, the effect on the `enum`'s alignment is the same as if the `enum` was wrapped in a newtype `struct` with the same `align` modifier.
+`align` 修饰符也可以应用于 `enum`。当应用时，对 `enum` 对齐方式的影响与将 `enum` 包装在带有相同 `align` 修饰符的 newtype `struct` 中相同。
 
 > [!NOTE]
-> References to unaligned fields are not allowed because it is [undefined behavior]. When fields are unaligned due to an alignment modifier, consider the following options for using references and dereferences:
+> 不允许引用未对齐的字段，因为这是[未定义行为][undefined behavior]。当字段由于对齐修饰符而变得未对齐时，请考虑以下使用引用和解引用的选项：
 >
 > ```rust
 > #[repr(packed)]
@@ -520,13 +518,13 @@ The `align` modifier can also be applied on an `enum`. When it is, the effect on
 >     f2: u16,
 > }
 > let mut e = Packed { f1: 1, f2: 2 };
-> // Instead of creating a reference to a field, copy the value to a local variable.
+> // 不用创建对字段的引用，而是将值复制到局部变量中。
 > let x = e.f2;
-> // Or in situations like `println!` which creates a reference, use braces
-> // to change it to a copy of the value.
+> // 或者在像 `println!` 这样创建引用的场景中，使用花括号
+> // 将其更改为值的副本。
 > println!("{}", {e.f2});
-> // Or if you need a pointer, use the unaligned methods for reading and writing
-> // instead of dereferencing the pointer directly.
+> // 或者如果你需要一个指针，使用未对齐的方法进行读取和写入，
+> // 而不是直接解引用指针。
 > let ptr: *const u16 = &raw const e.f2;
 > let value = unsafe { ptr.read_unaligned() };
 > let mut_ptr: *mut u16 = &raw mut e.f2;
@@ -534,20 +532,20 @@ The `align` modifier can also be applied on an `enum`. When it is, the effect on
 > ```
 
 r[layout.repr.transparent]
-### The `transparent` representation
+### `transparent` 表示法
 
 r[layout.repr.transparent.constraint-field]
-The `transparent` representation can only be used on a [`struct`][structs] or an [`enum`][enumerations] with a single variant that has:
-- any number of fields with size 0 and alignment 1 (e.g. [`PhantomData<T>`]), and
-- at most one other field.
+`transparent` 表示法只能用于具有单个变体的 [`struct`][structs] 或 [`enum`][enumerations]，该变体具有：
+- 任意数量的、大小为 0 且对齐方式为 1 的字段（例如 [`PhantomData<T>`]），以及
+- 至多一个其他字段。
 
 r[layout.repr.transparent.layout-abi]
-Structs and enums with this representation have the same layout and ABI as the only non-size 0 non-alignment 1 field, if present, or unit otherwise.
+具有此表示法的结构体和枚举具有与唯一的非 0 大小、非 1 对齐字段相同的布局和 ABI（如果存在），否则具有与单元类型相同的布局和 ABI。
 
-This is different than the `C` representation because a struct with the `C` representation will always have the ABI of a `C` `struct` while, for example, a struct with the `transparent` representation with a primitive field will have the ABI of the primitive field.
+这与 `C` 表示法不同，因为具有 `C` 表示法的结构体始终具有 C `struct` 的 ABI，而例如，具有 `transparent` 表示法且带有原始字段的结构体将具有该原始字段的 ABI。
 
 r[layout.repr.transparent.constraint-exclusive]
-Because this representation delegates type layout to another type, it cannot be used with any other representation.
+因为此表示法将类型布局委托给另一个类型，所以它不能与任何其他表示法一起使用。
 
 [`align_of_val`]: std::mem::align_of_val
 [`size_of_val`]: std::mem::size_of_val

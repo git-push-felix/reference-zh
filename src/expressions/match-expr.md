@@ -1,5 +1,5 @@
 r[expr.match]
-# `match` expressions
+# `match` 表达式
 
 r[expr.match.syntax]
 ```grammar,expressions
@@ -39,27 +39,27 @@ MatchGuardScrutinee -> Expression _except [ExcludedMatchConditions]_
     | AssignmentExpression
     | CompoundAssignmentExpression
 ```
-<!-- TODO: The exception above isn't accurate, see https://github.com/rust-lang/reference/issues/569 -->
+<!-- TODO: 上面的例外不准确，参见 https://github.com/rust-lang/reference/issues/569 -->
 
 r[expr.match.intro]
-A *`match` expression* branches on a pattern. The exact form of matching that occurs depends on the [pattern].
+*`match` 表达式*基于模式进行分支。所发生的匹配的确切形式取决于[模式][pattern]。
 
 r[expr.match.scrutinee]
-A `match` expression has a *[scrutinee] expression*, which is the value to compare to the patterns.
+`match` 表达式有一个*[受检者]表达式*，即要与模式进行比较的值。
 
 r[expr.match.scrutinee-constraint]
-The scrutinee expression and the patterns must have the same type.
+受检者表达式和模式必须具有相同的类型。
 
 r[expr.match.scrutinee-behavior]
-A `match` behaves differently depending on whether or not the scrutinee expression is a [place expression or value expression][place expression].
+`match` 的行为取决于受检者表达式是[位置表达式还是值表达式][place expression]。
 
 r[expr.match.scrutinee-value]
-If the scrutinee expression is a [value expression], it is first evaluated into a temporary location, and the resulting value is sequentially compared to the patterns in the arms until a match is found. The first arm with a matching pattern is chosen as the branch target of the `match`, any variables bound by the pattern are assigned to local variables in the arm's block, and control enters the block.
+如果受检者表达式是[值表达式]，它首先被求值到一个临时位置，然后结果值按顺序与分支中的模式进行比较，直到找到匹配。第一个具有匹配模式的分支被选为 `match` 的分支目标，模式绑定的任何变量被赋值给分支块中的局部变量，控制进入该块。
 
 r[expr.match.scrutinee-place]
-When the scrutinee expression is a [place expression], the match does not allocate a temporary location; however, a by-value binding may copy or move from the memory location. When possible, it is preferable to match on place expressions, as the lifetime of these matches inherits the lifetime of the place expression rather than being restricted to the inside of the match.
+当受检者表达式是[位置表达式]时，`match` 不分配临时位置；然而，按值绑定可能会从内存位置复制或移动。如果可能，最好对位置表达式进行匹配，因为这类匹配的生命周期继承位置表达式的生命周期，而不是被限制在 match 内部。
 
-An example of a `match` expression:
+`match` 表达式示例：
 
 ```rust
 let x = 1;
@@ -75,13 +75,13 @@ match x {
 ```
 
 r[expr.match.pattern-vars]
-Variables bound within the pattern are scoped to the match guard and the arm's expression.
+模式内绑定的变量的作用域是匹配守卫和分支表达式。
 
 r[expr.match.pattern-var-binding]
-The [binding mode] (move, copy, or reference) depends on the pattern.
+[绑定模式]（移动、复制或引用）取决于模式。
 
 r[expr.match.or-pattern]
-Multiple match patterns may be joined with the `|` operator. Each pattern will be tested in left-to-right sequence until a successful match is found.
+可以使用 `|` 运算符连接多个匹配模式。每个模式将按从左到右的顺序进行测试，直到找到成功的匹配。
 
 ```rust
 let x = 9;
@@ -93,7 +93,7 @@ let message = match x {
 
 assert_eq!(message, "a few");
 
-// Demonstration of pattern match order.
+// 模式匹配顺序的演示。
 struct S(i32, i32);
 
 match S(1, 2) {
@@ -103,19 +103,19 @@ match S(1, 2) {
 ```
 
 > [!NOTE]
-> The `2..=9` is a [Range Pattern], not a [Range Expression]. Thus, only those types of ranges supported by range patterns can be used in match arms.
+> `2..=9` 是一个[区间模式]，而不是[区间表达式]。因此，只有区间模式支持的那些类型的区间才能用于匹配分支中。
 
 r[expr.match.or-patterns-restriction]
-Every binding in each `|` separated pattern must appear in all of the patterns in the arm.
+每个 `|` 分隔模式中的每个绑定都必须出现在该分支的所有模式中。
 
 r[expr.match.binding-restriction]
-Every binding of the same name must have the same type, and have the same binding mode.
+每个同名的绑定必须具有相同的类型和相同的绑定模式。
 
 r[expr.match.type]
-The type of the overall `match` expression is the [least upper bound] of the individual match arms.
+整个 `match` 表达式的类型是各个匹配分支的[最小上界]。
 
 r[expr.match.empty]
-If there are no match arms, then the `match` expression is [diverging] and the type is [`!`].
+如果没有匹配分支，则 `match` 表达式是[发散][diverging]的，类型为 [`!`]。
 
 > [!EXAMPLE]
 > ```rust
@@ -130,22 +130,22 @@ If there are no match arms, then the `match` expression is [diverging] and the t
 
 
 r[expr.match.diverging]
-If either the scrutinee expression or all of the match arms diverge, then the entire `match` expression also diverges.
+如果受检者表达式或所有匹配分支发散，则整个 `match` 表达式也发散。
 
 r[expr.match.guard]
-## Match guards
+## 匹配守卫
 
 r[expr.match.guard.intro]
-Match arms can accept _match guards_ to further refine the criteria for matching a case.
+匹配分支可以接受*匹配守卫*以进一步细化匹配某个情况的条件。
 
 r[expr.match.guard.condition]
-Pattern guards appear after the pattern following the `if` keyword and consist of an [Expression] with a [boolean type][type.bool] or a conditional `let` match.
+模式守卫出现在 `if` 关键字之后的模式之后，由一个具有[布尔类型][type.bool]的[表达式][Expression]或一个条件 `let` 匹配组成。
 
 r[expr.match.guard.behavior]
-When the pattern matches successfully, the pattern guard is executed. If all of the guard condition operands evaluate to `true` and all of the `let` patterns successfully match their [scrutinee]s, the match arm is successfully matched against and the arm body is executed.
+当模式成功匹配时，模式守卫被执行。如果所有守卫条件操作数都求值为 `true` 且所有 `let` 模式都成功匹配其[受检者]，则该匹配分支被成功匹配，并执行分支体。
 
 r[expr.match.guard.next]
-Otherwise, the next pattern, including other matches with the `|` operator in the same arm, is tested.
+否则，测试下一个模式，包括同一分支中使用 `|` 运算符的其他匹配。
 
 ```rust
 # let maybe_digit = Some(0);
@@ -159,7 +159,7 @@ let message = match maybe_digit {
 ```
 
 > [!NOTE]
-> Multiple matches using the `|` operator can cause the pattern guard and the side effects it has to execute multiple times. For example:
+> 使用 `|` 运算符的多重匹配可能导致模式守卫及其副作用被多次执行。例如：
 >
 > ```rust
 > # use std::cell::Cell;
@@ -172,24 +172,24 @@ let message = match maybe_digit {
 > ```
 
 r[expr.match.guard.bound-variables]
-A pattern guard may refer to the variables bound within the pattern they follow.
+模式守卫可以引用在其后模式内绑定的变量。
 
 r[expr.match.guard.shared-ref]
-Before evaluating the guard, a shared reference is taken to the part of the scrutinee the variable matches on. While evaluating the guard, this shared reference is then used when accessing the variable.
+在求值守卫之前，会对受检者中变量匹配的部分获取共享引用。在求值守卫期间，访问变量时使用此共享引用。
 
 r[expr.match.guard.value]
-Only when the guard evaluates successfully is the value moved, or copied, from the scrutinee into the variable. This allows shared borrows to be used inside guards without moving out of the scrutinee in case guard fails to match.
+只有当守卫成功求值时，值才从受检者移动或复制到变量中。这允许在守卫内部使用共享借用，而如果在守卫未匹配的情况下不必从受检者中移出。
 
 r[expr.match.guard.no-mutation]
-Moreover, by holding a shared reference while evaluating the guard, mutation inside guards is also prevented.
+此外，通过在求值守卫时持有共享引用，也防止了守卫内部的修改。
 
 r[expr.match.guard.let]
-Guards can use `let` patterns to conditionally match a scrutinee and to bind new variables into scope when the pattern matches successfully.
+守卫可以使用 `let` 模式来有条件地匹配受检者，并在模式成功匹配时将新变量绑定到作用域中。
 
 > [!EXAMPLE]
-> In this example, the guard condition `let Some(first_char) = name.chars().next()` is evaluated. If the `let` pattern successfully matches (i.e. the string has at least one character), the arm's body is executed. Otherwise, pattern matching continues to the next arm.
+> 在此示例中，守卫条件 `let Some(first_char) = name.chars().next()` 被求值。如果 `let` 模式成功匹配（即字符串至少有一个字符），则执行分支体。否则，模式匹配继续到下一个分支。
 >
-> The `let` pattern creates a new binding (`first_char`), which can be used alongside the original pattern bindings (`name`) in the arm's body.
+> `let` 模式创建一个新绑定（`first_char`），它可以在分支体中与原始模式绑定（`name`）一起使用。
 > ```rust
 > # enum Command {
 > #     Run(String),
@@ -199,7 +199,7 @@ Guards can use `let` patterns to conditionally match a scrutinee and to bind new
 >
 > match cmd {
 >     Command::Run(name) if let Some(first_char) = name.chars().next() => {
->         // Both `name` and `first_char` are available here
+>         // 此处 `name` 和 `first_char` 都可用
 >         println!("Running: {name} (starts with '{first_char}')");
 >     }
 >     Command::Run(name) => {
@@ -210,10 +210,10 @@ Guards can use `let` patterns to conditionally match a scrutinee and to bind new
 > ```
 
 r[expr.match.guard.chains]
-## Match guard chains
+## 匹配守卫链
 
 r[expr.match.guard.chains.intro]
-Multiple guard condition operands can be separated with `&&`.
+多个守卫条件操作数可以用 `&&` 分隔。
 
 > [!EXAMPLE]
 > ```rust
@@ -226,34 +226,34 @@ Multiple guard condition operands can be separated with `&&`.
 > ```
 
 r[expr.match.guard.chains.order]
-Similar to a `&&` [LazyBooleanExpression], each operand is evaluated from left-to-right until an operand evaluates as `false` or a `let` match fails, in which case the subsequent operands are not evaluated.
+类似于 `&&` [LazyBooleanExpression]，每个操作数从左到右求值，直到某个操作数求值为 `false` 或 `let` 匹配失败，在这种情况下后续操作数不会被求值。
 
 r[expr.match.guard.chains.bindings]
-The bindings of each `let` pattern are put into scope to be available for the next condition operand and the match arm body.
+每个 `let` 模式的绑定被放入作用域，以供下一个条件操作数和匹配分支体使用。
 
 r[expr.match.guard.chains.or]
-If any guard condition operand is a `let` pattern, then none of the condition operands can be a `||` [lazy boolean operator expression][expr.bool-logic] due to ambiguity and precedence with the `let` scrutinee.
+如果任何守卫条件操作数是 `let` 模式，则由于与 `let` 受检者的歧义和优先级，所有条件操作数都不能是 `||` [惰性布尔运算符表达式][expr.bool-logic]。
 
 > [!EXAMPLE]
-> If a `||` expression is needed, then parentheses can be used. For example:
+> 如果需要 `||` 表达式，可以使用括号。例如：
 >
 > ```rust
 > # let foo = Some([123]);
 > match foo {
->     // Parentheses are required here.
+>     // 此处需要括号。
 >     Some(xs) if let [x] = xs && (x < -100 || x > 20) => {}
 >     _ => {}
 > }
 > ```
 
 r[expr.match.attributes]
-## Attributes on match arms
+## 匹配分支上的属性
 
 r[expr.match.attributes.outer]
-Outer attributes are allowed on match arms. The only attributes that have meaning on match arms are [`cfg`] and the [lint check attributes].
+匹配分支上允许外部属性。在匹配分支上有意义的唯一属性是 [`cfg`] 和 [lint 检查属性]。
 
 r[expr.match.attributes.inner]
-[Inner attributes] are allowed directly after the opening brace of the match expression in the same expression contexts as [attributes on block expressions].
+在匹配表达式开花括号后直接允许[内部属性]，其所在表达式上下文与[块表达式上的属性]相同。
 
 [`!`]: type.never
 [`cfg`]: ../conditional-compilation.md

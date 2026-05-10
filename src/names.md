@@ -1,111 +1,111 @@
 r[names]
-# Names
+# 名称
 
 r[names.intro]
-An *entity* is a language construct that can be referred to in some way within the source program, usually via a [path]. Entities include [types], [items], [generic parameters], [variable bindings], [loop labels], [lifetimes], [fields], [attributes], and [lints].
+*实体*是一种语言构造，可以在源程序中以某种方式引用，通常通过[路径][path]。实体包括[类型][types]、[程序项][items]、[泛型参数][generic parameters]、[变量绑定][variable bindings]、[循环标签][loop labels]、[生命周期][lifetimes]、[字段][fields]、[属性][attributes]和[lint][lints]。
 
-A *declaration* is a syntactical construct that can introduce a *name* to refer to an entity. Entity names are valid within a [*scope*] --- a region of source text where that name may be referenced.
+*声明*是一种语法构造，可以引入一个*名称*来引用实体。实体名称在其[*作用域*]内有效——作用域是源文本中可以引用该名称的区域。
 
-Some entities are [explicitly declared](#explicitly-declared-entities) in the source code, and some are [implicitly declared](#implicitly-declared-entities) as part of the language or compiler extensions.
+某些实体在源代码中[显式声明](#显式声明的实体)，某些实体作为语言或编译器扩展的一部分[隐式声明](#隐式声明的实体)。
 
-[*Paths*] are used to refer to an entity, possibly in another module or type.
+[*路径*]用于引用实体，可能位于其他模块或类型中。
 
-Lifetimes and loop labels use a [dedicated syntax][lifetimes-and-loop-labels] using a leading quote.
+生命周期和循环标签使用[专用语法][lifetimes-and-loop-labels]，以引号开头。
 
-Names are segregated into different [*namespaces*], allowing entities in different namespaces to share the same name without conflict.
+名称被隔离到不同的[*命名空间*]中，允许不同命名空间中的实体共享相同的名称而不会冲突。
 
-[*Name resolution*] is the compile-time process of tying paths, identifiers, and labels to entity declarations.
+[*名称解析*]是将路径、标识符和标签绑定到实体声明的编译时过程。
 
-Access to certain names may be restricted based on their [*visibility*].
+对某些名称的访问可能受其[*可见性*]的限制。
 
 r[names.explicit]
-## Explicitly declared entities
+## 显式声明的实体
 
 r[names.explicit.list]
-Entities that explicitly introduce a name in the source code are:
+在源代码中显式引入名称的实体包括：
 
 r[names.explicit.item-decl]
-* [Items]:
-    * [Module declarations]
-    * [External crate declarations]
-    * [Use declarations]
-    * [Function declarations] and [function parameters]
-    * [Type aliases]
-    * [struct], [union], [enum], enum variant declarations, and their named fields
-    * [Constant item declarations]
-    * [Static item declarations]
-    * [Trait item declarations] and their [associated items]
-    * [External block items]
-    * [`macro_rules` declarations] and [matcher metavariables]
-    * [Implementation] associated items
+* [程序项][Items]：
+    * [模块声明][Module declarations]
+    * [外部 crate 声明][External crate declarations]
+    * [use 声明][Use declarations]
+    * [函数声明][Function declarations]和[函数参数][function parameters]
+    * [类型别名][Type aliases]
+    * [struct]、[union]、[enum]、enum 变体声明及其命名字段
+    * [常量项声明][Constant item declarations]
+    * [静态项声明][Static item declarations]
+    * [trait 项声明][Trait item declarations]及其[关联项][associated items]
+    * [外部块项][External block items]
+    * [`macro_rules` 声明][`macro_rules` declarations]和[匹配器元变量][matcher metavariables]
+    * [实现][Implementation]关联项
 
 r[names.explicit.expr]
-* [Expressions]:
-    * [Closure] parameters
-    * [`while let`] pattern bindings
-    * [`for`] pattern bindings
-    * [`if let`] pattern bindings
-    * [`match`] pattern bindings
-    * [Loop labels]
+* [表达式][Expressions]：
+    * [闭包][Closure]参数
+    * [`while let`] 模式绑定
+    * [`for`] 模式绑定
+    * [`if let`] 模式绑定
+    * [`match`] 模式绑定
+    * [循环标签][Loop labels]
 
 r[names.explicit.generics]
-* [Generic parameters]
+* [泛型参数][Generic parameters]
 
 r[names.explicit.higher-ranked-bounds]
-* [Higher ranked trait bounds]
+* [高阶 trait 约束][Higher ranked trait bounds]
 
 r[names.explicit.binding]
-* [`let` statement] pattern bindings
+* [`let` 语句][`let` statement]模式绑定
 
 r[names.explicit.macro_use]
-* The [`macro_use` attribute] can introduce macro names from another crate
+* [`macro_use` 属性][`macro_use` attribute]可以从另一个 crate 引入宏名称
 
 r[names.explicit.macro_export]
-* The [`macro_export` attribute] can introduce an alias for the macro into the crate root
+* [`macro_export` 属性][`macro_export` attribute]可以为宏在 crate 根中引入别名
 
 r[names.explicit.macro-invocation]
-Additionally, [macro invocations] and [attributes] can introduce names by expanding to one of the above items.
+此外，[宏调用][macro invocations]和[属性][attributes]可以通过展开为上述某一项来引入名称。
 
 r[names.implicit]
-## Implicitly declared entities
+## 隐式声明的实体
 
 r[names.implicit.list]
-The following entities are implicitly defined by the language, or are introduced by compiler options and extensions:
+以下实体由语言隐式定义，或由编译器选项和扩展引入：
 
 r[names.implicit.primitive-types]
-* [Language prelude]:
-    * [Boolean type] --- `bool`
-    * Textual types --- [`char`] and [`str`]
-    * [Integer types] --- `i8`, `i16`, `i32`, `i64`, `i128`, `u8`, `u16`, `u32`, `u64`, `u128`
-    * [Machine-dependent integer types] --- `usize` and `isize`
-    * [floating-point types] --- `f32` and `f64`
+* [语言预导入][Language prelude]：
+    * [布尔类型][Boolean type] --- `bool`
+    * 文本类型 --- [`char`] 和 [`str`]
+    * [整数类型][Integer types] --- `i8`、`i16`、`i32`、`i64`、`i128`、`u8`、`u16`、`u32`、`u64`、`u128`
+    * [机器相关整数类型][Machine-dependent integer types] --- `usize` 和 `isize`
+    * [浮点类型][floating-point types] --- `f32` 和 `f64`
 
 r[names.implicit.builtin-attributes]
-* [Built-in attributes]
+* [内置属性][Built-in attributes]
 
 r[names.implicit.prelude]
-* [Standard library prelude] items, attributes, and macros
+* [标准库预导入][Standard library prelude]项、属性和宏
 
 r[names.implicit.stdlib]
-* [Standard library][extern-prelude] crates in the root module
+* 根模块中的[标准库][extern-prelude] crate
 
 r[names.implicit.extern-prelude]
-* [External crates][extern-prelude] linked by the compiler
+* 编译器链接的[外部 crate][extern-prelude]
 
 r[names.implicit.tool-attributes]
-* [Tool attributes]
+* [工具属性][Tool attributes]
 
 r[names.implicit.lints]
-* [Lints] and [tool lint attributes]
+* [lint][Lints]和[工具 lint 属性][tool lint attributes]
 
 r[names.implicit.derive-helpers]
-* [Derive helper attributes] are valid within an item without being explicitly imported
+* [派生辅助属性][Derive helper attributes]在项内部有效，无需显式导入
 
 r[names.implicit.lifetime-static]
-* The [`'static`] lifetime
+* [`'static`] 生命周期
 
 r[names.implicit.root]
-Additionally, the crate root module does not have a name, but can be referred to with certain [path qualifiers] or aliases.
+此外，crate 根模块没有名称，但可以通过某些[路径限定符][path qualifiers]或别名来引用。
 
 [*Name resolution*]: names/name-resolution.md
 [*namespaces*]: names/namespaces.md

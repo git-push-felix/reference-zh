@@ -1,5 +1,5 @@
 r[vis]
-# Visibility and privacy
+# 可见性和隐私
 
 r[vis.syntax]
 ```grammar,items
@@ -12,28 +12,28 @@ Visibility ->
 ```
 
 r[vis.intro]
-These two terms are often used interchangeably, and what they are attempting to convey is the answer to the question "Can this item be used at this location?"
+这两个术语经常互换使用，它们试图传达的是对"此项目能否在此位置使用？"这个问题的答案。
 
 r[vis.name-hierarchy]
-Rust's name resolution operates on a global hierarchy of namespaces. Each level in the hierarchy can be thought of as some item. The items are one of those mentioned above, but also include external crates. Declaring or defining a new module can be thought of as inserting a new tree into the hierarchy at the location of the definition.
+Rust 的名称解析在全局的命名空间层次结构上运行。层次结构中的每个级别可以被视为某个项。项是上述提到的那几种之一，但也包括外部 crate。声明或定义一个新模块可以被视为在定义位置的层次结构中插入一棵新树。
 
 r[vis.privacy]
-To control whether interfaces can be used across modules, Rust checks each use of an item to see whether it should be allowed or not. This is where privacy warnings are generated, or otherwise "you used a private item of another module and weren't allowed to."
+为了控制接口是否可以跨模块使用，Rust 检查对项的每次使用，以查看是否应该允许。这是隐私警告生成的地方，或者说"你使用了另一个模块的私有项并且不被允许"。
 
 r[vis.default]
-By default, everything is *private*, with two exceptions: Associated items in a `pub` Trait are public by default; Enum variants in a `pub` enum are also public by default. When an item is declared as `pub`, it can be thought of as being accessible to the outside world. For example:
+默认情况下，所有内容都是*私有的*，有两个例外：`pub` Trait 中的关联项默认是公共的；`pub` 枚举中的枚举变体也默认是公共的。当一个项被声明为 `pub` 时，它可以被认为对外部世界是可访问的。例如：
 
 ```rust
 # fn main() {}
-// Declare a private struct
+// 声明一个私有结构体
 struct Foo;
 
-// Declare a public struct with a private field
+// 声明一个带有私有字段的公共结构体
 pub struct Bar {
     field: i32,
 }
 
-// Declare a public enum with two public variants
+// 声明一个带有两个公共变体的公共枚举
 pub enum State {
     PubliclyAccessibleState,
     PubliclyAccessibleState2,
@@ -41,58 +41,55 @@ pub enum State {
 ```
 
 r[vis.access]
-With the notion of an item being either public or private, Rust allows item accesses in two cases:
+有了项是公共还是私有的概念，Rust 在两种情况下允许项访问：
 
-1. If an item is public, then it can be accessed externally from some module `m` if you can access all the item's ancestor modules from `m`. You can also potentially be able to name the item through re-exports. See below.
-2. If an item is private, it may be accessed by the current module and its descendants.
+1. 如果一个项是公共的，那么如果你可以从某个模块 `m` 访问该项的所有祖先模块，就可以从 `m` 外部访问它。你还可以通过重新导出来潜在地命名该项。见下文。
+2. 如果一个项是私有的，它可以被当前模块及其后代访问。
 
-These two cases are surprisingly powerful for creating module hierarchies exposing public APIs while hiding internal implementation details. To help explain, here's a few use cases and what they would entail:
+这两种情况对于创建暴露公共 API 同时隐藏内部实现细节的模块层次结构来说出奇地强大。为了帮助解释，这里有几个用例及其含义：
 
-* A library developer needs to expose functionality to crates which link against their library. As a consequence of the first case, this means that anything which is usable externally must be `pub` from the root down to the destination item. Any private item in the chain will disallow external accesses.
+* 库开发者需要将功能暴露给链接到其库的 crate。作为第一种情况的推论，这意味着任何可从外部使用的内容必须从根到目标项都是 `pub`。链中的任何私有项都将禁止外部访问。
 
-* A crate needs a global available "helper module" to itself, but it doesn't want to expose the helper module as a public API. To accomplish this, the root of the crate's hierarchy would have a private module which then internally has a "public API". Because the entire crate is a descendant of the root, then the entire local crate can access this private module through the second case.
+* 一个 crate 需要一个对其自身全局可用的"辅助模块"，但不想将辅助模块暴露为公共 API。为此，crate 层次结构的根将有一个私有模块，该模块内部具有"公共 API"。由于整个 crate 是根的后代，整个本地 crate 可以通过第二种情况访问此私有模块。
 
-* When writing unit tests for a module, it's often a common idiom to have an immediate child of the module to-be-tested named `mod test`. This module could access any items of the parent module through the second case, meaning that internal implementation details could also be seamlessly tested from the child module.
+* 当为某个模块编写单元测试时，一个常见的惯用法是让一个名为 `mod test` 的模块直接作为待测试模块的子模块。此模块可以通过第二种情况访问父模块的任何项，这意味着内部实现细节也可以从子模块无缝测试。
 
-In the second case, it mentions that a private item "can be accessed" by the current module and its descendants, but the exact meaning of accessing an item depends on what the item is.
+在第二种情况下，它提到私有项"可以被"当前模块及其后代"访问"，但访问项的确切含义取决于该项是什么。
 
 r[vis.use]
-Accessing a module, for example, would mean looking inside of it (to import more items). On the other hand, accessing a function would mean that it is invoked. Additionally, path expressions and import statements are considered to access an item in the sense that the import/expression is only valid if the destination is in the current visibility scope.
+例如，访问一个模块意味着查看其内部（以导入更多项）。另一方面，访问一个函数意味着它被调用。此外，路径表达式和导入语句被视为访问项，这意味着导入/表达式仅在目标位于当前可见性作用域中时才有效。
 
-Here's an example of a program which exemplifies the three cases outlined above:
+以下是一个示例程序，展示了上述三种情况：
 
 ```rust
-// This module is private, meaning that no external crate can access this
-// module. Because it is private at the root of this current crate, however, any
-// module in the crate may access any publicly visible item in this module.
+// 此模块是私有的，意味着没有外部 crate 可以访问此模块。
+// 然而，因为它在当前 crate 的根部是私有的，
+// crate 中的任何模块都可以访问此模块中的任何公开可见项。
 mod crate_helper_module {
 
-    // This function can be used by anything in the current crate
+    // 此函数可以被当前 crate 中的任何内容使用
     pub fn crate_helper() {}
 
-    // This function *cannot* be used by anything else in the crate. It is not
-    // publicly visible outside of the `crate_helper_module`, so only this
-    // current module and its descendants may access it.
+    // 此函数*不能*被 crate 中的任何其他内容使用。它在
+    // `crate_helper_module` 外部不可公开访问，因此只有
+    // 当前模块及其后代可以访问它。
     fn implementation_detail() {}
 }
 
-// This function is "public to the root" meaning that it's available to external
-// crates linking against this one.
+// 此函数是"对根公开的"，意味着它可用于链接到此 crate 的外部 crate。
 pub fn public_api() {}
 
-// Similarly to 'public_api', this module is public so external crates may look
-// inside of it.
+// 类似于 'public_api'，此模块是公共的，因此外部 crate 可以查看其内部。
 pub mod submodule {
     use crate::crate_helper_module;
 
     pub fn my_method() {
-        // Any item in the local crate may invoke the helper module's public
-        // interface through a combination of the two rules above.
+        // 本地 crate 中的任何项都可以通过上述两条规则的组合
+        // 调用辅助模块的公共接口。
         crate_helper_module::crate_helper();
     }
 
-    // This function is hidden to any module which is not a descendant of
-    // `submodule`
+    // 此函数对不是 `submodule` 后代的任何模块隐藏
     fn my_implementation() {}
 
     #[cfg(test)]
@@ -100,9 +97,8 @@ pub mod submodule {
 
         #[test]
         fn test_my_implementation() {
-            // Because this module is a descendant of `submodule`, it's allowed
-            // to access private items inside of `submodule` without a privacy
-            // violation.
+            // 因为此模块是 `submodule` 的后代，它被允许
+            // 访问 `submodule` 内部的私有项而不会违反隐私。
             super::my_implementation();
         }
     }
@@ -111,51 +107,51 @@ pub mod submodule {
 # fn main() {}
 ```
 
-For a Rust program to pass the privacy checking pass, all paths must be valid accesses given the two rules above. This includes all use statements, expressions, types, etc.
+为了让 Rust 程序通过隐私检查关，所有路径必须是给定上述两条规则的有效访问。这包括所有 use 语句、表达式、类型等。
 
 r[vis.scoped]
-## `pub(in path)`, `pub(crate)`, `pub(super)`, and `pub(self)`
+## `pub(in path)`、`pub(crate)`、`pub(super)` 和 `pub(self)`
 
 r[vis.scoped.intro]
-In addition to public and private, Rust allows users to declare an item as visible only within a given scope. The rules for `pub` restrictions are as follows:
+除了 public 和 private 之外，Rust 允许用户将项声明为仅在给定作用域内可见。`pub` 限制的规则如下：
 
 r[vis.scoped.in]
-- `pub(in path)` makes an item visible within the provided `path`. `path` must be a simple path which resolves to an ancestor module of the item whose visibility is being declared. Each identifier in `path` must refer directly to a module (not to a name introduced by a `use` statement).
+- `pub(in path)` 使项在提供的 `path` 内可见。`path` 必须是一个简单路径，解析为正在声明其可见性的项的祖先模块。`path` 中的每个标识符必须直接引用模块（而不是通过 `use` 语句引入的名称）。
 
 r[vis.scoped.crate]
-- `pub(crate)` makes an item visible within the current crate.
+- `pub(crate)` 使项在当前 crate 内可见。
 
 r[vis.scoped.super]
-- `pub(super)` makes an item visible to the parent module. This is equivalent to `pub(in super)`.
+- `pub(super)` 使项对父模块可见。这等价于 `pub(in super)`。
 
 r[vis.scoped.self]
-- `pub(self)` makes an item visible to the current module. This is equivalent to `pub(in self)` or not using `pub` at all.
+- `pub(self)` 使项对当前模块可见。这等价于 `pub(in self)` 或根本不使用 `pub`。
 
 r[vis.scoped.edition2018]
 > [!EDITION-2018]
-> Starting with the 2018 edition, paths for `pub(in path)` must start with `crate`, `self`, or `super`. The 2015 edition may also use paths starting with `::` or modules from the crate root.
+> 从 2018 版次开始，`pub(in path)` 的路径必须以 `crate`、`self` 或 `super` 开头。2015 版次还可以使用以 `::` 或来自 crate 根的模块开头的路径。
 
-Here's an example:
+以下是一个示例：
 
 ```rust,edition2015
 pub mod outer_mod {
     pub mod inner_mod {
-        // This function is visible within `outer_mod`
+        // 此函数在 `outer_mod` 内可见
         pub(in crate::outer_mod) fn outer_mod_visible_fn() {}
-        // Same as above, this is only valid in the 2015 edition.
+        // 与上面相同，这仅在 2015 版次中有效。
         pub(in outer_mod) fn outer_mod_visible_fn_2015() {}
 
-        // This function is visible to the entire crate
+        // 此函数对整个 crate 可见
         pub(crate) fn crate_visible_fn() {}
 
-        // This function is visible within `outer_mod`
+        // 此函数在 `outer_mod` 内可见
         pub(super) fn super_mod_visible_fn() {
-            // This function is visible since we're in the same `mod`
+            // 此函数可见，因为我们在同一个 `mod` 中
             inner_mod_visible_fn();
         }
 
-        // This function is visible only within `inner_mod`,
-        // which is the same as leaving it private.
+        // 此函数仅在 `inner_mod` 内可见，
+        // 这与保留私有相同。
         pub(self) fn inner_mod_visible_fn() {}
     }
     pub fn foo() {
@@ -163,22 +159,22 @@ pub mod outer_mod {
         inner_mod::crate_visible_fn();
         inner_mod::super_mod_visible_fn();
 
-        // This function is no longer visible since we're outside of `inner_mod`
-        // Error! `inner_mod_visible_fn` is private
+        // 此函数不再可见，因为我们在 `inner_mod` 外部
+        // 错误！`inner_mod_visible_fn` 是私有的
         //inner_mod::inner_mod_visible_fn();
     }
 }
 
 fn bar() {
-    // This function is still visible since we're in the same crate
+    // 此函数仍然可见，因为我们在同一个 crate 中
     outer_mod::inner_mod::crate_visible_fn();
 
-    // This function is no longer visible since we're outside of `outer_mod`
-    // Error! `super_mod_visible_fn` is private
+    // 此函数不再可见，因为我们在 `outer_mod` 外部
+    // 错误！`super_mod_visible_fn` 是私有的
     //outer_mod::inner_mod::super_mod_visible_fn();
 
-    // This function is no longer visible since we're outside of `outer_mod`
-    // Error! `outer_mod_visible_fn` is private
+    // 此函数不再可见，因为我们在 `outer_mod` 外部
+    // 错误！`outer_mod_visible_fn` 是私有的
     //outer_mod::inner_mod::outer_mod_visible_fn();
 
     outer_mod::foo();
@@ -188,13 +184,13 @@ fn main() { bar() }
 ```
 
 > [!NOTE]
-> This syntax only adds another restriction to the visibility of an item. It does not guarantee that the item is visible within all parts of the specified scope. To access an item, all of its parent items up to the current scope must still be visible as well.
+> 此语法仅对项的可见性增加了另一种限制。它不保证该项在指定作用域的所有部分都可见。要访问一个项，其所有父项直到当前作用域也必须仍然可见。
 
 r[vis.reexports]
-## Re-exporting and visibility
+## 重新导出和可见性
 
 r[vis.reexports.intro]
-Rust allows publicly re-exporting items through a `pub use` directive. Because this is a public directive, this allows the item to be used in the current module through the rules above. It essentially allows public access into the re-exported item. For example, this program is valid:
+Rust 允许通过 `pub use` 指令公开重新导出项。因为这是一个公共指令，这允许通过上述规则在当前模块中使用该项。它本质上允许对重新导出的项进行公共访问。例如，此程序是有效的：
 
 ```rust
 pub use self::implementation::api;
@@ -208,7 +204,7 @@ mod implementation {
 # fn main() {}
 ```
 
-This means that any external crate referencing `implementation::api::f` would receive a privacy violation, while the path `api::f` would be allowed.
+这意味着任何引用 `implementation::api::f` 的外部 crate 将收到隐私违规，而路径 `api::f` 将被允许。
 
 r[vis.reexports.private-item]
-When re-exporting a private item, it can be thought of as allowing the "privacy chain" being short-circuited through the reexport instead of passing through the namespace hierarchy as it normally would.
+当重新导出私有项时，可以认为允许通过重新导出"短路"隐私链，而不是像通常那样通过命名空间层次结构传递。

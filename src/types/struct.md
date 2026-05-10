@@ -1,26 +1,26 @@
 r[type.struct]
-# Struct types
+# 结构体类型
 
 r[type.struct.intro]
-A `struct` *type* is a heterogeneous product of other types, called the *fields* of the type.[^structtype]
+`struct` *类型*是其他类型的异构积，称为类型的*字段*。[^structtype]
 
 r[type.struct.constructor]
-New instances of a `struct` can be constructed with a [struct expression].
+`struct` 的新实例可以使用[结构体表达式]构造。
 
 r[type.struct.layout]
-The memory layout of a `struct` is undefined by default to allow for compiler optimizations like field reordering, but it can be fixed with the [`repr` attribute]. In either case, fields may be given in any order in a corresponding struct *expression*; the resulting `struct` value will always have the same memory layout.
+`struct` 的内存布局默认是未定义的，以便编译器进行字段重排等优化，但可以使用 [`repr` 属性]来固定。在两种情况下，字段都可以在相应的结构体*表达式*中以任意顺序给出；生成的 `struct` 值始终具有相同的内存布局。
 
 r[type.struct.field-visibility]
-The fields of a `struct` may be qualified by [visibility modifiers], to allow access to data in a struct outside a module.
+`struct` 的字段可以受[可见性修饰符]限定，以允许在模块外部访问结构体中的数据。
 
 r[type.struct.tuple]
-A _tuple struct_ type is just like a struct type, except that the fields are anonymous.
+*元组结构体*类型与结构体类型类似，只是字段是匿名的。
 
 r[type.struct.unit]
-A _unit-like struct_ type is like a struct type, except that it has no fields. The one value constructed by the associated [struct expression] is the only value that inhabits such a type.
+*类单元结构体*类型类似于结构体类型，只是它没有字段。由关联的[结构体表达式]构造的那个值是在这样的类型中存在的唯一值。
 
-[^structtype]: `struct` types are analogous to `struct` types in C, the *record* types of the ML family, or the *struct* types of the Lisp family.
+[^structtype]: `struct` 类型类似于 C 中的 `struct` 类型、ML 家族中的 *record* 类型或 Lisp 家族中的 *struct* 类型。
 
-[`repr` attribute]: ../type-layout.md#representations
-[struct expression]: ../expressions/struct-expr.md
-[visibility modifiers]: ../visibility-and-privacy.md
+[`repr` 属性]: ../type-layout.md#representations
+[结构体表达式]: ../expressions/struct-expr.md
+[可见性修饰符]: ../visibility-and-privacy.md

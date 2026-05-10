@@ -1,8 +1,8 @@
 r[type.closure]
-# Closure types
+# 闭包类型
 
 r[type.closure.intro]
-A [closure expression] produces a closure value with a unique, anonymous type that cannot be written out. A closure type is approximately equivalent to a struct which contains the captured values. For instance, the following closure:
+[闭包表达式]生成一个闭包值，其类型是唯一的、匿名的，无法被写出。闭包类型大致等价于一个包含被捕获值的结构体。例如，以下闭包：
 
 ```rust
 #[derive(Debug)]
@@ -23,16 +23,14 @@ let c = || {
     rect.right_bottom.x += 1;
     format!("{:?}", rect.left_top)
 };
-f(c); // Prints "Point { x: 2, y: 1 }".
+f(c); // 打印 "Point { x: 2, y: 1 }"。
 ```
 
-generates a closure type roughly like the following:
+生成一个大致如下的闭包类型：
 
 <!-- ignore: simplified -->
 ```rust,ignore
-// Note: This is not exactly how it is translated, this is only for
-// illustration.
-
+// 注意：这不是精确的转换方式，仅用于说明。
 struct Closure<'a> {
     left_top : &'a mut Point,
     right_bottom_x : &'a mut i32,
@@ -48,7 +46,7 @@ impl<'a> FnOnce<()> for Closure<'a> {
 }
 ```
 
-so that the call to `f` works as if it were:
+因此对 `f` 的调用如同：
 
 <!-- ignore: continuation of above -->
 ```rust,ignore
@@ -56,56 +54,56 @@ f(Closure{ left_top: &mut rect.left_top, right_bottom_x: &mut rect.right_bottom.
 ```
 
 r[type.closure.capture]
-## Capture modes
+## 捕获模式
 
 r[type.closure.capture.intro]
-A *capture mode* determines how a [place expression] from the environment is borrowed or moved into the closure. The capture modes are:
+*捕获模式*决定了环境中的[位置表达式]如何被借用或移动到闭包中。捕获模式有：
 
-1. Immutable borrow (`ImmBorrow`) --- The place expression is captured as a [shared reference].
-2. Unique immutable borrow (`UniqueImmBorrow`) --- This is similar to an immutable borrow, but must be unique as described [below](#unique-immutable-borrows-in-captures).
-3. Mutable borrow (`MutBorrow`) --- The place expression is captured as a [mutable reference].
-4. Move (`ByValue`) --- The place expression is captured by [moving the value] into the closure.
+1. 不可变借用 (`ImmBorrow`) --- 位置表达式被捕获为[共享引用]。
+2. 唯一不可变借用 (`UniqueImmBorrow`) --- 类似于不可变借用，但必须是唯一的，如[下文](#唯一不可变借用于捕获)所述。
+3. 可变借用 (`MutBorrow`) --- 位置表达式被捕获为[可变引用]。
+4. 移动 (`ByValue`) --- 位置表达式通过[移动值]的方式被捕获到闭包中。
 
 r[type.closure.capture.precedence]
-Place expressions from the environment are captured from the first mode that is compatible with how the captured value is used inside the closure body. The mode is not affected by the code surrounding the closure, such as the lifetimes of involved variables or fields, or of the closure itself.
+环境中的位置表达式从第一个与闭包体内捕获值的使用方式兼容的模式开始被捕获。模式不受闭包周围代码的影响，例如所涉及的变量或字段的生命周期，或闭包自身的生命周期。
 
-[moving the value]: ../expressions.md#moved-and-copied-types
-[mutable reference]: pointer.md#mutable-references-mut
-[place expression]: ../expressions.md#place-expressions-and-value-expressions
-[shared reference]: pointer.md#references--and-mut
+[移动值]: ../expressions.md#moved-and-copied-types
+[可变引用]: pointer.md#mutable-references-mut
+[位置表达式]: ../expressions.md#place-expressions-and-value-expressions
+[共享引用]: pointer.md#references--and-mut
 
 r[type.closure.capture.copy]
-### `Copy` values
+### `Copy` 值
 
-Values that implement [`Copy`] that are moved into the closure are captured with the `ImmBorrow` mode.
+实现了 [`Copy`] 并且被移动到闭包中的值以 `ImmBorrow` 模式捕获。
 
 ```rust
 let x = [0; 1024];
 let c = || {
-    let y = x; // x captured by ImmBorrow
+    let y = x; // x 以 ImmBorrow 捕获
 };
 ```
 
 r[type.closure.async.input]
-### Async input capture
+### 异步输入捕获
 
-Async closures always capture all input arguments, regardless of whether or not they are used within the body.
+异步闭包始终捕获所有输入参数，无论它们是否在闭包体内被使用。
 
-## Capture precision
+## 捕获精度
 
 r[type.closure.capture.precision.capture-path]
-A *capture path* is a sequence starting with a variable from the environment followed by zero or more place projections from that variable.
+*捕获路径*是一个序列，以环境中的变量开始，后面跟随零个或多个从该变量开始的位置投影。
 
 r[type.closure.capture.precision.place-projection]
-A *place projection* is a [field access], [tuple index], [dereference] (and automatic dereferences), [array or slice index] expression, or [pattern destructuring] applied to a variable.
+*位置投影*是[字段访问]、[元组索引]、[解引用]（和自动解引用）、[数组或切片索引]表达式，或应用于变量的[模式解构]。
 
 > [!NOTE]
-> In `rustc`, pattern destructuring desugars into a series of dereferences and field or element accesses.
+> 在 `rustc` 中，模式解构会脱糖为一系列解引用和字段或元素访问。
 
 r[type.closure.capture.precision.intro]
-The closure borrows or moves the capture path, which may be truncated based on the rules described below.
+闭包借用或移动捕获路径，该路径可能根据下述规则被截断。
 
-For example:
+例如：
 
 ```rust
 struct SomeStruct {
@@ -114,53 +112,53 @@ struct SomeStruct {
 let s = SomeStruct { f1: (1, 2) };
 
 let c = || {
-    let x = s.f1.1; // s.f1.1 captured by ImmBorrow
+    let x = s.f1.1; // s.f1.1 以 ImmBorrow 捕获
 };
 c();
 ```
 
-Here the capture path is the local variable `s`, followed by a field access `.f1`, and then a tuple index `.1`. This closure captures an immutable borrow of `s.f1.1`.
+此处捕获路径是局部变量 `s`，后跟字段访问 `.f1`，再后跟元组索引 `.1`。此闭包捕获 `s.f1.1` 的不可变借用。
 
-[field access]: ../expressions/field-expr.md
-[pattern destructuring]: patterns.destructure
-[tuple index]: ../expressions/tuple-expr.md#tuple-indexing-expressions
-[dereference]: ../expressions/operator-expr.md#the-dereference-operator
-[array or slice index]: ../expressions/array-expr.md#array-and-slice-indexing-expressions
+[字段访问]: ../expressions/field-expr.md
+[模式解构]: patterns.destructure
+[元组索引]: ../expressions/tuple-expr.md#tuple-indexing-expressions
+[解引用]: ../expressions/operator-expr.md#the-dereference-operator
+[数组或切片索引]: ../expressions/array-expr.md#array-and-slice-indexing-expressions
 
 r[type.closure.capture.precision.shared-prefix]
-### Shared prefix
+### 共享前缀
 
-In the case where a capture path and one of the ancestors of that path are both captured by a closure, the ancestor path is captured with the highest capture mode among the two captures, `CaptureMode = max(AncestorCaptureMode, DescendantCaptureMode)`, using the strict weak ordering:
+当一条捕获路径及其某个祖先路径同时被闭包捕获时，祖先路径将以两者中较高的捕获模式捕获，`CaptureMode = max(AncestorCaptureMode, DescendantCaptureMode)`，使用如下严格弱序：
 
 `ImmBorrow < UniqueImmBorrow < MutBorrow < ByValue`
 
-Note that this might need to be applied recursively.
+注意，这可能需要递归应用。
 
 ```rust
-// In this example, there are three different capture paths with a shared ancestor:
+// 此例中有三条不同的捕获路径共享同一祖先：
 # fn move_value<T>(_: T){}
 let s = String::from("S");
 let t = (s, String::from("T"));
 let mut u = (t, String::from("U"));
 
 let c = || {
-    println!("{:?}", u); // u captured by ImmBorrow
-    u.1.truncate(0); // u.1 captured by MutBorrow
-    move_value(u.0.0); // u.0.0 captured by ByValue
+    println!("{:?}", u); // u 以 ImmBorrow 捕获
+    u.1.truncate(0); // u.1 以 MutBorrow 捕获
+    move_value(u.0.0); // u.0.0 以 ByValue 捕获
 };
 c();
 ```
 
-Overall this closure will capture `u` by `ByValue`.
+总体而言，此闭包将以 `ByValue` 捕获 `u`。
 
 r[type.closure.capture.precision.dereference-shared]
-### Rightmost shared reference truncation
+### 最右侧共享引用截断
 
-The capture path is truncated at the rightmost dereference in the capture path if the dereference is applied to a shared reference.
+捕获路径在路径中最右侧的解引用处截断，前提是该解引用作用于共享引用。
 
-This truncation is allowed because fields that are read through a shared reference will always be read via a shared reference or a copy. This helps reduce the size of the capture when the extra precision does not yield any benefit from a borrow checking perspective.
+允许此截断是因为通过共享引用读取的字段始终通过共享引用或复制来读取。这有助于在额外精度从借用检查角度而言没有收益时减少捕获的大小。
 
-The reason it is the *rightmost* dereference is to help avoid a shorter lifetime than is necessary. Consider the following example:
+之所以是*最右侧*解引用，是为了帮助避免不必要的更短生命周期。考虑以下示例：
 
 ```rust
 struct Int(i32);
@@ -177,268 +175,266 @@ fn foo<'a, 'b>(m: &'a MyStruct<'b>) -> impl FnMut() + 'static {
 }
 ```
 
-If this were to capture `m`, then the closure would no longer outlive `'static`, since `m` is constrained to `'a`. Instead, it captures `(*(*m).a)` by `ImmBorrow`.
+如果此处捕获 `m`，则闭包将不再能存活超过 `'static`，因为 `m` 受 `'a` 约束。相反，它以 `ImmBorrow` 捕获 `(*(*m).a)`。
 
 r[type.closure.capture.precision.wildcard]
-### Wildcard pattern bindings
+### 通配符模式绑定
 
 r[type.closure.capture.precision.wildcard.reads]
-Closures only capture data that needs to be read. Binding a value with a [wildcard pattern] does not read the value, so the place is not captured.
+闭包仅捕获需要被读取的数据。使用[通配符模式]绑定值不会读取该值，因此该位置不会被捕获。
 
 ```rust,no_run
-struct S; // A non-`Copy` type.
+struct S; // 非 `Copy` 类型。
 let x = S;
 let c = || {
-    let _ = x;  // Does not capture `x`.
+    let _ = x;  // 不捕获 `x`。
 };
 let c = || match x {
-    _ => (), // Does not capture `x`.
+    _ => (), // 不捕获 `x`。
 };
-x; // OK: `x` can be moved here.
+x; // 正确：`x` 可以在这里移动。
 c();
 ```
 
 r[type.closure.capture.precision.wildcard.destructuring]
-Destructuring tuples, structs, and single-variant enums does not, by itself, cause a read or the place to be captured.
+解构元组、结构体和单变体枚举本身不会导致读取或捕获该位置。
 
 > [!NOTE]
-> Enums marked with [`#[non_exhaustive]`][attributes.type-system.non_exhaustive] are always treated as having multiple variants. See *[type.closure.capture.precision.discriminants.non_exhaustive]*.
+> 标记有 [`#[non_exhaustive]`][attributes.type-system.non_exhaustive] 的枚举始终被视为具有多个变体。参见 *[type.closure.capture.precision.discriminants.non_exhaustive]*。
 
 ```rust,no_run
-struct S; // A non-`Copy` type.
+struct S; // 非 `Copy` 类型。
 
-// Destructuring tuples does not cause a read or capture.
+// 解构元组不会导致读取或捕获。
 let x = (S,);
 let c = || {
-    let (..) = x; // Does not capture `x`.
+    let (..) = x; // 不捕获 `x`。
 };
-x; // OK: `x` can be moved here.
+x; // 正确：`x` 可以在这里移动。
 c();
 
-// Destructuring unit structs does not cause a read or capture.
+// 解构单元结构体不会导致读取或捕获。
 let x = S;
 let c = || {
-    let S = x; // Does not capture `x`.
+    let S = x; // 不捕获 `x`。
 };
-x; // OK: `x` can be moved here.
+x; // 正确：`x` 可以在这里移动。
 c();
 
-// Destructuring structs does not cause a read or capture.
+// 解构结构体不会导致读取或捕获。
 struct W<T>(T);
 let x = W(S);
 let c = || {
-    let W(..) = x; // Does not capture `x`.
+    let W(..) = x; // 不捕获 `x`。
 };
-x; // OK: `x` can be moved here.
+x; // 正确：`x` 可以在这里移动。
 c();
 
-// Destructuring single-variant enums does not cause a read
-// or capture.
+// 解构单变体枚举不会导致读取或捕获。
 enum E<T> { V(T) }
 let x = E::V(S);
 let c = || {
-    let E::V(..) = x; // Does not capture `x`.
+    let E::V(..) = x; // 不捕获 `x`。
 };
-x; // OK: `x` can be moved here.
+x; // 正确：`x` 可以在这里移动。
 c();
 ```
 
 r[type.closure.capture.precision.wildcard.fields]
-Fields matched against [RestPattern] (`..`) or [StructPatternEtCetera] (also `..`) are not read, and those fields are not captured.
+匹配 [RestPattern] (`..`) 或 [StructPatternEtCetera]（也是 `..`）的字段不会被读取，这些字段不会被捕获。
 
 ```rust,no_run
-struct S; // A non-`Copy` type.
+struct S; // 非 `Copy` 类型。
 let x = (S, S);
 let c = || {
-    let (x0, ..) = x;  // Captures `x.0` by `ByValue`.
+    let (x0, ..) = x;  // 以 `ByValue` 捕获 `x.0`。
 };
-// Only the first tuple field was captured by the closure.
-x.1; // OK: `x.1` can be moved here.
+// 只有第一个元组字段被闭包捕获。
+x.1; // 正确：`x.1` 可以在这里移动。
 c();
 ```
 
 r[type.closure.capture.precision.wildcard.array-slice]
-Partial captures of arrays and slices are not supported; the entire slice or array is always captured even if used with wildcard pattern matching, indexing, or sub-slicing.
+不支持对数组和切片的部分捕获；即使使用通配符模式匹配、索引或子切片，整个切片或数组也始终被捕获。
 
 ```rust,compile_fail,E0382
-struct S; // A non-`Copy` type.
+struct S; // 非 `Copy` 类型。
 let mut x = [S, S];
 let c = || {
-    let [x0, _] = x; // Captures all of `x` by `ByValue`.
+    let [x0, _] = x; // 以 `ByValue` 捕获整个 `x`。
 };
-let _ = &mut x[1]; // ERROR: Borrow of moved value.
+let _ = &mut x[1]; // 错误：借用已移动的值。
 ```
 
 r[type.closure.capture.precision.wildcard.initialized]
-Values that are matched with wildcards must still be initialized.
+使用通配符匹配的值仍然必须被初始化。
 
 ```rust,compile_fail,E0381
 let x: u8;
 let c = || {
-    let _ = x; // ERROR: Binding `x` isn't initialized.
+    let _ = x; // 错误：绑定 `x` 未初始化。
 };
 ```
 
-[wildcard pattern]: ../patterns.md#wildcard-pattern
+[通配符模式]: ../patterns.md#wildcard-pattern
 
 r[type.closure.capture.precision.discriminants]
-### Capturing for discriminant reads
+### 判别值读取的捕获
 
 r[type.closure.capture.precision.discriminants.reads]
-If pattern matching reads a discriminant, the place containing that discriminant is captured by `ImmBorrow`.
+如果模式匹配读取了判别值，则包含该判别值的位置以 `ImmBorrow` 被捕获。
 
 r[type.closure.capture.precision.discriminants.multiple-variant]
-Matching against a variant of an enum that has more than one variant reads the discriminant, capturing the place by `ImmBorrow`.
+匹配具有多个变体的枚举的某个变体将读取判别值，以 `ImmBorrow` 捕获该位置。
 
 ```rust,compile_fail,E0502
-struct S; // A non-`Copy` type.
+struct S; // 非 `Copy` 类型。
 let mut x = (Some(S), S);
 let c = || match x {
     (None, _) => (),
 //   ^^^^
-// This pattern requires reading the discriminant, which
-// causes `x.0` to be captured by `ImmBorrow`.
+// 此模式需要读取判别值，这导致
+// `x.0` 以 `ImmBorrow` 被捕获。
     _ => (),
 };
-let _ = &mut x.0; // ERROR: Cannot borrow `x.0` as mutable.
+let _ = &mut x.0; // 错误：无法将 `x.0` 作为可变借用。
 //           ^^^
-// The closure is still live, so `x.0` is still immutably
-// borrowed here.
+// 闭包仍然存活，因此这里 `x.0` 仍然
+// 被不可变借用。
 c();
 ```
 
 ```rust,no_run
-# struct S; // A non-`Copy` type.
+# struct S; // 非 `Copy` 类型。
 # let x = (Some(S), S);
-let c = || match x { // Captures `x.0` by `ImmBorrow`.
+let c = || match x { // 以 `ImmBorrow` 捕获 `x.0`。
     (None, _) => (),
     _ => (),
 };
-// Though `x.0` is captured due to the discriminant read,
-// `x.1` is not captured.
-x.1; // OK: `x.1` can be moved here.
+// 虽然 `x.0` 因判别值读取而被捕获，
+// 但 `x.1` 没有被捕获。
+x.1; // 正确：`x.1` 可以在这里移动。
 c();
 ```
 
 r[type.closure.capture.precision.discriminants.single-variant]
-Matching against the only variant of a single-variant enum does not read the discriminant and does not capture the place.
+匹配单变体枚举的唯一变体不会读取判别值，也不会捕获该位置。
 
 ```rust,no_run
-enum E<T> { V(T) } // A single-variant enum.
+enum E<T> { V(T) } // 单变体枚举。
 let x = E::V(());
 let c = || {
-    let E::V(_) = x; // Does not capture `x`.
+    let E::V(_) = x; // 不捕获 `x`。
 };
-x; // OK: `x` can be moved here.
+x; // 正确：`x` 可以在这里移动。
 c();
 ```
 
 r[type.closure.capture.precision.discriminants.non_exhaustive]
-If [`#[non_exhaustive]`][attributes.type-system.non_exhaustive] is applied to an enum, the enum is treated as having multiple variants for the purpose of deciding whether a read occurs, even if it actually has only one variant.
+如果 [`#[non_exhaustive]`][attributes.type-system.non_exhaustive] 应用于某个枚举，就判断是否发生读取而言，该枚举被视为具有多个变体，即使它实际上只有一个变体。
 
 r[type.closure.capture.precision.discriminants.uninhabited-variants]
-Even if all variants but the one being matched against are uninhabited, making the pattern [irrefutable][patterns.refutable], the discriminant is still read if it otherwise would be.
+即使除所匹配的变体之外的所有变体都是不可居住的，使得该模式[不可反驳][patterns.refutable]，判别值仍然会被读取（如果本来应读取的话）。
 
 ```rust,compile_fail,E0502
 enum Empty {}
 let mut x = Ok::<_, Empty>(42);
 let c = || {
-    let Ok(_) = x; // Captures `x` by `ImmBorrow`.
+    let Ok(_) = x; // 以 `ImmBorrow` 捕获 `x`。
 };
-let _ = &mut x; // ERROR: Cannot borrow `x` as mutable.
+let _ = &mut x; // 错误：无法将 `x` 作为可变借用。
 c();
 ```
 
 
 r[type.closure.capture.precision.range-patterns]
-### Capturing and range patterns
+### 范围模式的捕获
 
 r[type.closure.capture.precision.range-patterns.reads]
-Matching against a [range pattern][patterns.range] reads the place being matched, even if the range includes all possible values of the type, and captures the place by `ImmBorrow`.
+匹配[范围模式][patterns.range]会读取被匹配的位置，即使该范围包含类型的所有可能值，也会以 `ImmBorrow` 捕获该位置。
 
 ```rust,compile_fail,E0502
 let mut x = 0u8;
 let c = || {
-    let 0..=u8::MAX = x; // Captures `x` by `ImmBorrow`.
+    let 0..=u8::MAX = x; // 以 `ImmBorrow` 捕获 `x`。
 };
-let _ = &mut x; // ERROR: Cannot borrow `x` as mutable.
+let _ = &mut x; // 错误：无法将 `x` 作为可变借用。
 c();
 ```
 
 r[type.closure.capture.precision.slice-patterns]
-### Capturing and slice patterns
+### 切片模式的捕获
 
 r[type.closure.capture.precision.slice-patterns.slices]
-Matching a slice against a [slice pattern][patterns.slice] other than one with only a single [rest pattern][patterns.rest] (i.e. `[..]`) is treated as a read of the length from the slice and captures the slice by `ImmBorrow`.
+将切片与除仅包含单个[剩余模式][patterns.rest]（即 `[..]`）之外的[切片模式][patterns.slice]匹配，视为从切片读取长度，并以 `ImmBorrow` 捕获该切片。
 
 ```rust,compile_fail,E0502
 let x: &mut [u8] = &mut [];
-let c = || match x { // Captures `*x` by `ImmBorrow`.
+let c = || match x { // 以 `ImmBorrow` 捕获 `*x`。
     &mut [] => (),
 //       ^^
-// This matches a slice of exactly zero elements. To know whether the
-// scrutinee matches, the length must be read, causing the slice to
-// be captured.
+// 这匹配一个恰好零元素的切片。要判断被检查值是否
+// 匹配，必须读取长度，导致切片被捕获。
     _ => (),
 };
-let _ = &mut *x; // ERROR: Cannot borrow `*x` as mutable.
+let _ = &mut *x; // 错误：无法将 `*x` 作为可变借用。
 c();
 ```
 
 ```rust,no_run
 let x: &mut [u8] = &mut [];
-let c = || match x { // Does not capture `*x`.
+let c = || match x { // 不捕获 `*x`。
     [..] => (),
-//   ^^ Rest pattern.
+//   ^^ 剩余模式。
 };
-let _ = &mut *x; // OK: `*x` can be borrow here.
+let _ = &mut *x; // 正确：`*x` 可以在这里借用。
 c();
 ```
 
 > [!NOTE]
-> Perhaps surprisingly, even though the length is contained in the (wide) *pointer* to the slice, it is the place of the *pointee* (the slice) that is treated as read and is captured.
+> 也许令人惊讶的是，尽管长度包含在指向切片的（宽）*指针*中，但被视为读取并捕获的是*指向对象*（切片）的位置。
 >
 > ```rust,no_run
 > fn f<'l: 's, 's>(x: &'s mut &'l [u8]) -> impl Fn() + 'l {
->     // The closure outlives `'l` because it captures `**x`. If
->     // instead it captured `*x`, it would not live long enough
->     // to satisfy the `impl Fn() + 'l` bound.
->     || match *x { // Captures `**x` by `ImmBorrow`.
+>     // 闭包存活期超过 `'l`，因为它捕获了 `**x`。
+>     // 如果它捕获的是 `*x`，则存活时间不足以
+>     // 满足 `impl Fn() + 'l` 的约束。
+>     || match *x { // 以 `ImmBorrow` 捕获 `**x`。
 >         &[] => (),
 >         _ => (),
 >     }
 > }
 > ```
 >
-> In this way, the behavior is consistent with dereferencing to the slice in the scrutinee.
+> 这样，行为与在检查值中解引用到切片是一致的。
 >
 > ```rust,no_run
 > fn f<'l: 's, 's>(x: &'s mut &'l [u8]) -> impl Fn() + 'l {
->     || match **x { // Captures `**x` by `ImmBorrow`.
+>     || match **x { // 以 `ImmBorrow` 捕获 `**x`。
 >         [] => (),
 >         _ => (),
 >     }
 > }
 > ```
 >
-> For details, see [Rust PR #138961](https://github.com/rust-lang/rust/pull/138961).
+> 详细信息见 [Rust PR #138961](https://github.com/rust-lang/rust/pull/138961)。
 
 r[type.closure.capture.precision.slice-patterns.arrays]
-As the length of an array is fixed by its type, matching an array against a slice pattern does not by itself capture the place.
+由于数组的长度由类型确定，将数组与切片模式匹配本身并不会捕获该位置。
 
 ```rust,no_run
 let x: [u8; 1] = [0];
-let c = || match x { // Does not capture `x`.
-    [_] => (), // Length is fixed.
+let c = || match x { // 不捕获 `x`。
+    [_] => (), // 长度是固定的。
 };
-x; // OK: `x` can be moved here.
+x; // 正确：`x` 可以在这里移动。
 c();
 ```
 
 r[type.closure.capture.precision.move-dereference]
-### Capturing references in move contexts
+### `move` 上下文中捕获引用
 
-Because it is not allowed to move fields out of a reference, `move` closures will only capture the prefix of a capture path that runs up to, but not including, the first dereference of a reference. The reference itself will be moved into the closure.
+由于不允许从引用中移出字段，`move` 闭包仅会捕获到达引用第一次解引用之前（但不包括）的捕获路径前缀。引用本身将被移动到闭包中。
 
 ```rust
 struct T(String, String);
@@ -446,15 +442,15 @@ struct T(String, String);
 let mut t = T(String::from("foo"), String::from("bar"));
 let t_mut_ref = &mut t;
 let mut c = move || {
-    t_mut_ref.0.push_str("123"); // captures `t_mut_ref` ByValue
+    t_mut_ref.0.push_str("123"); // 以 ByValue 捕获 `t_mut_ref`
 };
 c();
 ```
 
 r[type.closure.capture.precision.raw-pointer-dereference]
-### Raw pointer dereference
+### 裸指针解引用
 
-Because it is `unsafe` to dereference a raw pointer, closures will only capture the prefix of a capture path that runs up to, but not including, the first dereference of a raw pointer.
+由于解引用裸指针是 `unsafe` 的，闭包仅会捕获到达裸指针第一次解引用之前（但不包括）的捕获路径前缀。
 
 ```rust
 struct T(String, String);
@@ -463,15 +459,15 @@ let t = T(String::from("foo"), String::from("bar"));
 let t_ptr = &t as *const T;
 
 let c = || unsafe {
-    println!("{}", (*t_ptr).0); // captures `t_ptr` by ImmBorrow
+    println!("{}", (*t_ptr).0); // 以 ImmBorrow 捕获 `t_ptr`
 };
 c();
 ```
 
 r[type.closure.capture.precision.union]
-### Union fields
+### 联合体字段
 
-Because it is `unsafe` to access a union field, closures will only capture the prefix of a capture path that runs up to the union itself.
+由于访问联合体字段是 `unsafe` 的，闭包仅会捕获到达联合体本身的捕获路径前缀。
 
 ```rust
 union U {
@@ -481,23 +477,23 @@ union U {
 let u = U { a: (123, 456) };
 
 let c = || {
-    let x = unsafe { u.a.0 }; // captures `u` ByValue
+    let x = unsafe { u.a.0 }; // 以 ByValue 捕获 `u`
 };
 c();
 
-// This also includes writing to fields.
+// 这也包括写入字段。
 let mut u = U { a: (123, 456) };
 
 let mut c = || {
-    u.b = true; // captures `u` with MutBorrow
+    u.b = true; // 以 MutBorrow 捕获 `u`
 };
 c();
 ```
 
 r[type.closure.capture.precision.unaligned]
-### Reference into unaligned `struct`s
+### 对未对齐 `struct` 的引用
 
-Because it is [undefined behavior] to create references to unaligned fields in a structure, closures will only capture the prefix of the capture path that runs up to, but not including, the first field access into a structure that uses [the `packed` representation]. This includes all fields, even those that are aligned, to protect against compatibility concerns should any of the fields in the structure change in the future.
+由于创建对结构中未对齐字段的引用是[未定义行为]，闭包仅会捕获到达使用了 [`packed` 表示法]的结构体中第一次字段访问之前（但不包括）的捕获路径前缀。这包括所有字段，即使那些是对齐的，以防将来结构体中的任何字段发生变化时产生兼容性问题。
 
 ```rust
 #[repr(packed)]
@@ -505,14 +501,14 @@ struct T(i32, i32);
 
 let t = T(2, 5);
 let c = || {
-    let a = t.0; // captures `t` with ImmBorrow
+    let a = t.0; // 以 ImmBorrow 捕获 `t`
 };
-// Copies out of `t` are ok.
+// 从 `t` 复制是可以的。
 let (a, b) = (t.0, t.1);
 c();
 ```
 
-Similarly, taking the address of an unaligned field also captures the entire struct:
+类似地，获取未对齐字段的地址也会捕获整个结构体：
 
 ```rust,compile_fail,E0505
 #[repr(packed)]
@@ -520,132 +516,131 @@ struct T(String, String);
 
 let mut t = T(String::new(), String::new());
 let c = || {
-    let a = std::ptr::addr_of!(t.1); // captures `t` with ImmBorrow
+    let a = std::ptr::addr_of!(t.1); // 以 ImmBorrow 捕获 `t`
 };
-let a = t.0; // ERROR: cannot move out of `t.0` because it is borrowed
+let a = t.0; // 错误：无法移出 `t.0`，因为它已被借用
 c();
 ```
 
-but the above works if it is not packed since it captures the field precisely:
+但如果不是 packed 的就可行，因为它精确地捕获了字段：
 
 ```rust
 struct T(String, String);
 
 let mut t = T(String::new(), String::new());
 let c = || {
-    let a = std::ptr::addr_of!(t.1); // captures `t.1` with ImmBorrow
+    let a = std::ptr::addr_of!(t.1); // 以 ImmBorrow 捕获 `t.1`
 };
-// The move here is allowed.
+// 这里允许移动。
 let a = t.0;
 c();
 ```
 
-[undefined behavior]: ../behavior-considered-undefined.md
-[the `packed` representation]: ../type-layout.md#the-alignment-modifiers
+[未定义行为]: ../behavior-considered-undefined.md
+[`packed` 表示法]: ../type-layout.md#the-alignment-modifiers
 
 r[type.closure.capture.precision.box-deref]
-### `Box` vs other `Deref` implementations
+### `Box` 与其他 `Deref` 实现
 
-The implementation of the [`Deref`] trait for [`Box`] is treated differently from other `Deref` implementations, as it is considered a special entity.
+[`Box`] 的 [`Deref`] trait 实现与其他 `Deref` 实现的处理方式不同，因为它被视为特殊实体。
 
-For example, let us look at examples involving `Rc` and `Box`. The `*rc` is desugared to a call to the trait method `deref` defined on `Rc`, but since `*box` is treated differently, it is possible to do a precise capture of the contents of the `Box`.
+例如，我们来看涉及 `Rc` 和 `Box` 的示例。`*rc` 脱糖为调用 `Rc` 上定义的 trait 方法 `deref`，但由于 `*box` 被特殊处理，可以对 `Box` 的内容进行精确捕获。
 
 [`Box`]: ../special-types-and-traits.md#boxt
 [`Deref`]: ../special-types-and-traits.md#deref-and-derefmut
 
 r[type.closure.capture.precision.box-non-move.not-moved]
-#### `Box` with non-`move` closure
+#### 非 `move` 闭包中的 `Box`
 
-In a non-`move` closure, if the contents of the `Box` are not moved into the closure body, the contents of the `Box` are precisely captured.
+在非 `move` 闭包中，如果 `Box` 的内容没有被移动到闭包体内，则 `Box` 的内容会被精确捕获。
 
 ```rust
 struct S(String);
 
 let b = Box::new(S(String::new()));
 let c_box = || {
-    let x = &(*b).0; // captures `(*b).0` by ImmBorrow
+    let x = &(*b).0; // 以 ImmBorrow 捕获 `(*b).0`
 };
 c_box();
 
-// Contrast `Box` with another type that implements Deref:
+// 将 `Box` 与另一个实现了 Deref 的类型对比：
 let r = std::rc::Rc::new(S(String::new()));
 let c_rc = || {
-    let x = &(*r).0; // captures `r` by ImmBorrow
+    let x = &(*r).0; // 以 ImmBorrow 捕获 `r`
 };
 c_rc();
 ```
 
 r[type.closure.capture.precision.box-non-move.moved]
-However, if the contents of the `Box` are moved into the closure, then the box is entirely captured. This is done so the amount of data that needs to be moved into the closure is minimized.
+但是，如果 `Box` 的内容被移动到闭包中，则整个 box 被捕获。这样做是为了最小化需要移动到闭包中的数据量。
 
 ```rust
-// This is the same as the example above except the closure
-// moves the value instead of taking a reference to it.
+// 与上例相同，只是闭包移动值而不是获取引用。
 
 struct S(String);
 
 let b = Box::new(S(String::new()));
 let c_box = || {
-    let x = (*b).0; // captures `b` with ByValue
+    let x = (*b).0; // 以 ByValue 捕获 `b`
 };
 c_box();
 ```
 
 r[type.closure.capture.precision.box-move.read]
-#### `Box` with move closure
+#### `move` 闭包中的 `Box`
 
-Similarly to moving contents of a `Box` in a non-`move` closure, reading the contents of a `Box` in a `move` closure will capture the `Box` entirely.
+与非 `move` 闭包中移动 `Box` 内容类似，在 `move` 闭包中读取 `Box` 的内容将会整体捕获该 `Box`。
 
 ```rust
 struct S(i32);
 
 let b = Box::new(S(10));
 let c_box = move || {
-    let x = (*b).0; // captures `b` with ByValue
+    let x = (*b).0; // 以 ByValue 捕获 `b`
 };
 ```
 
 r[type.closure.unique-immutable]
-## Unique immutable borrows in captures
+## 唯一不可变借用于捕获 {#唯一不可变借用于捕获}
 
-Captures can occur by a special kind of borrow called a _unique immutable borrow_, which cannot be used anywhere else in the language and cannot be written out explicitly. It occurs when modifying the referent of a mutable reference, as in the following example:
+捕获可以通过一种特殊的借用发生，称为*唯一不可变借用*，它不能在语言的其他任何地方使用，也无法显式写出。当修改可变引用的所指对象时会发生这种借用，如下例所示：
 
 ```rust
 let mut b = false;
 let x = &mut b;
 let mut c = || {
-    // An ImmBorrow and a MutBorrow of `x`.
+    // 对 `x` 的 ImmBorrow 和 MutBorrow。
     let a = &x;
-    *x = true; // `x` captured by UniqueImmBorrow
+    *x = true; // `x` 以 UniqueImmBorrow 捕获
 };
-// The following line is an error:
+// 下面这行会出错：
 // let y = &x;
 c();
-// However, the following is OK.
+// 然而下面这行没问题。
 let z = &x;
 ```
 
-In this case, borrowing `x` mutably is not possible, because `x` is not `mut`. But at the same time, borrowing `x` immutably would make the assignment illegal, because a `& &mut` reference might not be unique, so it cannot safely be used to modify a value. So a unique immutable borrow is used: it borrows `x` immutably, but like a mutable borrow, it must be unique.
+在这种情况下，可变借用 `x` 是不可能的，因为 `x` 不是 `mut`。但同时，不可变借用 `x` 会使赋值非法，因为 `& &mut` 引用可能不是唯一的，因此不能安全地用于修改值。所以使用了唯一不可变借用：它不可变地借用 `x`，但像可变借用一样，它必须是唯一的。
 
-In the above example, uncommenting the declaration of `y` will produce an error because it would violate the uniqueness of the closure's borrow of `x`; the declaration of z is valid because the closure's lifetime has expired at the end of the block, releasing the borrow.
+在上述示例中，取消 `y` 声明的注释将产生错误，因为这会违反闭包对 `x` 的借用的唯一性；`z` 的声明是有效的，因为闭包的生命周期已在块结束时到期，释放了借用。
 
 r[type.closure.call]
-## Call traits and coercions
+## 调用 trait 与强制转换
 
 r[type.closure.call.intro]
-Closure types all implement [`FnOnce`], indicating that they can be called once by consuming ownership of the closure. Additionally, some closures implement more specific call traits:
+闭包类型都实现了 [`FnOnce`]，表示它们可通过消耗闭包所有权被调用一次。此外，某些闭包实现了更具体的调用 trait：
 
 r[type.closure.call.fn-mut]
-* A closure which does not move out of any captured variables implements [`FnMut`], indicating that it can be called by mutable reference.
+* 不移动出任何被捕获变量的闭包实现了 [`FnMut`]，表示它可以通过可变引用被调用。
 
 r[type.closure.call.fn]
-* A closure which does not mutate or move out of any captured variables implements [`Fn`], indicating that it can be called by shared reference.
+* 不修改也不移动出任何被捕获变量的闭包实现了 [`Fn`]，表示它可以通过共享引用被调用。
 
 > [!NOTE]
-> `move` closures may still implement [`Fn`] or [`FnMut`], even though they capture variables by move. This is because the traits implemented by a closure type are determined by what the closure does with captured values, not how it captures them.
+> `move` 闭包仍然可能实现 [`Fn`] 或 [`FnMut`]，即使它们通过移动捕获变量。这是因为闭包类型实现的 trait 取决于闭包对捕获值所做的操作，而不是它如何捕获它们。
 
 r[type.closure.non-capturing]
-*Non-capturing closures* are closures that don't capture anything from their environment. Non-async, non-capturing closures can be coerced to function pointers (e.g., `fn()`) with the matching signature.
+*非捕获闭包*是不从环境中捕获任何内容的闭包。非异步、非捕获闭包可以强制转换为具有匹配签名的函数指针（例如 `fn()`）。
 
 ```rust
 let add = |x, y| x + y;
@@ -658,19 +653,19 @@ x = bo(5,7);
 ```
 
 r[type.closure.async.traits]
-### Async closure traits
+### 异步闭包 trait
 
 r[type.closure.async.traits.fn-family]
-Async closures have a further restriction of whether or not they implement [`FnMut`] or [`Fn`].
+异步闭包在是否实现 [`FnMut`] 或 [`Fn`] 方面有进一步的限制。
 
-The [`Future`] returned by the async closure has similar capturing characteristics as a closure. It captures place expressions from the async closure based on how they are used. The async closure is said to be *lending* to its [`Future`] if it has either of the following properties:
+异步闭包返回的 [`Future`] 具有与闭包类似的捕获特征。它根据捕获值在异步闭包中的使用方式，从异步闭包中捕获位置表达式。如果异步闭包具有以下任一属性，则称其*借出*给其 [`Future`]：
 
-- The `Future` includes a mutable capture.
-- The async closure captures by value, except when the value is accessed with a dereference projection.
+- `Future` 包含可变捕获。
+- 异步闭包按值捕获，除非该值通过解引用投影访问。
 
-If the async closure is lending to its `Future`, then [`FnMut`] and [`Fn`] are *not* implemented. [`FnOnce`] is always implemented.
+如果异步闭包借出给其 `Future`，则 [`FnMut`] 和 [`Fn`] *不*被实现。[`FnOnce`] 总是被实现。
 
-> **Example**: The first clause for a mutable capture can be illustrated with the following:
+> **示例**：可变捕获的第一个条款可以用以下示例说明：
 >
 > ```rust,compile_fail
 > fn takes_callback<Fut: Future>(c: impl FnMut() -> Fut) {}
@@ -678,13 +673,13 @@ If the async closure is lending to its `Future`, then [`FnMut`] and [`Fn`] are *
 > fn f() {
 >     let mut x = 1i32;
 >     let c = async || {
->         x = 2;  // x captured with MutBorrow
+>         x = 2;  // x 以 MutBorrow 捕获
 >     };
->     takes_callback(c);  // ERROR: async closure does not implement `FnMut`
+>     takes_callback(c);  // 错误：异步闭包未实现 `FnMut`
 > }
 > ```
 >
-> The second clause for a regular value capture can be illustrated with the following:
+> 常规值捕获的第二个条款可以用以下示例说明：
 >
 > ```rust,compile_fail
 > fn takes_callback<Fut: Future>(c: impl Fn() -> Fut) {}
@@ -692,13 +687,13 @@ If the async closure is lending to its `Future`, then [`FnMut`] and [`Fn`] are *
 > fn f() {
 >     let x = &1i32;
 >     let c = async move || {
->         let a = x + 2;  // x captured ByValue
+>         let a = x + 2;  // x 以 ByValue 捕获
 >     };
->     takes_callback(c);  // ERROR: async closure does not implement `Fn`
+>     takes_callback(c);  // 错误：异步闭包未实现 `Fn`
 > }
 > ```
 >
-> The exception of the the second clause can be illustrated by using a dereference, which does allow `Fn` and `FnMut` to be implemented:
+> 第二个条款的例外可以通过使用解引用来说明，这样确实允许实现 `Fn` 和 `FnMut`：
 >
 > ```rust
 > fn takes_callback<Fut: Future>(c: impl Fn() -> Fut) {}
@@ -708,18 +703,18 @@ If the async closure is lending to its `Future`, then [`FnMut`] and [`Fn`] are *
 >     let c = async move || {
 >         let a = *x + 2;
 >     };
->     takes_callback(c);  // OK: implements `Fn`
+>     takes_callback(c);  // 正确：实现了 `Fn`
 > }
 > ```
 
 r[type.closure.async.traits.async-family]
-Async closures implement [`AsyncFn`], [`AsyncFnMut`], and [`AsyncFnOnce`] in an analogous way as regular closures implement [`Fn`], [`FnMut`], and [`FnOnce`]; that is, depending on the use of the captured variables in its body.
+异步闭包以类似于常规闭包实现 [`Fn`]、[`FnMut`] 和 [`FnOnce`] 的方式实现 [`AsyncFn`]、[`AsyncFnMut`] 和 [`AsyncFnOnce`]；即，取决于闭包体内对捕获变量的使用方式。
 
 r[type.closure.traits]
-### Other traits
+### 其他 trait
 
 r[type.closure.traits.intro]
-All closure types implement [`Sized`]. Additionally, closure types implement the following traits if allowed to do so by the types of the captures it stores:
+所有闭包类型都实现了 [`Sized`]。此外，闭包类型在其存储的捕获类型允许时实现以下 trait：
 
 * [`Clone`]
 * [`Copy`]
@@ -727,26 +722,26 @@ All closure types implement [`Sized`]. Additionally, closure types implement the
 * [`Send`]
 
 r[type.closure.traits.behavior]
-The rules for [`Send`] and [`Sync`] match those for normal struct types, while [`Clone`] and [`Copy`] behave as if [derived]. For [`Clone`], the order of cloning of the captured values is left unspecified.
+[`Send`] 和 [`Sync`] 的规则与普通结构体类型相同，而 [`Clone`] 和 [`Copy`] 的行为如同[派生][derived]一样。对于 [`Clone`]，捕获值的克隆顺序未指定。
 
-Because captures are often by reference, the following general rules arise:
+由于捕获通常是通过引用进行的，因此产生以下一般规则：
 
-* A closure is [`Sync`] if all captured values are [`Sync`].
-* A closure is [`Send`] if all values captured by non-unique immutable reference are [`Sync`], and all values captured by unique immutable or mutable reference, copy, or move are [`Send`].
-* A closure is [`Clone`] or [`Copy`] if it does not capture any values by unique immutable or mutable reference, and if all values it captures by copy or move are [`Clone`] or [`Copy`], respectively.
+* 如果所有捕获的值都是 [`Sync`] 的，则闭包是 [`Sync`] 的。
+* 如果所有通过非唯一不可变引用捕获的值都是 [`Sync`] 的，并且所有通过唯一不可变或可变引用、复制或移动捕获的值都是 [`Send`] 的，则闭包是 [`Send`] 的。
+* 如果闭包没有通过唯一不可变或可变引用捕获任何值，并且它通过复制或移动捕获的所有值分别是 [`Clone`] 或 [`Copy`] 的，则闭包是 [`Clone`] 或 [`Copy`] 的。
 
 [`Clone`]: ../special-types-and-traits.md#clone
 [`Copy`]: ../special-types-and-traits.md#copy
 [`Send`]: ../special-types-and-traits.md#send
 [`Sized`]: ../special-types-and-traits.md#sized
 [`Sync`]: ../special-types-and-traits.md#sync
-[closure expression]: ../expressions/closure-expr.md
+[闭包表达式]: ../expressions/closure-expr.md
 [derived]: ../attributes/derive.md
 
 r[type.closure.drop-order]
-## Drop order
+## 丢弃顺序
 
-If a closure captures a field of a composite types such as structs, tuples, and enums by value, the field's lifetime would now be tied to the closure. As a result, it is possible for disjoint fields of a composite types to be dropped at different times.
+如果闭包按值捕获了复合类型（例如结构体、元组和枚举）的字段，则该字段的生命周期现在将绑定到闭包。因此，复合类型的不相交字段可能在不同时间被丢弃。
 
 ```rust
 {
@@ -754,19 +749,19 @@ If a closure captures a field of a composite types such as structs, tuples, and 
       (String::from("foo"), String::from("bar")); // --+
     { //                                               |
         let c = || { // ----------------------------+  |
-            // tuple.0 is captured into the closure |  |
+            // tuple.0 被捕获到闭包中              |  |
             drop(tuple.0); //                       |  |
         }; //                                       |  |
-    } // 'c' and 'tuple.0' dropped here ------------+  |
-} // tuple.1 dropped here -----------------------------+
+    } // 'c' 和 'tuple.0' 在此处丢弃 --------------+  |
+} // tuple.1 在此处丢弃 ------------------------------+
 ```
 
 r[type.closure.capture.precision.edition2018.entirety]
-## Edition 2018 and before
+## 2018 及更早版本 {#2018-及更早版本}
 
-### Closure types difference
+### 闭包类型差异
 
-In Edition 2018 and before, closures always capture a variable in its entirety, without its precise capture path. This means that for the example used in the [Closure types](#closure-types) section, the generated closure type would instead look something like this:
+在 2018 版本及之前，闭包始终整体捕获一个变量，不带其精确捕获路径。这意味着对于[闭包类型](#closure-types)一节中使用的示例，生成的闭包类型将类似如下：
 
 <!-- ignore: simplified -->
 ```rust,ignore
@@ -784,7 +779,7 @@ impl<'a> FnOnce<()> for Closure<'a> {
 }
 ```
 
-and the call to `f` would work as follows:
+对 `f` 的调用将如下工作：
 
 <!-- ignore: continuation of above -->
 ```rust,ignore
@@ -792,9 +787,9 @@ f(Closure { rect: rect });
 ```
 
 r[type.closure.capture.precision.edition2018.composite]
-### Capture precision difference
+### 捕获精度差异
 
-Composite types such as structs, tuples, and enums are always captured in its entirety, not by individual fields. As a result, it may be necessary to borrow into a local variable in order to capture a single field:
+复合类型（如结构体、元组和枚举）始终被整体捕获，而不是按单个字段捕获。因此，可能需要借用到局部变量才能捕获单个字段：
 
 ```rust
 # use std::collections::HashSet;
@@ -814,18 +809,18 @@ impl SetVec {
 }
 ```
 
-If, instead, the closure were to use `self.vec` directly, then it would attempt to capture `self` by mutable reference. But since `self.set` is already borrowed to iterate over, the code would not compile.
+如果闭包直接使用 `self.vec`，则它会尝试以可变引用捕获 `self`。但由于 `self.set` 已经被借用以进行迭代，代码将无法编译。
 
 r[type.closure.capture.precision.edition2018.move]
-If the `move` keyword is used, then all captures are by move or, for `Copy` types, by copy, regardless of whether a borrow would work. The `move` keyword is usually used to allow the closure to outlive the captured values, such as if the closure is being returned or used to spawn a new thread.
+如果使用了 `move` 关键字，则所有捕获都是通过移动或（对于 `Copy` 类型）复制进行的，无论借用是否可行。`move` 关键字通常用于允许闭包在捕获值之后继续存活，例如在返回闭包或使用它来生成新线程时。
 
 r[type.closure.capture.precision.edition2018.wildcard]
-Regardless of if the data will be read by the closure, i.e. in case of wild card patterns, if a variable defined outside the closure is mentioned within the closure the variable will be captured in its entirety.
+无论闭包是否会读取数据（即在通配符模式的情况下），如果在闭包内提到了闭包外部定义的变量，该变量将被整体捕获。
 
 r[type.closure.capture.precision.edition2018.drop-order]
-### Drop order difference
+### 丢弃顺序差异
 
-As composite types are captured in their entirety, a closure which captures one of those composite types by value would drop the entire captured variable at the same time as the closure gets dropped.
+由于复合类型被整体捕获，按值捕获这些复合类型之一的闭包将在闭包被丢弃时同时丢弃整个被捕获的变量。
 
 ```rust
 {
@@ -833,9 +828,9 @@ As composite types are captured in their entirety, a closure which captures one 
       (String::from("foo"), String::from("bar"));
     {
         let c = || { // --------------------------+
-            // tuple is captured into the closure |
+            // tuple 被捕获到闭包中              |
             drop(tuple.0); //                     |
         }; //                                     |
-    } // 'c' and 'tuple' dropped here ------------+
+    } // 'c' 和 'tuple' 在此处丢弃 --------------+
 }
 ```

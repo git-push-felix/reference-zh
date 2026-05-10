@@ -1,26 +1,26 @@
 r[memory]
-# Memory model
+# 内存模型
 
 > [!WARNING]
-> The memory model of Rust is incomplete and not fully decided.
+> Rust 的内存模型尚不完整，且未完全确定。
 
 r[memory.bytes]
-## Bytes
+## 字节
 
 r[memory.bytes.intro]
-The most basic unit of memory in Rust is a byte.
+Rust 中最基本的内存单元是字节。
 
 > [!NOTE]
-> While bytes are typically lowered to hardware bytes, Rust uses an "abstract" notion of bytes that can make distinctions which are absent in hardware, such as being uninitialized, or storing part of a pointer. Those distinctions can affect whether your program has undefined behavior, so they still have tangible impact on how compiled Rust programs behave.
+> 尽管字节通常被降低到硬件字节，Rust 使用一种"抽象"的字节概念，可以做出硬件中不存在的区分，例如未初始化或存储了指针的一部分。这些区分可能影响你的程序是否具有未定义行为，因此它们仍然对编译后的 Rust 程序的行为有实际影响。
 
 r[memory.bytes.contents]
-Each byte may have one of the following values:
+每个字节可能具有以下值之一：
 
 r[memory.bytes.init]
-* An initialized byte containing a `u8` value and optional [provenance][std::ptr#provenance],
+* 一个已初始化字节，包含一个 `u8` 值和可选的[来源][std::ptr#provenance]，
 
 r[memory.bytes.uninit]
-* An uninitialized byte.
+* 一个未初始化字节。
 
 > [!NOTE]
-> The above list is not yet guaranteed to be exhaustive.
+> 上述列表尚未保证是详尽无遗的。

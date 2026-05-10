@@ -1,6 +1,6 @@
 r[stmt-expr]
-# Statements and expressions
+# 语句与表达式
 
-Rust is _primarily_ an expression language. This means that most forms of value-producing or effect-causing evaluation are directed by the uniform syntax category of _expressions_. Each kind of expression can typically _nest_ within each other kind of expression, and rules for evaluation of expressions involve specifying both the value produced by the expression and the order in which its sub-expressions are themselves evaluated.
+Rust 主要是一门表达式语言。这意味着大多数产生值或引发效果的求值过程都由统一的*表达式*语法类别来主导。每种表达式通常可以互相嵌套，表达式求值的规则包括指定表达式产生的值以及其子表达式的求值顺序。
 
-In contrast, statements serve _mostly_ to contain and explicitly sequence expression evaluation.
+相比之下，语句的主要作用是承载表达式并明确地编排它们的求值顺序。

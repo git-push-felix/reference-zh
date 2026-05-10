@@ -1,230 +1,230 @@
-# Glossary
+# 术语表
 
 r[glossary.ast]
-### Abstract syntax tree
+### 抽象语法树
 
-An ‘abstract syntax tree’, or ‘AST’, is an intermediate representation of the structure of the program when the compiler is compiling it.
+"抽象语法树"（AST）是编译器在编译程序时对程序结构的一种中间表示。
 
-### Alignment
+### 对齐
 
-The alignment of a value specifies what addresses values are preferred to start at. Always a power of two. References to a value must be aligned. [More][alignment].
+值的对齐指定了值首选从哪些地址开始。始终是 2 的幂。对值的引用必须对齐。[更多信息][alignment]。
 
 r[glossary.abi]
-### Application binary interface (ABI)
+### 应用二进制接口（ABI）
 
-An *application binary interface* (ABI) defines how compiled code interacts with other compiled code. With [`extern` blocks] and [`extern fn`], *ABI strings* affect:
+*应用二进制接口*（ABI）定义了编译后的代码如何与其他编译后的代码交互。使用 [`extern` 块][`extern` blocks]和 [`extern fn`] 时，*ABI 字符串*影响：
 
-- **Calling convention**: How function arguments are passed, values are returned (e.g., in registers or on the stack), and who is responsible for cleaning up the stack.
-- **Unwinding**: Whether stack unwinding is allowed. For example, the `"C-unwind"` ABI allows unwinding across the FFI boundary, while the `"C"` ABI does not.
+- **调用约定**：函数参数如何传递、值如何返回（例如在寄存器中还是在栈上）以及谁负责清理栈。
+- **展开**：是否允许栈展开。例如，`"C-unwind"` ABI 允许跨 FFI 边界展开，而 `"C"` ABI 不允许。
 
-### Arity
+### 元数
 
-Arity refers to the number of arguments a function or operator takes. For some examples, `f(2, 3)` and `g(4, 6)` have arity 2, while `h(8, 2, 6)` has arity 3. The `!` operator has arity 1.
+元数指函数或运算符接受的参数数量。例如，`f(2, 3)` 和 `g(4, 6)` 的元数为 2，而 `h(8, 2, 6)` 的元数为 3。`!` 运算符的元数为 1。
 
-### Array
+### 数组
 
-An array, sometimes also called a fixed-size array or an inline array, is a value describing a collection of elements, each selected by an index that can be computed at run time by the program. It occupies a contiguous region of memory.
+数组，有时也称为固定大小数组或内联数组，是一个描述元素集合的值，每个元素通过程序在运行时可以计算的索引来选择。它占用连续的内存区域。
 
-### Associated item
+### 关联项
 
-An associated item is an item that is associated with another item. Associated items are defined in [implementations] and declared in [traits]. Only functions, constants, and type aliases can be associated. Contrast to a [free item].
+关联项是与另一个项关联的项。关联项在[实现][implementations]中定义，在 [trait][traits] 中声明。只有函数、常量和类型别名可以关联。与[自由项][free item]对比。
 
-### Blanket implementation
+### 毯式实现
 
-Any implementation where a type appears [uncovered](#uncovered-type). `impl<T> Foo for T`, `impl<T> Bar<T> for T`, `impl<T> Bar<Vec<T>> for T`, and `impl<T> Bar<T> for Vec<T>` are considered blanket impls. However, `impl<T> Bar<Vec<T>> for Vec<T>` is not a blanket impl, as all instances of `T` which appear in this `impl` are covered by `Vec`.
+任何在其中类型以[未覆盖](#未覆盖类型)形式出现的实现。`impl<T> Foo for T`、`impl<T> Bar<T> for T`、`impl<T> Bar<Vec<T>> for T` 和 `impl<T> Bar<T> for Vec<T>` 被视为毯式 impl。然而，`impl<T> Bar<Vec<T>> for Vec<T>` 不是毯式 impl，因为在此 `impl` 中出现的所有 `T` 实例都被 `Vec` 覆盖。
 
-### Bound
+### 约束
 
-Bounds are constraints on a type or trait. For example, if a bound is placed on the argument a function takes, types passed to that function must abide by that constraint.
+约束是对类型或 trait 的限制。例如，如果对函数接受的参数设置了约束，则传递给该函数的类型必须遵守该约束。
 
-### Combinator
+### 组合子
 
-Combinators are higher-order functions that apply only functions and earlier defined combinators to provide a result from its arguments. They can be used to manage control flow in a modular fashion.
+组合子是高阶函数，仅应用函数和先前定义的组合子来提供其参数的结果。它们可用于以模块化方式管理控制流。
 
 ### Crate
 
-A crate is the unit of compilation and linking. There are different [types of crates], such as libraries or executables. Crates may link and refer to other library crates, called external crates. A crate has a self-contained tree of [modules], starting from an unnamed root module called the crate root. [Items] may be made visible to other crates by marking them as public in the crate root, including through [paths] of public modules. [More][crate].
+Crate 是编译和链接的单位。存在不同[类型的 crate][types of crates]，例如库或可执行文件。Crate 可以链接和引用其他库 crate，称为外部 crate。一个 crate 有一个自包含的[模块][modules]树，从称为 crate 根的无名根模块开始。[程序项][Items]可以通过在 crate 根中标记为 public 使其对其他 crate 可见，包括通过 public 模块的[路径][paths]。[更多信息][crate]。
 
-### Dispatch
+### 分发
 
-Dispatch is the mechanism to determine which specific version of code is actually run when it involves polymorphism. Two major forms of dispatch are static dispatch and dynamic dispatch. Rust supports dynamic dispatch through the use of [trait objects][type.trait-object].
+分发是在涉及多态时确定实际运行哪个特定版本代码的机制。两种主要的分发形式是静态分发和动态分发。Rust 通过使用 [trait 对象][type.trait-object]支持动态分发。
 
-### Dynamically sized type
+### 动态大小类型
 
-A dynamically sized type (DST) is a type without a statically known size or alignment.
+动态大小类型（DST）是一种没有静态已知大小或对齐的类型。
 
-### Entity
+### 实体
 
-An [*entity*] is a language construct that can be referred to in some way within the source program, usually via a [path][paths]. Entities include [types], [items], [generic parameters], [variable bindings], [loop labels], [lifetimes], [fields], [attributes], and [lints].
+[*实体*][*entity*]是一种语言构造，可以在源程序中以某种方式引用，通常通过[路径][paths]。实体包括[类型][types]、[程序项][items]、[泛型参数][generic parameters]、[变量绑定][variable bindings]、[循环标签][loop labels]、[生命周期][lifetimes]、[字段][fields]、[属性][attributes]和 [lint][lints]。
 
-### Expression
+### 表达式
 
-An expression is a combination of values, constants, variables, operators and functions that evaluate to a single value, with or without side-effects.
+表达式是值、常量、变量、运算符和函数的组合，计算出单个值，可能带有副作用。
 
-For example, `2 + (3 * 4)` is an expression that returns the value 14.
+例如，`2 + (3 * 4)` 是一个返回值为 14 的表达式。
 
-### Free item
+### 自由项
 
-An [item] that is not a member of an [implementation], such as a *free function* or a *free const*. Contrast to an [associated item].
+不是[实现][implementation]成员的[项][item]，例如*自由函数*或*自由常量*。与[关联项][associated item]对比。
 
-### Fundamental traits
+### 基础 trait
 
-A fundamental trait is one where adding an impl of it for an existing type is a breaking change. The `Fn` traits and `Sized` are fundamental.
+基础 trait 是这样一个 trait：为现有类型添加一个 impl 是一个破坏性更改。`Fn` trait 和 `Sized` 是基础 trait。
 
-### Fundamental type constructors
+### 基础类型构造器
 
-A fundamental type constructor is a type where implementing a [blanket implementation](#blanket-implementation) over it is a breaking change. `&`, `&mut`, `Box`, and `Pin`  are fundamental.
+基础类型构造器是这样一个类型：在其上实现[毯式实现](#毯式实现)是一个破坏性更改。`&`、`&mut`、`Box` 和 `Pin` 是基础类型构造器。
 
-Any time a type `T` is considered [local](#local-type), `&T`, `&mut T`, `Box<T>`, and `Pin<T>` are also considered local. Fundamental type constructors cannot [cover](#uncovered-type) other types. Any time the term "covered type" is used, the `T` in `&T`, `&mut T`, `Box<T>`, and `Pin<T>` is not considered covered.
+任何时候类型 `T` 被认为是[局部的](#局部类型)，`&T`、`&mut T`、`Box<T>` 和 `Pin<T>` 也被认为是局部的。基础类型构造器不能[覆盖](#未覆盖类型)其他类型。任何时候使用术语"已覆盖类型"时，`&T`、`&mut T`、`Box<T>` 和 `Pin<T>` 中的 `T` 不被认为是被覆盖的。
 
-### Inhabited
+### 有人居住的
 
-A type is inhabited if it has constructors and therefore can be instantiated. An inhabited type is not "empty" in the sense that there can be values of the type. Opposite of [Uninhabited](#uninhabited).
+如果类型有构造函数并因此可以被实例化，则该类型是有人居住的。有人居住的类型不是"空"的，因为可以存在该类型的值。与[无人居住的](#无人居住的)相反。
 
-### Inherent implementation
+### 固有实现
 
-An [implementation] that applies to a nominal type, not to a trait-type pair. [More][inherent implementation].
+适用于名义类型而非 trait-类型对的[实现][implementation]。[更多信息][inherent implementation]。
 
-### Inherent method
+### 固有方法
 
-A [method] defined in an [inherent implementation], not in a trait implementation.
+在[固有实现][inherent implementation]中定义的[方法][method]，而非在 trait 实现中。
 
-### Initialized
+### 已初始化
 
-A variable is initialized if it has been assigned a value and hasn't since been moved from. All other memory locations are assumed to be uninitialized. Only unsafe Rust can create a memory location without initializing it.
+如果一个变量已被赋值且此后未被移动，则该变量是已初始化的。所有其他内存位置被假定为未初始化的。只有不安全 Rust 可以创建未初始化内存位置。
 
-### Local trait
+### 局部 trait
 
-A `trait` which was defined in the current crate. A trait definition is local or not independent of applied type arguments. Given `trait Foo<T, U>`, `Foo` is always local, regardless of the types substituted for `T` and `U`.
+在当前 crate 中定义的 `trait`。一个 trait 定义是局部的或不取决于应用的类型参数。给定 `trait Foo<T, U>`，`Foo` 始终是局部的，无论替换 `T` 和 `U` 的类型是什么。
 
-### Local type
+### 局部类型
 
-A `struct`, `enum`, or `union` which was defined in the current crate. This is not affected by applied type arguments. `struct Foo` is considered local, but `Vec<Foo>` is not. `LocalType<ForeignType>` is local. Type aliases do not affect locality.
+在当前 crate 中定义的 `struct`、`enum` 或 `union`。这不受应用的类型参数影响。`struct Foo` 被认为是局部的，但 `Vec<Foo>` 不是。`LocalType<ForeignType>` 是局部的。类型别名不影响局部性。
 
-### Module
+### 模块
 
-A module is a container for zero or more [items]. Modules are organized in a tree, starting from an unnamed module at the root called the crate root or the root module. [Paths] may be used to refer to items from other modules, which may be restricted by [visibility rules]. [More][modules]
+模块是包含零个或多个[程序项][items]的容器。模块组织成树，从根部的无名模块开始，称为 crate 根或根模块。[路径][Paths] 可用于引用其他模块的项，这可能受到[可见性规则][visibility rules]的限制。[更多信息][modules]
 
-### Name
+### 名称
 
-A [*name*] is an [identifier] or [lifetime or loop label] that refers to an [entity](#entity). A *name binding* is when an entity declaration introduces an identifier or label associated with that entity. [Paths], identifiers, and labels are used to refer to an entity.
+[*名称*][*name*] 是引用[实体](#实体)的[标识符][identifier]或[生命周期或循环标签][lifetime or loop label]。*名称绑定*是当实体声明引入与该实体关联的标识符或标签时。路径、标识符和标签用于引用实体。
 
-### Name resolution
+### 名称解析
 
-[*Name resolution*] is the compile-time process of tying [paths], [identifiers], and [labels] to [entity](#entity) declarations.
+[*名称解析*][*Name resolution*] 是将[路径][paths]、[标识符][identifiers]和[标签][labels]绑定到[实体](#实体)声明的编译时过程。
 
-### Namespace
+### 命名空间
 
-A *namespace* is a logical grouping of declared [names](#name) based on the kind of [entity](#entity) the name refers to. Namespaces allow the occurrence of a name in one namespace to not conflict with the same name in another namespace.
+*命名空间*是基于名称所指[实体](#实体)的类型对已声明[名称](#名称)的逻辑分组。命名空间允许一个命名空间中的名称出现不会与另一个命名空间中的相同名称冲突。
 
-Within a namespace, names are organized in a hierarchy, where each level of the hierarchy has its own collection of named entities.
+在命名空间内，名称组织成层次结构，层次结构的每个级别都有自己的一组命名实体。
 
-### Nominal types
+### 名义类型
 
-Types that can be referred to by a path directly. Specifically [enums], [structs], [unions], and [trait object types].
+可以直接通过路径引用的类型。具体指[枚举][enums]、[结构体][structs]、[联合体][unions]和 [trait 对象类型][trait object types]。
 
-### Dyn-compatible traits
+### Dyn 兼容 trait
 
-[Traits] that can be used in [trait object types] (`dyn Trait`). Only traits that follow specific [rules][dyn compatibility] are *dyn compatible*.
+可以在 [trait 对象类型][trait object types]（`dyn Trait`）中使用的 [Trait][Traits]。只有遵循特定[规则][dyn compatibility]的 trait 才是*dyn 兼容的*。
 
-These were formerly known as *object safe* traits.
+这些以前称为*对象安全* trait。
 
-### Path
+### 路径
 
-A [*path*] is a sequence of one or more path segments used to refer to an [entity](#entity) in the current scope or other levels of a [namespace](#namespace) hierarchy.
+[*路径*][*path*] 是用于引用当前作用域或[命名空间](#命名空间)层次结构其他级别中的[实体](#实体)的一个或多个路径段的序列。
 
-### Prelude
+### 预导入
 
-Prelude, or The Rust Prelude, is a small collection of items - mostly traits - that are imported into every module of every crate. The traits in the prelude are pervasive.
+预导入，或称 Rust 预导入，是一小部分项——主要是 trait——被导入到每个 crate 的每个模块中。预导入中的 trait 是普遍存在的。
 
-### Scope
+### 作用域
 
-A [*scope*] is the region of source text where a named [entity](#entity) may be referenced with that name.
+[*作用域*][*scope*] 是源文本中可以以其名称引用某命名[实体](#实体)的区域。
 
-### Scrutinee
+### 被匹配项
 
-A scrutinee is the expression that is matched on in `match` expressions and similar pattern matching constructs. For example, in `match x { A => 1, B => 2 }`, the expression `x` is the scrutinee.
+被匹配项是在 `match` 表达式和类似模式匹配构造中被匹配的表达式。例如，在 `match x { A => 1, B => 2 }` 中，表达式 `x` 是被匹配项。
 
-### Size
+### 大小
 
-The size of a value has two definitions.
+值的大小有两个定义。
 
-The first is that it is how much memory must be allocated to store that value.
+第一个是存储该值必须分配多少内存。
 
-The second is that it is the offset in bytes between successive elements in an array with that item type.
+第二个是该类型项的数组中连续元素之间的字节偏移量。
 
-It is a multiple of the alignment, including zero. The size can change depending on compiler version (as new optimizations are made) and target platform (similar to how `usize` varies per-platform).
+它是对齐的倍数，包括零。大小可能因编译器版本（随着新优化的实现）和目标平台而改变（类似于 `usize` 如何因平台而异）。
 
-[More][alignment].
+[更多信息][alignment]。
 
-### Slice
+### 切片
 
-A slice is dynamically-sized view into a contiguous sequence, written as `[T]`.
+切片是对连续序列的动态大小视图，写作 `[T]`。
 
-It is often seen in its borrowed forms, either mutable or shared. The shared slice type is `&[T]`, while the mutable slice type is `&mut [T]`, where `T` represents the element type.
+它经常以其借用的形式出现，可以是可变或共享的。共享切片类型是 `&[T]`，可变切片类型是 `&mut [T]`，其中 `T` 表示元素类型。
 
-### Statement
+### 语句
 
-A statement is the smallest standalone element of a programming language that commands a computer to perform an action.
+语句是编程语言中最小的独立元素，命令计算机执行某个操作。
 
-### String literal
+### 字符串字面量
 
-A string literal is a string stored directly in the final binary, and so will be valid for the `'static` duration.
+字符串字面量是直接存储在最终二进制文件中的字符串，因此将在 `'static` 持续时间内有效。
 
-Its type is `'static` duration borrowed string slice, `&'static str`.
+其类型是 `'static` 持续时间的借用字符串切片 `&'static str`。
 
-### String slice
+### 字符串切片
 
-A string slice is the most primitive string type in Rust, written as `str`. It is often seen in its borrowed forms, either mutable or shared. The shared string slice type is `&str`, while the mutable string slice type is `&mut str`.
+字符串切片是 Rust 中最原始的字符串类型，写作 `str`。它经常以其借用的形式出现，可以是可变或共享的。共享字符串切片类型是 `&str`，可变字符串切片类型是 `&mut str`。
 
-Strings slices are always valid UTF-8.
+字符串切片始终是有效的 UTF-8。
 
 ### Trait
 
-A trait is a language item that is used for describing the functionalities a type must provide. It allows a type to make certain promises about its behavior.
+Trait 是一种语言项，用于描述类型必须提供的功能。它允许类型对其行为做出某些承诺。
 
-Generic functions and generic structs can use traits to constrain, or bound, the types they accept.
+泛型函数和泛型结构体可以使用 trait 来约束它们接受的类型。
 
 ### Turbofish
 
-Paths with generic parameters in expressions must prefix the opening brackets with a `::`. Combined with the angular brackets for generics, this looks like a fish `::<>`. As such, this syntax is colloquially referred to as turbofish syntax.
+表达式中带有泛型参数的路径必须在开括号前加上 `::`。与用于泛型的尖括号结合，这看起来像一条鱼 `::<>`。因此，此语法俗称 turbofish 语法。
 
-Examples:
+示例：
 
 ```rust
 let ok_num = Ok::<_, ()>(5);
 let vec = [1, 2, 3].iter().map(|n| n * 2).collect::<Vec<_>>();
 ```
 
-This `::` prefix is required to disambiguate generic paths with multiple comparisons in a comma-separate list. See [the bastion of the turbofish][turbofish test] for an example where not having the prefix would be ambiguous.
+此 `::` 前缀对于在有多个比较的逗号分隔列表中消除泛型路径的歧义是必需的。参见 [the bastion of the turbofish][turbofish test] 了解不加前缀会产生歧义的示例。
 
-### Uncovered type
+### 未覆盖类型
 
-A type which does not appear as an argument to another type. For example, `T` is uncovered, but the `T` in `Vec<T>` is covered. This is only relevant for type arguments.
+不作为其他类型参数出现的类型。例如，`T` 是未覆盖的，但 `Vec<T>` 中的 `T` 是已覆盖的。这仅与类型参数相关。
 
-### Undefined behavior
+### 未定义行为
 
-Compile-time or run-time behavior that is not specified. This may result in, but is not limited to: process termination or corruption; improper, incorrect, or unintended computation; or platform-specific results. [More][undefined-behavior].
+未指定的编译时或运行时行为。这可能导致但不限于：进程终止或损坏；不当、不正确或意外的计算；或特定于平台的结果。[更多信息][undefined-behavior]。
 
 r[glossary.uninhabited]
-### Uninhabited
+### 无人居住的
 
-A type is uninhabited if it has no constructors and therefore can never be instantiated. An uninhabited type is "empty" in the sense that there are no values of the type. The canonical example of an uninhabited type is the [never type] `!`, or an enum with no variants `enum Never { }`. Opposite of [Inhabited](#inhabited).
+如果类型没有构造函数并因此永远不能被实例化，则该类型是无人居住的。无人居住的类型是"空"的，因为没有该类型的值。无人居住类型的经典示例是 [never 类型][never type] `!`，或没有变体的枚举 `enum Never { }`。与[有人居住的](#有人居住的)相反。
 
 r[glossary.zst]
-### Zero-sized type (ZST)
+### 零大小类型（ZST）
 
-A type is zero sized (a ZST) if its size is 0. Such types have at most one possible value. Examples include:
+如果类型的大小为 0，则该类型是零大小的（ZST）。此类类型至多有一个可能的值。示例包括：
 
-- The [unit type] (see [layout.tuple.unit]).
-- [Function items] (see [type.fn-item.intro]).
-- The constructors of [tuple-like structs] (see [type.fn-item.intro]).
-- The constructors of [tuple-like enum variants] (see [type.fn-item.intro]).
-- `repr(C)` [structs] with no fields or where all fields are zero-sized (see [layout.repr.c.struct.size-field-offset]).
-- `repr(transparent)` [structs] with no fields or where all fields are zero-sized (see [layout.repr.transparent.layout-abi]).
-- [Arrays] of zero-sized types (see [layout.array]).
-- [Arrays] of length zero (see [layout.array]).
-- [Unions] of zero-sized types (see [items.union.common-storage]).
+- [单元类型][unit type]（见 [layout.tuple.unit]）。
+- [函数项][function items]（见 [type.fn-item.intro]）。
+- [元组结构体][tuple-like structs]的构造函数（见 [type.fn-item.intro]）。
+- [元组枚举变体][tuple-like enum variants]的构造函数（见 [type.fn-item.intro]）。
+- 没有字段或所有字段为零大小的 `repr(C)` [结构体][structs]（见 [layout.repr.c.struct.size-field-offset]）。
+- 没有字段或所有字段为零大小的 `repr(transparent)` [结构体][structs]（见 [layout.repr.transparent.layout-abi]）。
+- 零大小类型的[数组][Arrays]（见 [layout.array]）。
+- 长度为零的[数组][Arrays]（见 [layout.array]）。
+- 零大小类型的[联合体][Unions]（见 [items.union.common-storage]）。
 
 ```rust
 # use core::mem::{size_of, size_of_val};
@@ -270,14 +270,14 @@ assert_eq!(0, size_of::<U>());
 [`extern fn`]: items.fn.extern
 [alignment]: type-layout.md#size-and-alignment
 [arrays]: type.array
-[associated item]: #associated-item
+[associated item]: #关联项
 [attributes]: attributes.md
 [*entity*]: names.md
 [crate]: crates-and-source-files.md
 [dyn compatibility]: items/traits.md#dyn-compatibility
 [enums]: items/enumerations.md
 [fields]: expressions/field-expr.md
-[free item]: #free-item
+[free item]: #自由项
 [function items]: type.fn-item
 [generic parameters]: items/generics.md
 [identifier]: identifiers.md

@@ -1,12 +1,12 @@
 <!-- template:attributes -->
 r[attributes.derive]
-# Derive
+# 派生
 
 r[attributes.derive.intro]
-The *`derive` [attribute][attributes]* invokes one or more [derive macros], allowing new [items] to be automatically generated for data structures. You can create `derive` macros with [procedural macros].
+*`derive` [属性][attributes]* 调用一个或多个[派生宏][derive macros]，允许为数据结构自动生成新的[程序项][items]。你可以使用[过程宏][procedural macros]创建 `derive` 宏。
 
 > [!EXAMPLE]
-> The [`PartialEq`][macro@PartialEq] derive macro emits an [implementation] of [`PartialEq`] for `Foo<T> where T: PartialEq`. The [`Clone`][macro@Clone] derive macro does likewise for [`Clone`].
+> [`PartialEq`][macro@PartialEq] 派生宏为 `Foo<T> where T: PartialEq` 生成 [`PartialEq`] 的[实现][implementation]。[`Clone`][macro@Clone] 派生宏类似地为 [`Clone`] 生成实现。
 >
 > ```rust
 > #[derive(PartialEq, Clone)]
@@ -16,7 +16,7 @@ The *`derive` [attribute][attributes]* invokes one or more [derive macros], allo
 > }
 > ```
 >
-> The generated `impl` items are equivalent to:
+> 生成的 `impl` 项等价于：
 >
 > ```rust
 > # struct Foo<T> { a: i32, b: T }
@@ -34,16 +34,16 @@ The *`derive` [attribute][attributes]* invokes one or more [derive macros], allo
 > ```
 
 r[attributes.derive.syntax]
-The `derive` attribute uses the [MetaListPaths] syntax to specify a list of paths to [derive macros] to invoke.
+`derive` 属性使用 [MetaListPaths] 语法来指定要调用的[派生宏][derive macros]的路径列表。
 
 r[attributes.derive.allowed-positions]
-The `derive` attribute may only be applied to [structs][items.struct], [enums][items.enum], and [unions][items.union].
+`derive` 属性只能应用于[结构体][items.struct]、[枚举][items.enum]和[联合体][items.union]。
 
 r[attributes.derive.duplicates]
-The `derive` attribute may be used any number of times on an item. All derive macros listed in all attributes are invoked.
+`derive` 属性可以在一个项上使用任意次数。所有属性中列出的所有派生宏都会被调用。
 
 r[attributes.derive.stdlib]
-The `derive` attribute is exported in the standard library as:
+`derive` 属性在标准库中导出为：
 
 - [`core::derive`]
 - [`std::derive`]
@@ -51,7 +51,7 @@ The `derive` attribute is exported in the standard library as:
 - [`std::prelude::v1::derive`]
 
 r[attributes.derive.built-in]
-Built-in derives are defined in the [language prelude][names.preludes.lang]. The list of built-in derives are:
+内置派生宏定义在[语言预导入][names.preludes.lang]中。内置派生宏的列表如下：
 
 - [`Clone`]
 - [`Copy`]
@@ -64,20 +64,20 @@ Built-in derives are defined in the [language prelude][names.preludes.lang]. The
 - [`PartialOrd`]
 
 r[attributes.derive.built-in-automatically_derived]
-The built-in derives include the [`automatically_derived` attribute][attributes.derive.automatically_derived] on the implementations they generate.
+内置派生宏在其生成的实现中包含 [`automatically_derived` 属性][attributes.derive.automatically_derived]。
 
 r[attributes.derive.behavior]
-During macro expansion, for each element in the list of derives, the corresponding derive macro expands to zero or more [items].
+在宏展开期间，对于派生列表中的每个元素，相应的派生宏展开为零个或多个[程序项][items]。
 
 <!-- template:attributes -->
 r[attributes.derive.automatically_derived]
-## The `automatically_derived` attribute
+## `automatically_derived` 属性
 
 r[attributes.derive.automatically_derived.intro]
-The *`automatically_derived` [attribute][attributes]* is used to annotate an [implementation] to indicate that it was automatically created by a [derive macro]. It has no direct effect, but it may be used by tools and diagnostic lints to detect these automatically generated implementations.
+*`automatically_derived` [属性][attributes]* 用于标注一个[实现][implementation]，以表明它是由[派生宏][derive macro]自动创建的。它没有直接影响，但可以被工具和诊断 lint 用于检测这些自动生成的实现。
 
 > [!EXAMPLE]
-> Given [`#[derive(Clone)]`][macro@Clone] on `struct Example`, the [derive macro] may produce:
+> 给定 `struct Example` 上的 [`#[derive(Clone)]`][macro@Clone]，[派生宏][derive macro]可能产生：
 >
 > ```rust
 > # struct Example;
@@ -91,22 +91,22 @@ The *`automatically_derived` [attribute][attributes]* is used to annotate an [im
 > ```
 
 r[attributes.derive.automatically_derived.syntax]
-The `automatically_derived` attribute uses the [MetaWord] syntax.
+`automatically_derived` 属性使用 [MetaWord] 语法。
 
 r[attributes.derive.automatically_derived.allowed-positions]
-The `automatically_derived` attribute may only be applied to an [implementation].
+`automatically_derived` 属性只能应用于[实现][implementation]。
 
 > [!NOTE]
-> `rustc` ignores use in other positions but lints against it. This may become an error in the future.
+> `rustc` 忽略其他位置的用法但会发出 lint 警告。这可能在将来成为错误。
 
 r[attributes.derive.automatically_derived.duplicates]
-Using `automatically_derived` more than once on an implementation has the same effect as using it once.
+在一个实现上多次使用 `automatically_derived` 的效果与使用一次相同。
 
 > [!NOTE]
-> `rustc` lints against any use following the first.
+> `rustc` 会对第一次之后的使用发出 lint 警告。
 
 r[attributes.derive.automatically_derived.behavior]
-The `automatically_derived` attribute has no behavior.
+`automatically_derived` 属性没有行为。
 
 [items]: ../items.md
 [derive macro]: macro.proc.derive

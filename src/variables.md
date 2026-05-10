@@ -1,34 +1,22 @@
 r[variable]
-# Variables
+# 变量
 
 r[variable.intro]
-A _variable_ is a component of a stack frame, either a named function parameter,
-an anonymous [temporary](expressions.md#temporaries), or a named local
-variable.
+*变量*是栈帧的一个组成部分，可以是具名的函数参数、匿名的[临时值](expressions.md#temporaries)，或具名的局部变量。
 
 r[variable.local]
-A _local variable_ (or *stack-local* allocation) holds a value directly,
-allocated within the stack's memory. The value is a part of the stack frame.
+*局部变量*（或称*栈局部*分配）直接持有一个值，分配在栈内存中。该值是栈帧的一部分。
 
 r[variable.local-mut]
-Local variables are immutable unless declared otherwise. For example:
-`let mut x = ...`.
+局部变量默认是不可变的，除非另行声明。例如：`let mut x = ...`。
 
 r[variable.param-mut]
-Function parameters are immutable unless declared with `mut`. The `mut` keyword
-applies only to the following parameter. For example: `|mut x, y|` and
-`fn f(mut x: Box<i32>, y: Box<i32>)` declare one mutable variable `x` and one
-immutable variable `y`.
+函数参数默认是不可变的，除非用 `mut` 声明。`mut` 关键字仅作用于紧随其后的那个参数。例如：`|mut x, y|` 和 `fn f(mut x: Box<i32>, y: Box<i32>)` 声明了一个可变变量 `x` 和一个不可变变量 `y`。
 
 r[variable.init]
-Local variables are not initialized when allocated. Instead, the entire frame
-worth of local variables are allocated, on frame-entry, in an uninitialized
-state. Subsequent statements within a function may or may not initialize the
-local variables. Local variables can be used only after they have been
-initialized through all reachable control flow paths.
+局部变量在分配时并不初始化。相反，整个栈帧的全部局部变量在进入栈帧时以未初始化状态一次性分配。函数内的后续语句可以初始化这些局部变量，也可以不初始化。局部变量只有在通过所有可达的控制流路径被初始化后才能使用。
 
-In this next example, `init_after_if` is initialized after the [`if` expression]
-while `uninit_after_if` is not because it is not initialized in the `else` case.
+在下面的示例中，`init_after_if` 在 [`if` 表达式]之后被初始化，而 `uninit_after_if` 则没有，因为在 `else` 分支中它没有被初始化。
 
 ```rust
 # fn random_bool() -> bool { true }
@@ -48,4 +36,4 @@ fn initialization_example() {
 }
 ```
 
-[`if` expression]: expressions/if-expr.md#if-expressions
+[`if` 表达式]: expressions/if-expr.md#if-expressions

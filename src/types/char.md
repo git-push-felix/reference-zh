@@ -1,8 +1,8 @@
 r[type.char]
-# Character type
+# 字符类型
 
 r[type.char.intro]
-The `char` type represents a single [Unicode scalar value] (i.e., a code point that is not a surrogate).
+`char` 类型表示单个 [Unicode 标量值]（即不是代理项对的码位）。
 
 > [!EXAMPLE]
 > ```rust
@@ -12,16 +12,16 @@ The `char` type represents a single [Unicode scalar value] (i.e., a code point t
 > ```
 
 > [!NOTE]
-> See [the standard library docs][`char`] for information on the impls of the `char` type.
+> 有关 `char` 类型的实现信息，请参阅[标准库文档][`char`]。
 
 r[type.char.value]
-A value of type `char` is represented as a 32-bit unsigned word in the 0x0000 to 0xD7FF or 0xE000 to 0x10FFFF range. It is immediate [undefined behavior] to create a `char` that falls outside this range.
+`char` 类型的值表示为一个 32 位无符号字，取值范围在 0x0000 到 0xD7FF 或 0xE000 到 0x10FFFF 之间。创建超出此范围的 `char` 将立即构成[未定义行为]。
 
 r[type.char.layout]
-`char` is guaranteed to have the same size and alignment as `u32` on all platforms.
+`char` 在所有平台上保证与 `u32` 具有相同的大小和对齐。
 
 r[type.char.validity]
-Every byte of a `char` is guaranteed to be initialized. In other words, `transmute::<char, [u8; size_of::<char>()]>(...)` is always sound -- but since some bit patterns are invalid `char`s, the inverse is not always sound.
+`char` 的每个字节都保证被初始化。换句话说，`transmute::<char, [u8; size_of::<char>()]>(...)` 始终是可靠的——但由于某些位模式是无效的 `char`，反过来并不总是可靠的。
 
-[Unicode scalar value]: http://www.unicode.org/glossary/#unicode_scalar_value
-[undefined behavior]: ../behavior-considered-undefined.md
+[Unicode 标量值]: http://www.unicode.org/glossary/#unicode_scalar_value
+[未定义行为]: ../behavior-considered-undefined.md

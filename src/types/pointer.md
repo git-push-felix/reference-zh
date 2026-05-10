@@ -1,11 +1,11 @@
 r[type.pointer]
-# Pointer types
+# 指针类型
 
 r[type.pointer.intro]
-All pointers are explicit first-class values. They can be moved or copied, stored into data structs, and returned from functions.
+所有指针都是显式的一等值。它们可以被移动或复制，存储在数据结构中，并从函数返回。
 
 r[type.pointer.reference]
-## References (`&` and `&mut`)
+## 引用（`&` 和 `&mut`）
 
 r[type.pointer.reference.syntax]
 ```grammar,types
@@ -13,28 +13,28 @@ ReferenceType -> `&` Lifetime? `mut`? TypeNoBounds
 ```
 
 r[type.pointer.reference.shared]
-### Shared references (`&`)
+### 共享引用（`&`）
 
 r[type.pointer.reference.shared.intro]
-Shared references point to memory which is owned by some other value.
+共享引用指向由某个其他值拥有的内存。
 
 r[type.pointer.reference.shared.constraint-mutation]
-When a shared reference to a value is created, it prevents direct mutation of the value. [Interior mutability] provides an exception for this in certain circumstances. As the name suggests, any number of shared references to a value may exist. A shared reference type is written `&type`, or `&'a type` when you need to specify an explicit lifetime.
+当创建对值的共享引用时，它会阻止该值的直接修改。[内部可变性]在某些情况下提供了对此的例外。顾名思义，可以对一个值存在任意数量的共享引用。共享引用类型写作 `&type`，或者当你需要指定显式生命周期时写作 `&'a type`。
 
 r[type.pointer.reference.shared.copy]
-Copying a reference is a "shallow" operation: it involves only copying the pointer itself, that is, pointers are `Copy`. Releasing a reference has no effect on the value it points to, but referencing of a [temporary value] will keep it alive during the scope of the reference itself.
+复制引用是一种"浅"操作：它只涉及复制指针本身，也就是说，指针是 `Copy` 的。释放引用对其指向的值没有影响，但对[临时值]的引用会在引用自身的作用域期间保持该临时值的存活。
 
 r[type.pointer.reference.mut]
-### Mutable references (`&mut`)
+### 可变引用（`&mut`）
 
 r[type.pointer.reference.mut.intro]
-Mutable references point to memory which is owned by some other value. A mutable reference type is written `&mut type` or `&'a mut type`.
+可变引用指向由某个其他值拥有的内存。可变引用类型写作 `&mut type` 或 `&'a mut type`。
 
 r[type.pointer.reference.mut.copy]
-A mutable reference (that hasn't been borrowed) is the only way to access the value it points to, so is not `Copy`.
+可变引用（未被借出的）是访问其指向值的唯一方式，因此不是 `Copy` 的。
 
 r[type.pointer.raw]
-## Raw pointers (`*const` and `*mut`)
+## 裸指针（`*const` 和 `*mut`）
 
 r[type.pointer.raw.syntax]
 ```grammar,types
@@ -42,38 +42,38 @@ RawPointerType -> `*` ( `mut` | `const` ) TypeNoBounds
 ```
 
 r[type.pointer.raw.intro]
-Raw pointers are pointers without safety or liveness guarantees. Raw pointers are written as `*const T` or `*mut T`. For example `*const i32` means a raw pointer to a 32-bit integer.
+裸指针是没有安全或活性保证的指针。裸指针写作 `*const T` 或 `*mut T`。例如，`*const i32` 表示指向 32 位整数的裸指针。
 
 r[type.pointer.raw.copy]
-Copying or dropping a raw pointer has no effect on the lifecycle of any other value.
+复制或丢弃裸指针不会对任何其他值的生命周期产生任何影响。
 
 r[type.pointer.raw.safety]
-Dereferencing a raw pointer is an [`unsafe` operation].
+解引用裸指针是 [`unsafe` 操作]。
 
-This can also be used to convert a raw pointer to a reference by reborrowing it (`&*` or `&mut *`). Raw pointers are generally discouraged; they exist to support interoperability with foreign code, and writing performance-critical or low-level functions.
+这也可以用来通过重新借用（`&*` 或 `&mut *`）将裸指针转换为引用。通常不鼓励使用裸指针；它们存在是为了支持与外部代码的互操作，以及编写性能关键或底层函数。
 
 r[type.pointer.raw.cmp]
-When comparing raw pointers they are compared by their address, rather than by what they point to. When comparing raw pointers to [dynamically sized types] they also have their additional data compared.
+比较裸指针时，按地址进行比较，而不是按其指向的内容进行比较。比较指向[动态大小类型]的裸指针时，还会比较它们的附加数据。
 
 r[type.pointer.raw.constructor]
-Raw pointers can be created directly using `&raw const` for `*const` pointers and `&raw mut` for `*mut` pointers.
+裸指针可以直接使用 `&raw const`（用于 `*const` 指针）和 `&raw mut`（用于 `*mut` 指针）来创建。
 
 r[type.pointer.smart]
-## Smart pointers
+## 智能指针
 
-The standard library contains additional 'smart pointer' types beyond references and raw pointers.
+标准库包含了引用和裸指针之外的额外"智能指针"类型。
 
 r[type.pointer.validity]
-## Bit validity
+## 位有效性
 
 r[type.pointer.validity.pointer-fragment]
-Despite pointers and references being similar to `usize`s in the machine code emitted on most platforms, the semantics of transmuting a reference or pointer type to a non-pointer type is currently undecided. Thus, it may not be valid to transmute a pointer or reference type, `P`, to a `[u8; size_of::<P>()]`.
+尽管在大多数平台上生成的机器码中，指针和引用与 `usize` 类似，但将引用或指针类型转换为非指针类型的语义目前尚未确定。因此，将指针或引用类型 `P` 转换为 `[u8; size_of::<P>()]` 可能不是有效的。
 
 r[type.pointer.validity.raw]
-For thin raw pointers (i.e., for `P = *const T` or `P = *mut T` for `T: Sized`), the inverse direction (transmuting from an integer or array of integers to `P`) is always valid. However, the pointer produced via such a transmutation may not be dereferenced (not even if `T` has [size zero]).
+对于瘦裸指针（即对于 `T: Sized` 的 `P = *const T` 或 `P = *mut T`），反向（从整数或整数数组转换为 `P`）始终是有效的。然而，通过这样的转换产生的指针可能不能被解引用（即使 `T` 具有[零大小][size zero]也不行）。
 
-[Interior mutability]: ../interior-mutability.md
-[`unsafe` operation]: ../unsafety.md
-[dynamically sized types]: ../dynamically-sized-types.md
+[内部可变性]: ../interior-mutability.md
+[`unsafe` 操作]: ../unsafety.md
+[动态大小类型]: ../dynamically-sized-types.md
 [size zero]: glossary.zst
-[temporary value]: ../expressions.md#temporaries
+[临时值]: ../expressions.md#temporaries

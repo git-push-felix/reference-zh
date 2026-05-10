@@ -1,217 +1,180 @@
 r[lang-types]
-# Special types and traits
+# 特殊类型和 trait
 
 r[lang-types.intro]
-Certain types and traits that exist in [the standard library] are known to the
-Rust compiler. This chapter documents the special features of these types and
-traits.
+[标准库][the standard library]中的某些类型和 trait 为 Rust 编译器所知。本章记录了这些类型和 trait 的特殊特性。
 
 r[lang-types.box]
 ## `Box<T>`
 
 r[lang-types.box.intro]
-[`Box<T>`] has a few special features that Rust doesn't currently allow for user
-defined types.
+[`Box<T>`] 具有一些 Rust 目前不允许用户定义类型使用的特殊特性。
 
 r[lang-types.box.deref]
-* The [dereference operator] for `Box<T>` produces a place which can be [moved
-  from]. This means that the `*` operator and the destructor of `Box<T>` are
-  built-in to the language.
+* `Box<T>` 的[解引用运算符][dereference operator]产生一个可以[移出][moved from]的位置。这意味着 `*` 运算符和 `Box<T>` 的析构函数是语言内置的。
 
 r[lang-types.box.receiver]
-* [Methods] can take `Box<Self>` as a receiver.
+* [方法][Methods]可以将 `Box<Self>` 作为接收者（receiver）。
 
 r[lang-types.box.fundamental]
-* A trait may be implemented for `Box<T>` in the same crate as `T`, which the
-  [orphan rules] prevent for other generic types.
+* 可以在与 `T` 相同的 crate 中为 `Box<T>` 实现 trait，而[孤儿规则][orphan rules]禁止其他泛型类型这样做。
 
-<!-- Editor Note: This is nowhere close to an exhaustive list -->
+<!-- Editor Note: 这远非详尽列表 -->
 
 r[lang-types.rc]
 ## `Rc<T>`
 
 r[lang-types.rc.receiver]
-[Methods] can take [`Rc<Self>`] as a receiver.
+[方法][Methods]可以将 [`Rc<Self>`] 作为接收者。
 
 r[lang-types.arc]
 ## `Arc<T>`
 
 r[lang-types.arc.receiver]
-[Methods] can take [`Arc<Self>`] as a receiver.
+[方法][Methods]可以将 [`Arc<Self>`] 作为接收者。
 
 r[lang-types.pin]
 ## `Pin<P>`
 
 r[lang-types.pin.receiver]
-[Methods] can take [`Pin<P>`] as a receiver.
+[方法][Methods]可以将 [`Pin<P>`] 作为接收者。
 
 r[lang-types.unsafe-cell]
 ## `UnsafeCell<T>`
 
 r[lang-types.unsafe-cell.interior-mut]
-[`std::cell::UnsafeCell<T>`] is used for [interior mutability]. It ensures that
-the compiler doesn't perform optimisations that are incorrect for such types.
+[`std::cell::UnsafeCell<T>`] 用于[内部可变性][interior mutability]。它确保编译器不会对此类类型执行不正确的优化。
 
 r[lang-types.unsafe-cell.read-only-alloc]
-It also ensures that [`static` items] which have a type with interior
-mutability aren't placed in memory marked as read only.
+它还确保具有内部可变性类型的 [`static` 项][`static` items]不会被放置在标记为只读的内存中。
 
 r[lang-types.phantom-data]
 ## `PhantomData<T>`
 
-[`std::marker::PhantomData<T>`] is a [zero-sized], minimum alignment, type that
-is considered to own a `T` for the purposes of [variance], [drop check], and
-[auto traits](#auto-traits).
+[`std::marker::PhantomData<T>`] 是一个[零大小][zero-sized]、最小对齐的类型，对于[变型][variance]、[丢弃检查][drop check]和[自动 trait](#自动-trait)的目的，它被认为是拥有一个 `T`。
 
 r[lang-types.ops]
-## Operator traits
+## 运算符 trait
 
-The traits in [`std::ops`] and [`std::cmp`] are used to overload [operators],
-[indexing expressions], and [call expressions].
+[`std::ops`] 和 [`std::cmp`] 中的 trait 用于重载[运算符][operators]、[索引表达式][indexing expressions]和[调用表达式][call expressions]。
 
 r[lang-types.deref]
-## `Deref` and `DerefMut`
+## `Deref` 和 `DerefMut`
 
-As well as overloading the unary `*` operator, [`Deref`] and [`DerefMut`] are
-also used in [method resolution] and [deref coercions].
+除了重载一元 `*` 运算符外，[`Deref`] 和 [`DerefMut`] 还用于[方法解析][method resolution]和[解引用强制转换][deref coercions]。
 
 r[lang-types.drop]
 ## `Drop`
 
-The [`Drop`] trait provides a [destructor], to be run whenever a value of this
-type is to be destroyed.
+[`Drop`] trait 提供了一个[析构函数][destructor]，在此类型的值将被销毁时运行。
 
 r[lang-types.copy]
 ## `Copy`
 
 r[lang-types.copy.intro]
-The [`Copy`] trait changes the semantics of a type implementing it.
+[`Copy`] trait 改变了实现它的类型的语义。
 
 r[lang-types.copy.behavior]
-Values whose type implements `Copy` are copied rather than moved upon assignment.
+类型实现 `Copy` 的值在赋值时被复制而不是移动。
 
 r[lang-types.copy.constraint]
-`Copy` can only be implemented for types which do not implement `Drop`, and whose fields are all `Copy`.
-For enums, this means all fields of all variants have to be `Copy`.
-For unions, this means all variants have to be `Copy`.
+`Copy` 只能为不实现 `Drop` 且其所有字段都是 `Copy` 的类型实现。对于枚举，这意味着所有变体的所有字段都必须是 `Copy`。对于联合体，这意味着所有变体都必须是 `Copy`。
 
 r[lang-types.copy.builtin-types]
-`Copy` is implemented by the compiler for
+编译器为以下类型实现 `Copy`：
 
 r[lang-types.copy.tuple]
-* [Tuples] of `Copy` types
+* `Copy` 类型的[元组][Tuples]
 
 r[lang-types.copy.fn-pointer]
-* [Function pointers]
+* [函数指针][Function pointers]
 
 r[lang-types.copy.fn-item]
-* [Function items]
+* [函数项][Function items]
 
 r[lang-types.copy.closure]
-* [Closures] that capture no values or that only capture values of `Copy` types
+* 不捕获值或仅捕获 `Copy` 类型值的[闭包][Closures]
 
 r[lang-types.clone]
 ## `Clone`
 
 r[lang-types.clone.intro]
-The [`Clone`] trait is a supertrait of `Copy`, so it also needs compiler
-generated implementations.
+[`Clone`] trait 是 `Copy` 的超 trait，因此它也需要编译器生成的实现。
 
 r[lang-types.clone.builtin-types]
-It is implemented by the compiler for the following types:
+编译器为以下类型实现它：
 
 r[lang-types.clone.builtin-copy]
-* Types with a built-in `Copy` implementation (see above)
+* 具有内置 `Copy` 实现的类型（见上文）
 
 r[lang-types.clone.tuple]
-* [Tuples] of `Clone` types
+* `Clone` 类型的[元组][Tuples]
 
 r[lang-types.clone.closure]
-* [Closures] that only capture values of `Clone` types or capture no values from the environment
+* 仅捕获 `Clone` 类型值或不从环境捕获值的[闭包][Closures]
 
 r[lang-types.send]
 ## `Send`
 
-The [`Send`] trait indicates that a value of this type is safe to send from one
-thread to another.
+[`Send`] trait 表示此类型的值可以安全地从一个线程发送到另一个线程。
 
 r[lang-types.sync]
 ## `Sync`
 
 r[lang-types.sync.intro]
-The [`Sync`] trait indicates that a value of this type is safe to share between
-multiple threads.
+[`Sync`] trait 表示此类型的值可以安全地在多个线程之间共享。
 
 r[lang-types.sync.static-constraint]
-This trait must be implemented for all types used in immutable [`static` items].
+所有在不可变 [`static` 项][`static` items]中使用的类型都必须实现此 trait。
 
 r[lang-types.termination]
 ## `Termination`
 
-The [`Termination`] trait indicates the acceptable return types for the [main function] and [test functions].
+[`Termination`] trait 指示 [main 函数][main function]和[测试函数][test functions]可接受的返回类型。
 
 r[lang-types.auto-traits]
-## Auto traits
+## 自动 trait
 
-The [`Send`], [`Sync`], [`Unpin`], [`UnwindSafe`], and [`RefUnwindSafe`] traits are _auto
-traits_. Auto traits have special properties.
+[`Send`]、[`Sync`]、[`Unpin`]、[`UnwindSafe`] 和 [`RefUnwindSafe`] trait 是*自动 trait*。自动 trait 具有特殊属性。
 
 r[lang-types.auto-traits.auto-impl]
-If no explicit implementation or negative implementation is written out for an
-auto trait for a given type, then the compiler implements it automatically
-according to the following rules:
+如果没有为给定类型的自动 trait 编写显式实现或否定实现，则编译器根据以下规则自动实现它：
 
 r[lang-types.auto-traits.builtin-composite]
-* `&T`, `&mut T`, `*const T`, `*mut T`, `[T; n]`, and `[T]` implement the trait
-  if `T` does.
+* 如果 `T` 实现了该 trait，则 `&T`、`&mut T`、`*const T`、`*mut T`、`[T; n]` 和 `[T]` 也实现该 trait。
 
 r[lang-types.auto-traits.fn-item-pointer]
-* Function item types and function pointers automatically implement the trait.
+* 函数项类型和函数指针自动实现该 trait。
 
 r[lang-types.auto-traits.aggregate]
-* Structs, enums, unions, and tuples implement the trait if all of their fields
-  do.
+* 如果结构体、枚举、联合体和元组的所有字段都实现了该 trait，则它们也实现该 trait。
 
 r[lang-types.auto-traits.closure]
-* Closures implement the trait if the types of all of their captures do. A
-  closure that captures a `T` by shared reference and a `U` by value implements
-  any auto traits that both `&T` and `U` do.
+* 如果闭包的所有捕获的类型都实现了该 trait，则闭包也实现该 trait。通过共享引用捕获 `T` 和通过值捕获 `U` 的闭包实现了 `&T` 和 `U` 都实现的任何自动 trait。
 
 r[lang-types.auto-traits.generic-impl]
-For generic types (counting the built-in types above as generic over `T`), if a
-generic implementation is available, then the compiler does not automatically
-implement it for types that could use the implementation except that they do not
-meet the requisite trait bounds. For instance, the standard library implements
-`Send` for all `&T` where `T` is `Sync`; this means that the compiler will not
-implement `Send` for `&T` if `T` is `Send` but not `Sync`.
+对于泛型类型（将上述内置类型视为对 `T` 泛型），如果存在泛型实现，则编译器不会自动为那些本可以使用该实现但不满足所需 trait 约束的类型实现它。例如，标准库为所有 `T` 是 `Sync` 的 `&T` 实现了 `Send`；这意味着如果 `T` 是 `Send` 但不是 `Sync`，编译器将不会为 `&T` 实现 `Send`。
 
 r[lang-types.auto-traits.negative]
-Auto traits can also have negative implementations, shown as `impl !AutoTrait
-for T` in the standard library documentation, that override the automatic
-implementations. For example `*mut T` has a negative implementation of `Send`,
-and so `*mut T` is not `Send`, even if `T` is. There is currently no stable way
-to specify additional negative implementations; they exist only in the standard
-library.
+自动 trait 也可以有否定实现，在标准库文档中显示为 `impl !AutoTrait for T`，覆盖自动实现。例如 `*mut T` 具有 `Send` 的否定实现，因此 `*mut T` 不是 `Send`，即使 `T` 是。目前没有稳定方式来指定额外的否定实现；它们仅存在于标准库中。
 
 r[lang-types.auto-traits.trait-object-marker]
-Auto traits may be added as an additional bound to any [trait object], even
-though normally only one trait is allowed. For instance, `Box<dyn Debug + Send +
-UnwindSafe>` is a valid type.
+自动 trait 可以作为附加约束添加到任何 [trait 对象][trait object]中，即使通常只允许一个 trait。例如，`Box<dyn Debug + Send + UnwindSafe>` 是有效类型。
 
 r[lang-types.sized]
 ## `Sized`
 
 r[lang-types.sized.intro]
-The [`Sized`] trait indicates that the size of this type is known at compile-time; that is, it's not a [dynamically sized type].
+[`Sized`] trait 表示此类型的大小在编译时已知；也就是说，它不是[动态大小类型][dynamically sized type]。
 
 r[lang-types.sized.implicit-sized]
-[Type parameters] (except `Self` in traits) are `Sized` by default, as are [associated types].
+[类型参数][Type parameters]（trait 中的 `Self` 除外）默认是 `Sized`，[关联类型][associated types]也是如此。
 
 r[lang-types.sized.implicit-impl]
-`Sized` is always implemented automatically by the compiler, not by [implementation items].
+`Sized` 始终由编译器自动实现，而不是通过[实现项][implementation items]。
 
 r[lang-types.sized.relaxation]
-These implicit `Sized` bounds may be relaxed by using the special `?Sized` bound.
+这些隐式 `Sized` 约束可以通过使用特殊的 `?Sized` 约束来放宽。
 
 [`Arc<Self>`]: std::sync::Arc
 [`Deref`]: std::ops::Deref

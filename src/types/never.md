@@ -1,5 +1,5 @@
 r[type.never]
-# Never type
+# Never 类型
 
 r[type.never.syntax]
 ```grammar,types
@@ -7,17 +7,17 @@ NeverType -> `!`
 ```
 
 r[type.never.intro]
-The never type `!` is a type with no values, representing the result of computations that never complete.
+never 类型 `!` 是一种没有值的类型，表示永远不会完成的求值结果。
 
 r[type.never.coercion]
-Expressions of type `!` can be coerced into any other type.
+类型为 `!` 的表达式可以被强制转换为任何其他类型。
 
 r[type.never.constraint]
-The `!` type can **only** appear in function return types presently, indicating it is a diverging function that never returns.
+`!` 类型目前**只能**出现在函数返回类型中，表示它是一个永不返回的发散函数。
 
 ```rust
 fn foo() -> ! {
-    panic!("This call never returns.");
+    panic!("此调用永远不会返回。");
 }
 ```
 

@@ -1,171 +1,165 @@
 r[const-eval]
-# Constant evaluation
+# 常量求值
 
 r[const-eval.intro]
-Constant evaluation is the process of computing the result of [expressions] during compilation. Only a subset of all expressions can be evaluated at compile-time.
+常量求值是在编译期间计算[表达式][expressions]结果的过程。只有所有表达式的一个子集可以在编译时求值。
 
 r[const-eval.const-expr]
-## Constant expressions
+## 常量表达式
 
 r[const-eval.const-expr.intro]
-Certain forms of expressions, called constant expressions, can be evaluated at compile time.
+某些形式的表达式（称为常量表达式）可以在编译时求值。
 
 r[const-eval.const-expr.const-context]
-Expressions in a [const context] must be constant expressions.
+[const 上下文][const context]中的表达式必须是常量表达式。
 
 r[const-eval.const-expr.evaluation]
-Expressions in const contexts are always evaluated at compile time.
+const 上下文中的表达式始终在编译时求值。
 
 r[const-eval.const-expr.runtime-context]
-Outside of const contexts, constant expressions *may* be, but are not guaranteed to be, evaluated at compile time.
+在 const 上下文之外，常量表达式*可能*在编译时求值，但不保证。
 
 r[const-eval.const-expr.error]
-Behaviors such as out of bounds [array indexing] or [overflow] are compiler errors if the value must be evaluated at compile time (i.e. in const contexts). Otherwise, these behaviors are warnings, but will likely panic at run-time.
+如果值必须在编译时求值（即在 const 上下文中），诸如越界[数组索引][array indexing]或[溢出][overflow]等行为是编译器错误。否则，这些行为是警告，但在运行时可能会导致 panic。
 
 r[const-eval.const-expr.list]
-The following expressions are constant expressions, so long as any operands are also constant expressions and do not cause any [`Drop::drop`][destructors] calls to be run.
+以下表达式是常量表达式，只要任何操作数也是常量表达式，并且不会导致运行任何 [`Drop::drop`][destructors] 调用。
 
 r[const-eval.const-expr.literal]
-* [Literals].
+* [字面量][Literals]。
 
 r[const-eval.const-expr.parameter]
-* [Const parameters].
+* [常量参数][Const parameters]。
 
 r[const-eval.const-expr.path-item]
-* [Paths] to [functions] and [constants]. Recursively defining constants is not allowed.
+* 指向[函数][functions]和[常量][constants]的[路径][Paths]。不允许递归定义常量。
 
 r[const-eval.const-expr.path-static]
-* Paths to [statics] with these restrictions:
-  * Writes to `static` items are not allowed in any constant evaluation context.
-  * Reads from `extern` statics are not allowed in any constant evaluation context.
-  * If the evaluation is *not* carried out in an initializer of a `static` item, then reads from any mutable `static` are not allowed. A mutable `static` is a `static mut` item, or a `static` item with an interior-mutable type.
+* 指向[静态项][statics]的路径，有以下限制：
+  * 在任何常量求值上下文中不允许写入 `static` 项。
+  * 在任何常量求值上下文中不允许读取 `extern` 静态项。
+  * 如果求值*不*在 `static` 项的初始化器中进行，则不允许读取任何可变 `static`。可变 `static` 是 `static mut` 项，或具有内部可变类型的 `static` 项。
 
-  These requirements are checked only when the constant is evaluated. In other words, having such accesses syntactically occur in const contexts is allowed as long as they never get executed.
+  这些要求仅在常量被求值时检查。换句话说，在 const 上下文中语法上存在此类访问是允许的，只要它们从未被执行。
 
 r[const-eval.const-expr.tuple]
-* [Tuple expressions].
+* [元组表达式][Tuple expressions]。
 
 r[const-eval.const-expr.array]
-* [Array expressions].
+* [数组表达式][Array expressions]。
 
 r[const-eval.const-expr.constructor]
-* [Struct expressions].
+* [结构体表达式][Struct expressions]。
 
 r[const-eval.const-expr.block]
-* [Block expressions], including `unsafe` and `const` blocks.
-    * [let statements] and thus irrefutable [patterns], including mutable bindings
-    * [assignment expressions]
-    * [compound assignment expressions]
-    * [expression statements]
+* [块表达式][Block expressions]，包括 `unsafe` 和 `const` 块。
+    * [let 语句][let statements]及不可反驳的[模式][patterns]，包括可变绑定
+    * [赋值表达式][assignment expressions]
+    * [复合赋值表达式][compound assignment expressions]
+    * [表达式语句][expression statements]
 
 r[const-eval.const-expr.field]
-* [Field expressions].
+* [字段表达式][Field expressions]。
 
 r[const-eval.const-expr.index]
-* [Array and slice indexing expressions][array indexing], where the index is a `usize`.
+* [数组和切片索引表达式][array indexing]，其中索引是 `usize`。
 
 r[const-eval.const-expr.range]
-* [Range expressions].
+* [范围表达式][Range expressions]。
 
 r[const-eval.const-expr.closure]
-* [Closure expressions] which don't capture variables from the environment.
+* 不从环境中捕获变量的[闭包表达式][Closure expressions]。
 
 r[const-eval.const-expr.builtin-arith-logic]
-* Built-in [negation], [arithmetic], [logical], [comparison] or [lazy boolean] operators used on integer and floating point types, `bool`, and `char`.
+* 用于整数和浮点类型、`bool` 和 `char` 的内置[取反][negation]、[算术][arithmetic]、[逻辑][logical]、[比较][comparison]或[惰性布尔][lazy boolean]运算符。
 
 r[const-eval.const-expr.borrows]
-* All forms of [borrow]s, including raw borrows, except borrows of expressions whose temporary scopes would be extended (see [temporary lifetime extension]) to the end of the program and which are either:
-  * Mutable borrows.
-  * Shared borrows of expressions that result in values with [interior mutability].
+* 所有形式的[借用][borrow]，包括原始借用，除了那些临时作用域会被延长到程序结束（见[临时生命周期延长][temporary lifetime extension]）的表达式的借用，并且这些表达式要么是：
+  * 可变借用。
+  * 对产生具有[内部可变性][interior mutability]值的表达式的共享借用。
 
   ```rust,compile_fail,E0764
-  // Due to being in tail position, this borrow extends the scope of the
-  // temporary to the end of the program. Since the borrow is mutable,
-  // this is not allowed in a const expression.
-  const C: &u8 = &mut 0; // ERROR not allowed
+  // 由于处于尾部位置，此借用将临时值的作用域延长到程序结束。
+  // 由于借用是可变的，这在 const 表达式中不允许。
+  const C: &u8 = &mut 0; // 错误，不允许
   ```
 
   ```rust,compile_fail,E0764
-  // Const blocks are similar to initializers of `const` items.
-  let _: &u8 = const { &mut 0 }; // ERROR not allowed
+  // Const 块类似于 `const` 项的初始化器。
+  let _: &u8 = const { &mut 0 }; // 错误，不允许
   ```
 
   ```rust,compile_fail,E0492
   # use core::sync::atomic::AtomicU8;
-  // This is not allowed as 1) the temporary scope is extended to the
-  // end of the program and 2) the temporary has interior mutability.
-  const C: &AtomicU8 = &AtomicU8::new(0); // ERROR not allowed
+  // 这是不允许的，因为 1) 临时作用域被延长到程序结束，
+  // 且 2) 临时值具有内部可变性。
+  const C: &AtomicU8 = &AtomicU8::new(0); // 错误，不允许
   ```
 
   ```rust,compile_fail,E0492
   # use core::sync::atomic::AtomicU8;
-  // As above.
-  let _: &_ = const { &AtomicU8::new(0) }; // ERROR not allowed
+  // 同上。
+  let _: &_ = const { &AtomicU8::new(0) }; // 错误，不允许
   ```
 
   ```rust
   # #![allow(static_mut_refs)]
-  // Even though this borrow is mutable, it's not of a temporary, so
-  // this is allowed.
-  const C: &u8 = unsafe { static mut S: u8 = 0; &mut S }; // OK
+  // 即使此借用是可变的，它也不是临时值的借用，因此允许。
+  const C: &u8 = unsafe { static mut S: u8 = 0; &mut S }; // 正确
   ```
 
   ```rust
   # use core::sync::atomic::AtomicU8;
-  // Even though this borrow is of a value with interior mutability,
-  // it's not of a temporary, so this is allowed.
+  // 即使此借用是对具有内部可变性值的借用，
+  // 它不是临时值的借用，因此允许。
   const C: &AtomicU8 = {
-      static S: AtomicU8 = AtomicU8::new(0); &S // OK
+      static S: AtomicU8 = AtomicU8::new(0); &S // 正确
   };
   ```
 
   ```rust
   # use core::sync::atomic::AtomicU8;
-  // This shared borrow of an interior mutable temporary is allowed
-  // because its scope is not extended.
-  const C: () = { _ = &AtomicU8::new(0); }; // OK
+  // 此对内部可变临时值的共享借用是允许的，
+  // 因为其作用域未被延长。
+  const C: () = { _ = &AtomicU8::new(0); }; // 正确
   ```
 
   ```rust
-  // Even though the borrow is mutable and the temporary lives to the
-  // end of the program due to promotion, this is allowed because the
-  // borrow is not in tail position and so the scope of the temporary
-  // is not extended via temporary lifetime extension.
-  const C: () = { let _: &'static mut [u8] = &mut []; }; // OK
+  // 即使借用是可变的且临时值由于提升而存活到程序结束，这也是允许的，
+  // 因为借用不在尾部位置，因此临时值的作用域
+  // 不会通过临时生命周期延长而扩展。
+  const C: () = { let _: &'static mut [u8] = &mut []; }; // 正确
   //                                              ~~
-  //                                     Promoted temporary.
+  //                                     已提升的临时值。
   ```
 
   > [!NOTE]
-  > In other words --- to focus on what's allowed rather than what's not allowed --- shared borrows of interior mutable data and mutable borrows are only allowed in a [const context] when the borrowed [place expression] is *transient*, *indirect*, or *static*.
+  > 换句话说——关注允许什么而不是不允许什么——对内部可变数据的共享借用和可变借用仅在 [const 上下文][const context]中被借用的[位置表达式][place expression]是*瞬态的*、*间接的*或*静态的*时才允许。
   >
-  > A place expression is *transient* if it is a variable local to the current const context or an expression whose temporary scope is contained inside the current const context.
+  > 如果位置表达式是当前 const 上下文局部的变量或其临时作用域包含在当前 const 上下文内的表达式，则该位置表达式是*瞬态的*。
   >
   > ```rust
-  > // The borrow is of a variable local to the initializer, therefore
-  > // this place expression is transient.
+  > // 借用是对初始化器局部变量的借用，因此此位置表达式是瞬态的。
   > const C: () = { let mut x = 0; _ = &mut x; };
   > ```
   >
   > ```rust
-  > // The borrow is of a temporary whose scope has not been extended,
-  > // therefore this place expression is transient.
+  > // 借用是对其作用域未被延长的临时值的借用，因此此位置表达式是瞬态的。
   > const C: () = { _ = &mut 0u8; };
   > ```
   >
   > ```rust
-  > // When a temporary is promoted but not lifetime extended, its
-  > // place expression is still treated as transient.
+  > // 当临时值被提升但生命周期未被延长时，其位置表达式仍被视为瞬态的。
   > const C: () = { let _: &'static mut [u8] = &mut []; };
   > ```
   >
-  > A place expression is *indirect* if it is a [dereference expression].
+  > 如果位置表达式是[解引用表达式][dereference expression]，则该位置表达式是*间接的*。
   >
   > ```rust
   > const C: () = { _ = &mut *(&mut 0); };
   > ```
   >
-  > A place expression is *static* if it is a `static` item.
+  > 如果位置表达式是 `static` 项，则该位置表达式是*静态的*。
   >
   > ```rust
   > # #![allow(static_mut_refs)]
@@ -173,98 +167,98 @@ r[const-eval.const-expr.borrows]
   > ```
 
   > [!NOTE]
-  > One surprising consequence of these rules is that we allow this,
+  > 这些规则的一个令人惊讶的后果是我们允许这种写法，
   >
   > ```rust
-  > const C: &[u8] = { let x: &mut [u8] = &mut []; x }; // OK
+  > const C: &[u8] = { let x: &mut [u8] = &mut []; x }; // 正确
   > //                                    ~~~~~~~
-  > // Empty arrays are promoted even behind mutable borrows.
+  > // 空数组即使在可变借用之后也会被提升。
   > ```
   >
-  > but we disallow this similar code:
+  > 但我们不允许这段类似的代码：
   >
   > ```rust,compile_fail,E0764
-  > const C: &[u8] = &mut []; // ERROR
+  > const C: &[u8] = &mut []; // 错误
   > //               ~~~~~~~
-  > //           Tail expression.
+  > //           尾部表达式。
   > ```
   >
-  > The difference between these is that, in the first, the empty array is [promoted] but its scope does not undergo [temporary lifetime extension], so we consider the [place expression] to be transient (even though after promotion the place indeed lives to the end of the program). In the second, the scope of the empty array temporary does undergo lifetime extension, and so it is rejected due to being a mutable borrow of a lifetime-extended temporary (and therefore borrowing a non-transient place expression).
+  > 这两者之间的区别在于，在第一种情况下，空数组被[提升][promoted]但其作用域不经历[临时生命周期延长][temporary lifetime extension]，因此我们认为[位置表达式][place expression]是瞬态的（即使在提升之后该位置确实存活到程序结束）。在第二种情况下，空数组临时值的作用域确实经历了生命周期延长，因此由于是对生命周期延长临时值的可变借用而被拒绝（因此借用了非瞬态位置表达式）。
   >
-  > The effect is surprising because temporary lifetime extension, in this case, causes less code to compile than would without it.
+  > 这种效果令人惊讶，因为在这种情况下，临时生命周期延长导致比没有它更少的代码可以编译。
   >
-  > See [issue #143129](https://github.com/rust-lang/rust/issues/143129) for more details.
+  > 更多细节请参见 [issue #143129](https://github.com/rust-lang/rust/issues/143129)。
 
 r[const-eval.const-expr.deref]
-* [Dereference expressions].
+* [解引用表达式][Dereference expressions]。
 
   ```rust,no_run
   # use core::cell::UnsafeCell;
   const _: u8 = unsafe {
       let x: *mut u8 = &raw mut *&mut 0;
       //                        ^^^^^^^
-      //             Dereference of mutable reference.
-      *x = 1; // Dereference of mutable pointer.
-      *(x as *const u8) // Dereference of constant pointer.
+      //             可变引用的解引用。
+      *x = 1; // 可变指针的解引用。
+      *(x as *const u8) // 常量指针的解引用。
   };
   const _: u8 = unsafe {
       let x = &UnsafeCell::new(0);
-      *x.get() = 1; // Mutation of interior mutable value.
+      *x.get() = 1; // 内部可变值的修改。
       *x.get()
   };
   ```
 
 r[const-eval.const-expr.group]
 
-* [Grouped] expressions.
+* [分组][Grouped]表达式。
 
 r[const-eval.const-expr.cast]
-* [Cast] expressions, except
-  * pointer to address casts and
-  * function pointer to address casts.
+* [强制转换][Cast]表达式，除了
+  * 指针到地址的强制转换和
+  * 函数指针到地址的强制转换。
 
 r[const-eval.const-expr.const-fn]
-* Calls of [const functions] and const methods.
+* [const 函数][const functions]和 const 方法的调用。
 
 r[const-eval.const-expr.loop]
-* [loop] and [while] expressions.
+* [loop] 和 [while] 表达式。
 
 r[const-eval.const-expr.if-match]
-* [if] and [match] expressions.
+* [if] 和 [match] 表达式。
 
 r[const-eval.const-context]
-## Const context
+## Const 上下文
 [const context]: #const-context
 
 r[const-eval.const-context.def]
-A _const context_ is one of the following:
+*const 上下文*是以下之一：
 
 r[const-eval.const-context.array-length]
-* [Array type length expressions]
+* [数组类型长度表达式][Array type length expressions]
 
 r[const-eval.const-context.repeat-length]
-* [Array repeat length expressions][array expressions]
+* [数组重复长度表达式][array expressions]
 
 r[const-eval.const-context.init]
-* The initializer of
-  * [constants]
-  * [statics]
-  * [enum discriminants]
+* 以下内容的初始化器
+  * [常量][constants]
+  * [静态项][statics]
+  * [枚举判别值][enum discriminants]
 
 r[const-eval.const-context.generic]
-* A [const generic argument]
+* [const 泛型参数][const generic argument]
 
 r[const-eval.const-context.block]
-* A [const block]
+* [const 块][const block]
 
 r[const-eval.const-context.outer-generics]
-Array type length expressions, array repeat length expressions, and const generic arguments are restricted in their use of outer generic parameters: such an expression must either be a single const generic parameter, or an expression that does not reference any generic parameters.
+数组类型长度表达式、数组重复长度表达式和 const 泛型参数在使用外部泛型参数时受到限制：此类表达式必须是单个 const 泛型参数，或者是不引用任何泛型参数的表达式。
 
 r[const-eval.const-fn]
-## Const functions
+## Const 函数
 
 r[const-eval.const-fn.intro]
-A _const function_ is a function that can be called from a const context. It is defined with the `const` qualifier, and also includes [tuple struct] and [tuple enum variant] constructors.
+*const 函数*是可以从 const 上下文调用的函数。它使用 `const` 限定符定义，也包括[元组结构体][tuple struct]和[元组枚举变体][tuple enum variant]构造函数。
 
 > [!EXAMPLE]
 > ```rust
@@ -274,19 +268,19 @@ A _const function_ is a function that can be called from a const context. It is 
 > ```
 
 r[const-eval.const-fn.const-context]
-When called from a const context, a const function is interpreted by the compiler at compile time. The interpretation happens in the environment of the compilation target and not the host. So `usize` is `32` bits if you are compiling against a `32` bit system, irrelevant of whether you are building on a `64` bit or a `32` bit system.
+从 const 上下文调用时，const 函数由编译器在编译时解释。解释发生在编译目标的环境中，而不是主机环境中。因此，如果你针对 `32` 位系统编译，`usize` 是 `32` 位，无论你是在 `64` 位还是 `32` 位系统上构建。
 
 r[const-eval.const-fn.outside-context]
-When a const function is called from outside a const context, it behaves the same as if it did not have the `const` qualifier.
+当 const 函数在 const 上下文之外调用时，其行为与没有 `const` 限定符时相同。
 
 r[const-eval.const-fn.body-restriction]
-The body of a const function may only use [constant expressions].
+const 函数的主体只能使用[常量表达式][constant expressions]。
 
 r[const-eval.const-fn.async]
-Const functions are not allowed to be [async].
+const 函数不允许是 [async]。
 
 r[const-eval.const-fn.type-restrictions]
-The types of a const function's parameters and return type are restricted to those that are compatible with a const context.
+const 函数的参数和返回类型的类型限制为与 const 上下文兼容的类型。
 <!-- TODO: Define the type restrictions. -->
 
 [arithmetic]:           expressions/operator-expr.md#arithmetic-and-logical-binary-operators

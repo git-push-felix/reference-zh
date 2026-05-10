@@ -1,5 +1,5 @@
 r[expr.block]
-# Block expressions
+# 块表达式
 
 r[expr.block.syntax]
 ```grammar,expressions
@@ -16,84 +16,84 @@ Statements ->
 ```
 
 r[expr.block.intro]
-A *block expression*, or *block*, is a control flow expression and anonymous namespace scope for items and variable declarations.
+*块表达式*（或称*块*）是一种控制流表达式，也是项和变量声明的匿名命名空间作用域。
 
 r[expr.block.sequential-evaluation]
-As a control flow expression, a block sequentially executes its component non-item declaration statements and then its final optional expression.
+作为控制流表达式，块按顺序执行其组成的非项声明语句，然后是其可选的最终表达式。
 
 r[expr.block.namespace]
-As an anonymous namespace scope, item declarations are only in scope inside the block itself and variables declared by `let` statements are in scope from the next statement until the end of the block. See the [scopes] chapter for more details.
+作为匿名命名空间作用域，项声明仅在块自身内部有效，由 `let` 语句声明的变量从下一条语句开始直到块结束都有效。更多细节参见[作用域][scopes]章节。
 
 r[expr.block.inner-attributes]
-The syntax for a block is `{`, then any [inner attributes], then any number of [statements], then an optional expression, called the final operand, and finally a `}`.
+块的语法是 `{`，然后是一些[内部属性]，然后是一些[语句]，然后是一个可选的表达式（称为最终操作数），最后是 `}`。
 
 r[expr.block.statements]
-Statements are usually required to be followed by a semicolon, with two exceptions:
+语句通常要求后跟分号，有两个例外：
 
-1. Item declaration statements do not need to be followed by a semicolon.
-2. Expression statements usually require a following semicolon except if its outer expression is a flow control expression.
+1. 项声明语句不需要后跟分号。
+2. 表达式语句通常要求后跟分号，除非其外围表达式是控制流表达式。
 
 r[expr.block.null-statement]
-Furthermore, extra semicolons between statements are allowed, but these semicolons do not affect semantics.
+此外，语句之间允许额外的分号，但这些分号不影响语义。
 
 r[expr.block.evaluation]
-When evaluating a block expression, each statement, except for item declaration statements, is executed sequentially.
+在求值块表达式时，每条语句（除了项声明语句）按顺序执行。
 
 r[expr.block.result]
-Then the final operand is executed, if given.
+然后执行最终操作数（如果有给出的话）。
 
 r[expr.block.value-trailing-expr]
-When a block contains a [final operand], the block has the type and value of that final operand.
+当块包含[最终操作数]时，块具有该最终操作数的类型和值。
 
 ```rust
-let x: u8 = { 0u8 }; // `0u8` is the final operand.
+let x: u8 = { 0u8 }; // `0u8` 是最终操作数。
 assert_eq!(x, 0);
-let x: u8 = { (); 0u8 }; // As above.
+let x: u8 = { (); 0u8 }; // 同上。
 assert_eq!(x, 0);
 ```
 
 r[expr.block.value-no-trailing-expr]
-When a block does not contain a [final operand] and the block does not diverge, the block has [unit type] and [unit value].
+当块不包含[最终操作数]且块不发散时，块具有[单元类型]和[单元值]。
 
 ```rust
-let x: () = {}; // Has no final operand.
+let x: () = {}; // 没有最终操作数。
 assert_eq!(x, ());
-let x: () = { 0u8; }; // As above.
+let x: () = { 0u8; }; // 同上。
 assert_eq!(x, ());
 ```
 
 r[expr.block.value-diverges-no-trailing-expr]
-When a block does not contain a [final operand] and the block [diverges], the block has the [never type] and has no final value (because its type is [uninhabited]).
+当块不包含[最终操作数]且块[发散][diverges]时，块具有[永不类型]且没有最终值（因为其类型是[无人居住][uninhabited]的）。
 
 ```rust,no_run
-fn f() -> ! { loop {}; } // Diverges and has no final operand.
+fn f() -> ! { loop {}; } // 发散且没有最终操作数。
 //          ^^^^^^^^^^^^
-// The body of a function is a block expression.
+// 函数体是块表达式。
 ```
 
 > [!NOTE]
-> Observe that a block having no final operand is distinct from having an explicit final operand with unit type.  E.g., even though this block diverges, the type of the block is [unit] rather than [never].
+> 注意，块没有最终操作数与有显式的单元类型最终操作数是不同的。例如，即使此块发散，块的类型也是[单元][unit]而非[永不][never]。
 >
 > ```rust,compile_fail,E0308
-> fn f() -> ! { loop {}; () } // ERROR: Mismatched types.
-> //          ^^^^^^^^^^^^^^^ This block has unit type.
+> fn f() -> ! { loop {}; () } // 错误：类型不匹配。
+> //          ^^^^^^^^^^^^^^^ 此块具有单元类型。
 > ```
 
 > [!NOTE]
-> As a control flow expression, if a block expression is the outer expression of an expression statement, the expected type is `()` unless it is followed immediately by a semicolon.
+> 作为控制流表达式，如果块表达式是表达式语句的外围表达式，则期望类型为 `()`，除非其后紧跟分号。
 
 r[expr.block.diverging]
-A block is considered to be [diverging][divergence] if all reachable control flow paths contain a diverging expression, unless that expression is a [place expression] that is not read from.
+如果一个块的所有可达控制流路径都包含一个发散表达式，则该块被认为是[发散的][diverging]，除非该表达式是未被读取的[位置表达式]。
 
 ```rust,no_run
 # #![ feature(never_type) ]
 fn no_control_flow() -> ! {
-    // There are no conditional statements, so this entire function body is diverging.
+    // 没有条件语句，因此整个函数体是发散的。
     loop {}
 }
 
 fn control_flow_diverging() -> ! {
-    // All paths are diverging, so this entire function body is diverging.
+    // 所有路径都是发散的，因此整个函数体是发散的。
     if true {
         loop {}
     } else {
@@ -102,7 +102,7 @@ fn control_flow_diverging() -> ! {
 }
 
 fn control_flow_not_diverging() -> () {
-    // Some paths are not diverging, so this entire block is not diverging.
+    // 某些路径不是发散的，因此整个块不是发散的。
     if true {
         ()
     } else {
@@ -110,10 +110,10 @@ fn control_flow_not_diverging() -> () {
     }
 }
 
-// Note: This makes use of the unstable never type which is only available on
-// Rust's nightly channel. This is done for illustration purposes. It is
-// possible to encounter this scenario in stable Rust, but requires a more
-// convoluted example.
+// 注意：这里使用了不稳定的 never 类型，该类型仅在
+// Rust 的 nightly 通道上可用。这只是为了说明目的。
+// 在稳定版 Rust 中也可能遇到这种情况，但需要更
+// 复杂的示例。
 struct Foo {
     x: !,
 }
@@ -122,7 +122,7 @@ fn make<T>() -> T { loop {} }
 
 fn diverging_place_read() -> ! {
     let foo = Foo { x: make() };
-    // A read of a place expression produces a diverging block.
+    // 读取位置表达式产生一个发散块。
     let _x = foo.x;
 }
 ```
@@ -135,16 +135,16 @@ fn diverging_place_read() -> ! {
 # }
 fn diverging_place_not_read() -> ! {
     let foo = Foo { x: make() };
-    // Assignment to `_` means the place is not read.
+    // 赋值给 `_` 意味着该位置未被读取。
     let _ = foo.x;
-} // ERROR: Mismatched types.
+} // 错误：类型不匹配。
 ```
 
 r[expr.block.value]
-Blocks are always [value expressions] and evaluate the last operand in value expression context.
+块始终是[值表达式]，并在值表达式上下文中求值最后一个操作数。
 
 > [!NOTE]
-> This can be used to force moving a value if really needed. For example, the following example fails on the call to `consume_self` because the struct was moved out of `s` in the block expression.
+> 这可以用于在确实需要时强制移动值。例如，下面的示例在调用 `consume_self` 时失败，因为结构体已在块表达式中从 `s` 移出。
 >
 > ```rust,compile_fail
 > struct Struct;
@@ -157,16 +157,16 @@ Blocks are always [value expressions] and evaluate the last operand in value exp
 > fn move_by_block_expression() {
 >     let s = Struct;
 >
->     // Move the value out of `s` in the block expression.
+>     // 在块表达式中将值从 `s` 移出。
 >     (&{ s }).borrow_self();
 >
->     // Fails to execute because `s` is moved out of.
+>     // 因为 `s` 已被移出，所以执行失败。
 >     s.consume_self();
 > }
 > ```
 
 r[expr.block.async]
-## `async` blocks
+## `async` 块
 
 r[expr.block.async.syntax]
 ```grammar,expressions
@@ -174,59 +174,59 @@ AsyncBlockExpression -> `async` `move`? BlockExpression
 ```
 
 r[expr.block.async.intro]
-An *async block* is a variant of a block expression which evaluates to a future.
+*async 块*是块表达式的一种变体，它求值为一个 future。
 
 r[expr.block.async.future-result]
-The final expression of the block, if present, determines the result value of the future.
+块的最终表达式（如果有的话）决定 future 的结果值。
 
 r[expr.block.async.anonymous-type]
-Executing an async block is similar to executing a closure expression: its immediate effect is to produce and return an anonymous type.
+执行 async 块类似于执行闭包表达式：其直接效果是产生并返回一个匿名类型。
 
 r[expr.block.async.future]
-Whereas closures return a type that implements one or more of the [`std::ops::Fn`] traits, however, the type returned for an async block implements the [`std::future::Future`] trait.
+然而，闭包返回一个实现 [`std::ops::Fn`] trait 族之一的类型，而 async 块返回的类型实现 [`std::future::Future`] trait。
 
 r[expr.block.async.layout-unspecified]
-The actual data format for this type is unspecified.
+此类型的具体数据格式未作规定。
 
 > [!NOTE]
-> The future type that rustc generates is roughly equivalent to an enum with one variant per `await` point, where each variant stores the data needed to resume from its corresponding point.
+> rustc 生成的 future 类型大致等价于一个枚举，每个 `await` 点对应一个变体，每个变体存储从其对应点恢复所需的数据。
 
 r[expr.block.async.edition2018]
 > [!EDITION-2018]
-> Async blocks are only available beginning with Rust 2018.
+> Async 块仅从 Rust 2018 起可用。
 
 r[expr.block.async.capture]
-### Capture modes
+### 捕获模式
 
-Async blocks capture variables from their environment using the same [capture modes] as closures. Like closures, when written `async { .. }` the capture mode for each variable will be inferred from the content of the block. `async move { .. }` blocks however will move all referenced variables into the resulting future.
+Async 块使用与闭包相同的[捕获模式]从环境中捕获变量。与闭包类似，当写为 `async { .. }` 时，每个变量的捕获模式将根据块的内容推断。而 `async move { .. }` 块则会将所有引用的变量移动到生成的 future 中。
 
 r[expr.block.async.context]
-### Async context
+### 异步上下文
 
-Because async blocks construct a future, they define an **async context** which can in turn contain [`await` expressions]. Async contexts are established by async blocks as well as the bodies of async functions, whose semantics are defined in terms of async blocks.
+因为 async 块构造一个 future，它们定义了一个**异步上下文**，其中又可以包含 [`await` 表达式]。异步上下文由 async 块以及异步函数体建立，异步函数的语义是通过 async 块来定义的。
 
 r[expr.block.async.function]
-### Control-flow operators
+### 控制流运算符
 
 r[expr.block.async.function.intro]
-Async blocks act like a function boundary, much like closures.
+Async 块像函数边界一样运作，很像闭包。
 
 r[expr.block.async.function.return-try]
-Therefore, the `?` operator and `return` expressions both affect the output of the future, not the enclosing function or other context. That is, `return <expr>` from within an async block will return the result of `<expr>` as the output of the future. Similarly, if `<expr>?` propagates an error, that error is propagated as the result of the future.
+因此，`?` 运算符和 `return` 表达式都影响 future 的输出，而不是外围函数或其他上下文。也就是说，async 块内的 `return <expr>` 将返回 `<expr>` 的结果作为 future 的输出。类似地，如果 `<expr>?` 传播错误，该错误将作为 future 的结果传播。
 
 r[expr.block.async.function.control-flow]
-Finally, the `break` and `continue` keywords cannot be used to branch out from an async block. Therefore the following is illegal:
+最后，`break` 和 `continue` 关键字不能用于从 async 块中跳出。因此以下代码是非法的：
 
 ```rust,compile_fail
 loop {
     async move {
-        break; // error[E0267]: `break` inside of an `async` block
+        break; // 错误[E0267]：`async` 块内的 `break`
     }
 }
 ```
 
 r[expr.block.const]
-## `const` blocks
+## `const` 块
 
 r[expr.block.const.syntax]
 ```grammar,expressions
@@ -234,13 +234,13 @@ ConstBlockExpression -> `const` BlockExpression
 ```
 
 r[expr.block.const.intro]
-A *const block* is a variant of a block expression whose body evaluates at compile-time instead of at runtime.
+*const 块*是块表达式的一种变体，其主体在编译时求值而不是在运行时求值。
 
 r[expr.block.const.context]
-Const blocks allows you to define a constant value without having to define new [constant items], and thus they are also sometimes referred as *inline consts*. It also supports type inference so there is no need to specify the type, unlike [constant items].
+Const 块允许你定义常量值而无需定义新的[常量项]，因此有时也称为*内联常量*。它还支持类型推断，因此无需像[常量项]那样指定类型。
 
 r[expr.block.const.generic-params]
-Const blocks have the ability to reference generic parameters in scope, unlike [free][free item] constant items. They are desugared to constant items with generic parameters in scope (similar to associated constants, but without a trait or type they are associated with). For example, this code:
+与[自由项][free item]常量项不同，Const 块能够引用作用域内的泛型参数。它们被脱糖为作用域内有泛型参数的常量项（类似于关联常量，但没有与之关联的 trait 或类型）。例如，以下代码：
 
 ```rust
 fn foo<T>() -> usize {
@@ -248,7 +248,7 @@ fn foo<T>() -> usize {
 }
 ```
 
-is equivalent to:
+等价于：
 
 ```rust
 fn foo<T>() -> usize {
@@ -264,14 +264,13 @@ fn foo<T>() -> usize {
 
 r[expr.block.const.evaluation]
 
-If the const block expression is executed at runtime, then the constant is guaranteed to be evaluated, even if its return value is ignored:
+如果 const 块表达式在运行时被执行，则常量保证被求值，即使其返回值被忽略：
 
 ```rust
 fn foo<T>() -> usize {
-    // If this code ever gets executed, then the assertion has definitely
-    // been evaluated at compile-time.
+    // 如果此代码曾经被执行，则断言肯定已在编译时被求值。
     const { assert!(std::mem::size_of::<T>() > 0); }
-    // Here we can have unsafe code relying on the type being non-zero-sized.
+    // 此处我们可以有依赖于类型非零大小的 unsafe 代码。
     /* ... */
     42
 }
@@ -279,16 +278,16 @@ fn foo<T>() -> usize {
 
 r[expr.block.const.not-executed]
 
-If the const block expression is not executed at runtime, it may or may not be evaluated:
+如果 const 块表达式不在运行时被执行，它可能被求值也可能不被求值：
 ```rust,compile_fail
 if false {
-    // The panic may or may not occur when the program is built.
+    // 当程序构建时，panic 可能发生也可能不发生。
     const { panic!(); }
 }
 ```
 
 r[expr.block.unsafe]
-## `unsafe` blocks
+## `unsafe` 块
 
 r[expr.block.unsafe.syntax]
 ```grammar,expressions
@@ -296,9 +295,9 @@ UnsafeBlockExpression -> `unsafe` BlockExpression
 ```
 
 r[expr.block.unsafe.intro]
-_See [`unsafe` blocks] for more information on when to use `unsafe`_.
+*有关何时使用 `unsafe` 的更多信息，请参见 [`unsafe` 块]。*
 
-A block of code can be prefixed with the `unsafe` keyword to permit [unsafe operations]. Examples:
+代码块可以用 `unsafe` 关键字作为前缀，以允许[不安全操作]。示例：
 
 ```rust
 unsafe {
@@ -313,27 +312,27 @@ let a = unsafe { an_unsafe_fn() };
 ```
 
 r[expr.block.label]
-## Labeled block expressions
+## 带标签的块表达式
 
-Labeled block expressions are documented in the [Loops and other breakable expressions] section.
+带标签的块表达式在[循环和其他可中断表达式][Loops and other breakable expressions]一节中描述。
 
 r[expr.block.attributes]
-## Attributes on block expressions
+## 块表达式上的属性
 
 r[expr.block.attributes.inner-attributes]
-[Inner attributes] are allowed directly after the opening brace of a block expression in the following situations:
+在以下情况下，允许在块表达式的开花括号后直接放置[内部属性]：
 
-* [Function] and [method] bodies.
-* Loop bodies ([`loop`], [`while`], and [`for`]).
-* Block expressions used as a [statement].
-* Block expressions as elements of [array expressions], [tuple expressions], [call expressions], and tuple-style [struct] expressions.
-* A block expression as the tail expression of another block expression.
+* [函数][Function]和[方法][method]体。
+* 循环体（[`loop`]、[`while`] 和 [`for`]）。
+* 用作[语句]的块表达式。
+* 作为[数组表达式]、[元组表达式]、[调用表达式]和元组式[结构体][struct]表达式元素的块表达式。
+* 作为另一个块表达式的尾部表达式的块表达式。
 <!-- Keep list in sync with expressions.md -->
 
 r[expr.block.attributes.valid]
-The attributes that have meaning on a block expression are [`cfg`] and [the lint check attributes].
+在块表达式上有意义的属性是 [`cfg`] 和 [lint 检查属性]。
 
-For example, this function returns `true` on unix platforms and `false` on other platforms.
+例如，此函数在 unix 平台上返回 `true`，在其他平台上返回 `false`。
 
 ```rust
 fn is_unix_platform() -> bool {

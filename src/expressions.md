@@ -1,5 +1,5 @@
 r[expr]
-# Expressions
+# 表达式
 
 r[expr.syntax]
 ```grammar,expressions
@@ -46,92 +46,92 @@ ExpressionWithBlockNoAttrs ->
 ```
 
 r[expr.intro]
-An expression may have two roles: it always produces a *value*, and it may have *effects* (otherwise known as "side effects").
+表达式可以有两种角色：它总是产生一个*值*，并且可能具有*效果*（也称为"副作用"）。
 
 r[expr.evaluation]
-An expression *evaluates to* a value, and has effects during *evaluation*.
+表达式*求值为*一个值，并在*求值*期间产生效果。
 
 r[expr.operands]
-Many expressions contain sub-expressions, called the *operands* of the expression.
+许多表达式包含子表达式，称为表达式的*操作数*。
 
 r[expr.behavior]
-The meaning of each kind of expression dictates several things:
+每种表达式的含义决定了以下几件事：
 
-* Whether or not to evaluate the operands when evaluating the expression
-* The order in which to evaluate the operands
-* How to combine the operands' values to obtain the value of the expression
+* 在求值表达式时是否要求值其操作数
+* 求值操作数的顺序
+* 如何组合操作数的值以获得表达式的值
 
 r[expr.structure]
-In this way, the structure of expressions dictates the structure of execution. Blocks are just another kind of expression, so blocks, statements, expressions, and blocks again can recursively nest inside each other to an arbitrary depth.
+这样，表达式的结构就决定了执行的结构。块只是另一种表达式，因此块、语句、表达式和块可以相互递归嵌套，达到任意深度。
 
 > [!NOTE]
-> We give names to the operands of expressions so that we may discuss them, but these names are not stable and may be changed.
+> 我们为表达式的操作数命名以便讨论，但这些名称并不稳定，可能会发生变化。
 
 r[expr.precedence]
-## Expression precedence
+## 表达式优先级
 
-The precedence of Rust operators and expressions is ordered as follows, going from strong to weak. Binary Operators at the same precedence level are grouped in the order given by their associativity.
+Rust 运算符和表达式的优先级按从强到弱的顺序排列如下。处于同一优先级的二元运算符按其结合性给定的顺序分组。
 
-| Operator/Expression         | Associativity       |
-|-----------------------------|---------------------|
-| [Paths][expr.path]          |                     |
-| [Method calls][expr.method] |                     |
-| [Field expressions][expr.field] | left to right   |
-| [Function calls][expr.call], [array indexing][expr.array.index] | |
-| [`?`][expr.try]             |                     |
-| Unary [`-`][expr.negate] [`!`][expr.negate] [`*`][expr.deref] [borrow][expr.operator.borrow] | |
-| [`as`][expr.as]             | left to right       |
-| [`*`][expr.arith-logic] [`/`][expr.arith-logic] [`%`][expr.arith-logic] | left to right       |
-| [`+`][expr.arith-logic] [`-`][expr.arith-logic] | left to right       |
-| [`<<`][expr.arith-logic] [`>>`][expr.arith-logic] | left to right     |
-| [`&`][expr.arith-logic]     | left to right       |
-| [`^`][expr.arith-logic]     | left to right       |
-| [<code>&#124;</code>][expr.arith-logic] | left to right       |
-| [`==`][expr.cmp] [`!=`][expr.cmp] [`<`][expr.cmp] [`>`][expr.cmp] [`<=`][expr.cmp] [`>=`][expr.cmp] | Require parentheses |
-| [`&&`][expr.bool-logic]     | left to right       |
-| [<code>&#124;&#124;</code>][expr.bool-logic] | left to right       |
-| [`..`][expr.range] [`..=`][expr.range] | Require parentheses |
-| [`=`][expr.assign] [`+=`][expr.compound-assign] [`-=`][expr.compound-assign] [`*=`][expr.compound-assign] [`/=`][expr.compound-assign] [`%=`][expr.compound-assign] <br> [`&=`][expr.compound-assign] [<code>&#124;=</code>][expr.compound-assign] [`^=`][expr.compound-assign] [`<<=`][expr.compound-assign] [`>>=`][expr.compound-assign] | right to left |
-| [`return`][expr.return] [`break`][expr.loop.break] [closures][expr.closure]  | |
+| 运算符/表达式                  | 结合性              |
+|--------------------------------|---------------------|
+| [路径][expr.path]              |                     |
+| [方法调用][expr.method]        |                     |
+| [字段表达式][expr.field]       | 从左到右            |
+| [函数调用][expr.call]、[数组索引][expr.array.index] |       |
+| [`?`][expr.try]                |                     |
+| 一元 [`-`][expr.negate] [`!`][expr.negate] [`*`][expr.deref] [借用][expr.operator.borrow] | |
+| [`as`][expr.as]                | 从左到右            |
+| [`*`][expr.arith-logic] [`/`][expr.arith-logic] [`%`][expr.arith-logic] | 从左到右    |
+| [`+`][expr.arith-logic] [`-`][expr.arith-logic] | 从左到右      |
+| [`<<`][expr.arith-logic] [`>>`][expr.arith-logic] | 从左到右    |
+| [`&`][expr.arith-logic]        | 从左到右            |
+| [`^`][expr.arith-logic]        | 从左到右            |
+| [<code>&#124;</code>][expr.arith-logic] | 从左到右     |
+| [`==`][expr.cmp] [`!=`][expr.cmp] [`<`][expr.cmp] [`>`][expr.cmp] [`<=`][expr.cmp] [`>=`][expr.cmp] | 需要括号 |
+| [`&&`][expr.bool-logic]        | 从左到右            |
+| [<code>&#124;&#124;</code>][expr.bool-logic] | 从左到右     |
+| [`..`][expr.range] [`..=`][expr.range] | 需要括号        |
+| [`=`][expr.assign] [`+=`][expr.compound-assign] [`-=`][expr.compound-assign] [`*=`][expr.compound-assign] [`/=`][expr.compound-assign] [`%=`][expr.compound-assign] <br> [`&=`][expr.compound-assign] [<code>&#124;=</code>][expr.compound-assign] [`^=`][expr.compound-assign] [`<<=`][expr.compound-assign] [`>>=`][expr.compound-assign] | 从右到左 |
+| [`return`][expr.return] [`break`][expr.loop.break] [闭包][expr.closure]  | |
 
 r[expr.operand-order]
-## Evaluation order of operands
+## 操作数的求值顺序
 
 r[expr.operand-order.default]
-The following list of expressions all evaluate their operands the same way, as described after the list. Other expressions either don't take operands or evaluate them conditionally as described on their respective pages.
+以下列表中的表达式都以相同的方式求值其操作数，如下文所述。其他表达式要么不接收操作数，要么根据其各自页面的描述有条件地求值。
 
-* Dereference expression
-* Error propagation expression
-* Negation expression
-* Arithmetic and logical binary operators
-* Comparison operators
-* Type cast expression
-* Grouped expression
-* Array expression
-* Await expression
-* Index expression
-* Tuple expression
-* Tuple index expression
-* Struct expression
-* Call expression
-* Method call expression
-* Field expression
-* Break expression
-* Range expression
-* Return expression
+* 解引用表达式
+* 错误传播表达式
+* 取反表达式
+* 算术和逻辑二元运算符
+* 比较运算符
+* 类型转换表达式
+* 分组表达式
+* 数组表达式
+* Await 表达式
+* 索引表达式
+* 元组表达式
+* 元组索引表达式
+* 结构体表达式
+* 调用表达式
+* 方法调用表达式
+* 字段表达式
+* Break 表达式
+* 区间表达式
+* Return 表达式
 
 r[expr.operand-order.operands-before-primary]
-The operands of these expressions are evaluated prior to applying the effects of the expression. Expressions taking multiple operands are evaluated left to right as written in the source code.
+这些表达式的操作数在应用表达式效果之前被求值。接受多个操作数的表达式按源代码中从左到右的顺序求值。
 
 > [!NOTE]
-> Which subexpressions are the operands of an expression is determined by expression precedence as per the previous section.
+> 哪些子表达式是表达式的操作数由前一节中的表达式优先级决定。
 
-For example, the two `next` method calls will always be called in the same order:
+例如，两个 `next` 方法调用将始终以相同的顺序被调用：
 
 ```rust
-# // Using vec instead of array to avoid references
-# // since there is no stable owned array iterator
-# // at the time this example was written.
+# // 使用 vec 而不是数组以避免引用
+# // 因为在编写此示例时尚无稳定的自有数组迭代器
+# // 在编写此示例时。
 let mut one_two = vec![1, 2].into_iter();
 assert_eq!(
     (1, 2),
@@ -140,188 +140,187 @@ assert_eq!(
 ```
 
 > [!NOTE]
-> Since this is applied recursively, these expressions are also evaluated from innermost to outermost, ignoring siblings until there are no inner subexpressions.
+> 由于这是递归应用的，这些表达式也从最内层到最外层求值，忽略兄弟节点，直到没有内部子表达式为止。
 
 r[expr.place-value]
-## Place expressions and value expressions
+## 位置表达式和值表达式
 
 r[expr.place-value.intro]
-Expressions are divided into two main categories: place expressions and value expressions; there is also a third, minor category of expressions called assignee expressions. Within each expression, operands may likewise occur in either place context or value context. The evaluation of an expression depends both on its own category and the context it occurs within.
+表达式分为两大类：位置表达式和值表达式；还有第三类次要的表达式，称为赋值目标表达式。在每个表达式内部，操作数同样可以出现在位置上下文或值上下文中。表达式的求值取决于其自身的类别以及它所处的上下文。
 
 r[expr.place-value.place-memory-location]
-A *place expression* is an expression that represents a memory location.
+*位置表达式*是表示内存位置的表达式。
 
 r[expr.place-value.place-expr-kinds]
-These expressions are [paths] which refer to local variables, [static variables], [dereferences][deref] (`*expr`), [array indexing] expressions (`expr[expr]`), [field] references (`expr.f`) and parenthesized place expressions.
+这些表达式包括引用局部变量的[路径]、[静态变量]、[解引用][deref]（`*expr`）、[数组索引]表达式（`expr[expr]`）、[字段]引用（`expr.f`）和带括号的位置表达式。
 
 r[expr.place-value.value-expr-kinds]
-All other expressions are value expressions.
+所有其他表达式都是值表达式。
 
 r[expr.place-value.value-result]
-A *value expression* is an expression that represents an actual value.
+*值表达式*是表示实际值的表达式。
 
 r[expr.place-value.place-context]
-The following contexts are *place expression* contexts:
+以下上下文是*位置表达式*上下文：
 
-* The left operand of a [compound assignment] expression.
-* The operand of a unary [borrow], [raw borrow] or [dereference][deref] operator.
-* The operand of a [field expression].
-* The indexed operand of an [array indexing expression].
-* The tuple operand of a [tuple indexing expression].
-* The operand of any [implicit borrow].
-* The initializer of a [let statement].
-* The [scrutinee] of an [`if let`], [`match`][match], or [`while let`] expression.
-* The base of a [functional update] struct expression.
+* [复合赋值]表达式的左操作数。
+* 一元[借用]、[裸借用]或[解引用][deref]运算符的操作数。
+* [字段表达式]的操作数。
+* [数组索引表达式]的索引操作数。
+* [元组索引表达式]的元组操作数。
+* 任何[隐式借用]的操作数。
+* [let 语句]的初始化器。
+* [`if let`]、[`match`][match] 或 [`while let`] 表达式的[受检者]。
+* [函数式更新]结构体表达式的基值。
 
 > [!NOTE]
-> Historically, place expressions were called *lvalues* and value expressions were called *rvalues*.
+> 历史上，位置表达式曾被称为*lvalues*，值表达式曾被称为*rvalues*。
 
 r[expr.place-value.assignee]
-An *assignee expression* is an expression that appears in the left operand of an [assignment][assign] expression. Explicitly, the assignee expressions are:
+*赋值目标表达式*是出现在[赋值][assign]表达式左操作数中的表达式。具体来说，赋值目标表达式包括：
 
-- Place expressions.
-- [Underscores].
-- [Tuples] of assignee expressions.
-- [Slices][expr.array.index] of assignee expressions.
-- [Tuple structs] of assignee expressions.
-- [Structs] of assignee expressions (with optionally named fields).
-- [Unit structs]
+- 位置表达式。
+- [下划线]。
+- 由赋值目标表达式构成的[元组]。
+- 由赋值目标表达式构成的[切片][expr.array.index]。
+- 由赋值目标表达式构成的[元组结构体]。
+- 由赋值目标表达式构成的[结构体]（可带命名字段）。
+- [单元结构体]
 
 r[expr.place-value.parenthesis]
-Arbitrary parenthesisation is permitted inside assignee expressions.
+在赋值目标表达式内部允许任意加括号。
 
 r[expr.move]
-### Moved and copied types
+### 移动和复制类型
 
 r[expr.move.intro]
-When a place expression is evaluated in a value expression context, or is bound by value in a pattern, it denotes the value held _in_ that memory location.
+当位置表达式在值表达式上下文中求值，或在模式中以值绑定时，它表示该内存位置中*持有的*值。
 
 r[expr.move.copy]
-If the type of that value implements [`Copy`], then the value will be copied.
+如果该值的类型实现了 [`Copy`]，则该值将被复制。
 
 r[expr.move.requires-sized]
-In the remaining situations, if that type is [`Sized`], then it may be possible to move the value.
+在其余情况下，如果该类型是 [`Sized`]，则可能可以移动该值。
 
 r[expr.move.movable-place]
-Only the following place expressions may be moved out of:
+只有以下位置表达式可以被移出：
 
-* [Variables] which are not currently borrowed.
-* [Temporary values](#temporaries).
-* [Fields][field] of a place expression which can be moved out of and don't implement [`Drop`].
-* The result of [dereferencing][deref] an expression with type [`Box<T>`] and that can also be moved out of.
+* 当前未被借用的[变量]。
+* [临时值](#temporaries)。
+* 可以被移出且未实现 [`Drop`] 的位置表达式的[字段][field]。
+* 对类型为 [`Box<T>`] 且也可以被移出的表达式的[解引用][deref]结果。
 
 r[expr.move.deinitialization]
-After moving out of a place expression that evaluates to a local variable, the location is deinitialized and cannot be read from again until it is reinitialized.
+从求值为局部变量的位置表达式中移出后，该位置被反初始化，在重新初始化之前不能再被读取。
 
 r[expr.move.place-invalid]
-In all other cases, trying to use a place expression in a value expression context is an error.
+在所有其他情况下，尝试在值表达式上下文中使用位置表达式是错误的。
 
 r[expr.mut]
-### Mutability
+### 可变性
 
 r[expr.mut.intro]
-For a place expression to be [assigned][assign] to, mutably [borrowed][borrow], [implicitly mutably borrowed], or bound to a pattern containing `ref mut`, it must be _mutable_. We call these *mutable place expressions*. In contrast, other place expressions are called *immutable place expressions*.
+要使一个位置表达式能够被[赋值][assign]、可变[借用][borrow]、[隐式可变借用]或绑定到包含 `ref mut` 的模式，它必须是*可变的*。我们称这些为*可变位置表达式*。相反，其他位置表达式称为*不可变位置表达式*。
 
 r[expr.mut.valid-places]
-The following expressions can be mutable place expression contexts:
+以下表达式可以是可变位置表达式上下文：
 
-* Mutable [variables] which are not currently borrowed.
-* [Mutable `static` items].
-* [Temporary values].
-* [Fields][field]: this evaluates the subexpression in a mutable place expression context.
-* [Dereferences][deref] of a `*mut T` pointer.
-* Dereference of a variable, or field of a variable, with type `&mut T`. Note: This is an exception to the requirement of the next rule.
-* Dereferences of a type that implements `DerefMut`: this then requires that the value being dereferenced is evaluated in a mutable place expression context.
-* [Array indexing] of a type that implements `IndexMut`: this then evaluates the value being indexed, but not the index, in mutable place expression context.
+* 当前未被借用的可变[变量]。
+* [可变 `static` 项]。
+* [临时值]。
+* [字段][field]：这在可变位置表达式上下文中求值子表达式。
+* 对 `*mut T` 指针的[解引用][deref]。
+* 对类型为 `&mut T` 的变量或变量的字段的解引用。注意：这是下一条规则要求的例外。
+* 对实现了 `DerefMut` 的类型的解引用：这要求被解引用的值在可变位置表达式上下文中求值。
+* 对实现了 `IndexMut` 的类型的[数组索引]：这在可变位置表达式上下文中求值被索引的值，但不求值索引。
 
 r[expr.temporary]
-### Temporaries
+### 临时值
 
-When using a value expression in most place expression contexts, a temporary unnamed memory location is created and initialized to that value. The expression evaluates to that location instead, except if [promoted] to a `static`. The [drop scope] of the temporary is usually the end of the enclosing statement.
+在大多数位置表达式上下文中使用值表达式时，会创建一个临时的无名内存位置并初始化为该值。表达式求值为该位置，除非被[提升]为 `static`。临时值的[丢弃作用域]通常是包围语句的末尾。
 
 r[expr.super-macros]
-### Super macros
+### 超级宏
 
 r[expr.super-macros.intro]
-Certain built-in macros may create [temporaries] whose [scopes][temporary scopes] may be [extended]. These temporaries are *super temporaries* and these macros are *super macros*. [Invocations][macro invocations] of these macros are *super macro call expressions*. Arguments to these macros may be *super operands*.
+某些内置宏可能会创建[临时值]，其[作用域][temporary scopes]可以被[延长]。这些临时值是*超级临时值*，这些宏是*超级宏*。这些宏的[调用][macro invocations]是*超级宏调用表达式*。这些宏的参数可以是*超级操作数*。
 
 > [!NOTE]
-> When a super macro call expression is an [extending expression], its super operands are [extending expressions] and the [scopes][temporary scopes] of the super temporaries are [extended]. See [destructors.scope.lifetime-extension.exprs].
+> 当超级宏调用表达式是[延长表达式]时，其超级操作数是[延长表达式]，并且超级临时值的[作用域][temporary scopes]被[延长]。参见 [destructors.scope.lifetime-extension.exprs]。
 
 r[expr.super-macros.format_args]
 #### `format_args!`
 
 r[expr.super-macros.format_args.super-operands]
-Except for the format string argument, all arguments passed to [`format_args!`] are *super operands*.
+除格式字符串参数外，传递给 [`format_args!`] 的所有参数都是*超级操作数*。
 
 ```rust,edition2024
 # fn temp() -> String { String::from("") }
-// Due to the call being an extending expression and the argument
-// being a super operand, the inner block is an extending expression,
-// so the scope of the temporary created in its trailing expression
-// is extended.
+// 由于该调用是延长表达式且参数是超级操作数，
+// 内部块是延长表达式，因此在其尾部表达式中创建的
+// 临时值的作用域被延长。
 let _ = format_args!("{}", { &temp() }); // OK
 ```
 
 r[expr.super-macros.format_args.super-temporaries]
-The super operands of [`format_args!`] are [implicitly borrowed] and are therefore [place expression contexts]. When a [value expression] is passed as an argument, it creates a *super temporary*.
+[`format_args!`] 的超级操作数被[隐式借用]，因此是[位置表达式上下文]。当传递[值表达式]作为参数时，它创建一个*超级临时值*。
 
 ```rust
 # fn temp() -> String { String::from("") }
 let x = format_args!("{}", temp());
-x; // <-- The temporary is extended, allowing use here.
+x; // <-- 临时值被延长了，允许在此处使用。
 ```
 
-The expansion of a call to [`format_args!`] sometimes creates other internal *super temporaries*.
+[`format_args!`] 调用的展开有时会创建其他内部的*超级临时值*。
 
 ```rust,compile_fail,E0716
 let x = {
-    // This call creates an internal temporary.
+    // 此调用创建一个内部临时值。
     let x = format_args!("{:?}", 0);
-    x // <-- The temporary is extended, allowing its use here.
-}; // <-- The temporary is dropped here.
-x; // ERROR
+    x // <-- 临时值被延长了，允许在此处使用。
+}; // <-- 临时值在此处被丢弃。
+x; // 错误
 ```
 
 ```rust
-// This call doesn't create an internal temporary.
+// 此调用不创建内部临时值。
 let x = { let x = format_args!("{}", 0); x };
 x; // OK
 ```
 
 > [!NOTE]
-> The details of when [`format_args!`] does or does not create internal temporaries are currently unspecified.
+> [`format_args!`] 何时创建或不创建内部临时值的细节目前尚未规定。
 
 r[expr.super-macros.pin]
 #### `pin!`
 
 r[expr.super-macros.pin.super-operands]
-The argument to [`pin!`] is a *super operand*.
+[`pin!`] 的参数是*超级操作数*。
 
 ```rust,edition2024
 # use core::pin::pin;
 # fn temp() {}
-// As above for `format_args!`.
+// 与上面的 `format_args!` 相同。
 let _ = pin!({ &temp() }); // OK
 ```
 
 r[expr.super-macros.pin.super-temporaries]
-The argument to [`pin!`] is a [value expression context] and creates a *super temporary*.
+[`pin!`] 的参数是[值表达式上下文]，并创建一个*超级临时值*。
 
 ```rust
 # use core::pin::pin;
 # fn temp() {}
-// The argument is evaluated into a super temporary.
+// 参数被求值为一个超级临时值。
 let x = pin!(temp());
-// The temporary is extended, allowing its use here.
+// 临时值被延长了，允许在此处使用。
 x; // OK
 ```
 
 r[expr.implicit-borrow]
-### Implicit borrows
+### 隐式借用
 
 r[expr.implicit-borrow-intro]
-Certain expressions will treat an expression as a place expression by implicitly borrowing it. For example, it is possible to compare two unsized [slices][slice] for equality directly, because the `==` operator implicitly borrows its operands:
+某些表达式会将一个表达式视为位置表达式，通过隐式借用它。例如，可以直接比较两个非固定大小的[切片][slice]是否相等，因为 `==` 运算符会隐式借用其操作数：
 
 ```rust
 # let c = [1, 2, 3];
@@ -332,42 +331,42 @@ let b: &[i32];
 # b = &d;
 // ...
 *a == *b;
-// Equivalent form:
+// 等价形式：
 ::std::cmp::PartialEq::eq(&*a, &*b);
 ```
 
 r[expr.implicit-borrow.application]
-Implicit borrows may be taken in the following expressions:
+隐式借用可能在以下表达式中发生：
 
-* Left operand in [method-call] expressions.
-* Left operand in [field] expressions.
-* Left operand in [call expressions].
-* Left operand in [array indexing] expressions.
-* Operand of the [dereference operator][deref] (`*`).
-* Operands of [comparison].
-* Left operands of the [compound assignment].
-* Arguments to [`format_args!`] except the format string.
+* [方法调用][method-call]表达式中的左操作数。
+* [字段][field]表达式中的左操作数。
+* [调用表达式]中的左操作数。
+* [数组索引]表达式中的左操作数。
+* [解引用运算符][deref]（`*`）的操作数。
+* [比较]的操作数。
+* [复合赋值]的左操作数。
+* 传递给 [`format_args!`] 的参数（格式字符串除外）。
 
 r[expr.overload]
-## Overloading traits
+## 重载 trait
 
-Many of the following operators and expressions can also be overloaded for other types using traits in `std::ops` or `std::cmp`. These traits also exist in `core::ops` and `core::cmp` with the same names.
+以下许多运算符和表达式也可以使用 `std::ops` 或 `std::cmp` 中的 trait 为其他类型进行重载。这些 trait 也以相同的名称存在于 `core::ops` 和 `core::cmp` 中。
 
 r[expr.attr]
-## Expression attributes
+## 表达式属性
 
 r[expr.attr.restriction]
-[Outer attributes] before an expression are allowed only in a few specific cases:
+表达式前允许[外部属性]的情况仅限于以下几种：
 
-* Before an expression used as a [statement].
-* Elements of [array expressions], [tuple expressions], [call expressions], and tuple-style [struct] expressions.
-* The tail expression of [block expressions].
+* 用作[语句]的表达式之前。
+* [数组表达式]、[元组表达式]、[调用表达式]和元组式[结构体]表达式的元素。
+* [块表达式]的尾部表达式。
 <!-- Keep list in sync with block-expr.md -->
 
 r[expr.attr.never-before]
-They are never allowed before:
-* [Range] expressions.
-* Binary operator expressions ([ArithmeticOrLogicalExpression], [ComparisonExpression], [LazyBooleanExpression], [TypeCastExpression], [AssignmentExpression], [CompoundAssignmentExpression]).
+绝不允许在以下表达式之前：
+* [区间][Range]表达式。
+* 二元运算符表达式（[ArithmeticOrLogicalExpression]、[ComparisonExpression]、[LazyBooleanExpression]、[TypeCastExpression]、[AssignmentExpression]、[CompoundAssignmentExpression]）。
 
 [`Box<T>`]:             special-types-and-traits.md#boxt
 [`Copy`]:               special-types-and-traits.md#copy

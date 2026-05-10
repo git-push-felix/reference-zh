@@ -1,50 +1,50 @@
 r[type.bool]
-# Boolean type
+# 布尔类型
 
 ```rust
 let b: bool = true;
 ```
 
 r[type.bool.intro]
-The *boolean type* or *bool* is a primitive data type that can take on one of two values, called *true* and *false*.
+*布尔类型*或 *bool* 是一种原始数据类型，可以取两个值之一，称为 *true* 和 *false*。
 
 r[type.bool.literal]
-Values of this type may be created using a [literal expression] using the keywords `true` and `false` corresponding to the value of the same name.
+此类型的值可以使用[字面量表达式]通过关键字 `true` 和 `false` 来创建，分别对应同名的值。
 
 r[type.bool.namespace]
-This type is a part of the [language prelude] with the [name] `bool`.
+此类型属于[语言预导入]的一部分，其[名称]为 `bool`。
 
 r[type.bool.layout]
-An object with the boolean type has a [size and alignment] of 1 each.
+布尔类型的对象具有1的[大小和对齐]。
 
 r[type.bool.repr]
-The value false has the bit pattern `0x00` and the value true has the bit pattern `0x01`. It is [undefined behavior] for an object with the boolean type to have any other bit pattern.
+值 false 的位模式为 `0x00`，值 true 的位模式为 `0x01`。布尔类型的对象具有任何其它位模式是[未定义行为]。
 
 r[type.bool.use]
-The boolean type is the type of many operands in various [expressions]:
+布尔类型是多种[表达式]中许多操作数的类型：
 
 r[type.bool.use-in-condition]
-* The condition operand in [if expressions] and [while expressions]
+* [if 表达式]和 [while 表达式]中的条件操作数
 
 r[type.bool.use-in-lazy-operator]
-* The operands in [lazy boolean operator expressions][lazy]
+* [惰性布尔运算符表达式][lazy]中的操作数
 
 > [!NOTE]
-> The boolean type acts similarly to but is not an [enumerated type]. In practice, this mostly means that constructors are not associated to the type (e.g. `bool::true`).
+> 布尔类型的行为类似于[枚举类型]，但不是枚举类型。在实践中，这主要意味着构造函数不与类型关联（例如 `bool::true`）。
 
 r[type.bool.traits]
-Like all primitives, the boolean type [implements][p-impl] the [traits][p-traits] [`Clone`][p-clone], [`Copy`][p-copy], [`Sized`][p-sized], [`Send`][p-send], and [`Sync`][p-sync].
+与所有原始类型一样，布尔类型[实现][p-impl]了 [trait][p-traits] [`Clone`][p-clone]、[`Copy`][p-copy]、[`Sized`][p-sized]、[`Send`][p-send] 和 [`Sync`][p-sync]。
 
 > [!NOTE]
-> See the [standard library docs](bool) for library operations.
+> 有关库操作，请参阅[标准库文档](bool)。
 
 r[type.bool.expr]
-## Operations on boolean values
+## 布尔值的运算
 
-When using certain operator expressions with a boolean type for its operands, they evaluate using the rules of [boolean logic].
+当使用某些运算符表达式对布尔类型的操作数进行运算时，它们按照[布尔逻辑]的规则求值。
 
 r[type.bool.expr.not]
-### Logical not
+### 逻辑非
 
 | `b` | [`!b`][op-not] |
 |- | - |
@@ -52,7 +52,7 @@ r[type.bool.expr.not]
 | `false` | `true` |
 
 r[type.bool.expr.or]
-### Logical or
+### 逻辑或
 
 | `a` | `b` | [`a \| b`][op-or] |
 |- | - | - |
@@ -62,7 +62,7 @@ r[type.bool.expr.or]
 | `false` | `false` | `false` |
 
 r[type.bool.expr.and]
-### Logical and
+### 逻辑与
 
 | `a` | `b` | [`a & b`][op-and] |
 |- | - | - |
@@ -72,7 +72,7 @@ r[type.bool.expr.and]
 | `false` | `false` | `false` |
 
 r[type.bool.expr.xor]
-### Logical xor
+### 逻辑异或
 
 | `a` | `b` | [`a ^ b`][op-xor] |
 |- | - | - |
@@ -82,7 +82,7 @@ r[type.bool.expr.xor]
 | `false` | `false` | `false` |
 
 r[type.bool.expr.cmp]
-### Comparisons
+### 比较
 
 r[type.bool.expr.cmp.eq]
 | `a` | `b` | [`a == b`][op-compare] |
@@ -101,30 +101,30 @@ r[type.bool.expr.cmp.greater]
 | `false` | `false` | `false` |
 
 r[type.bool.expr.cmp.not-eq]
-* `a != b` is the same as `!(a == b)`
+* `a != b` 与 `!(a == b)` 相同
 
 r[type.bool.expr.cmp.greater-eq]
-* `a >= b` is the same as `a == b | a > b`
+* `a >= b` 与 `a == b | a > b` 相同
 
 r[type.bool.expr.cmp.less]
-* `a < b` is the same as `!(a >= b)`
+* `a < b` 与 `!(a >= b)` 相同
 
 r[type.bool.expr.cmp.less-eq]
-* `a <= b` is the same as `a == b | a < b`
+* `a <= b` 与 `a == b | a < b` 相同
 
 r[type.bool.validity]
-## Bit validity
+## 位有效性
 
-The single byte of a `bool` is guaranteed to be initialized (in other words, `transmute::<bool, u8>(...)` is always sound -- but since some bit patterns are invalid `bool`s, the inverse is not always sound).
+`bool` 的单个字节保证被初始化（换句话说，`transmute::<bool, u8>(...)` 始终是可靠的——但由于某些位模式是无效的 `bool`，反过来并不总是可靠的）。
 
-[boolean logic]: https://en.wikipedia.org/wiki/Boolean_algebra
-[enumerated type]: enum.md
-[expressions]: ../expressions.md
-[if expressions]: ../expressions/if-expr.md#if-expressions
-[language prelude]: ../names/preludes.md#language-prelude
+[布尔逻辑]: https://en.wikipedia.org/wiki/Boolean_algebra
+[枚举类型]: enum.md
+[表达式]: ../expressions.md
+[if 表达式]: ../expressions/if-expr.md#if-expressions
+[语言预导入]: ../names/preludes.md#language-prelude
 [lazy]: ../expressions/operator-expr.md#lazy-boolean-operators
-[literal expression]: ../expressions/literal-expr.md
-[name]: ../names.md
+[字面量表达式]: ../expressions/literal-expr.md
+[名称]: ../names.md
 [op-and]: ../expressions/operator-expr.md#arithmetic-and-logical-binary-operators
 [op-compare]: ../expressions/operator-expr.md#comparison-operators
 [op-not]: ../expressions/operator-expr.md#negation-operators
@@ -137,6 +137,6 @@ The single byte of a `bool` is guaranteed to be initialized (in other words, `tr
 [p-sized]: ../special-types-and-traits.md#sized
 [p-sync]: ../special-types-and-traits.md#sync
 [p-traits]: ../items/traits.md
-[size and alignment]: ../type-layout.md#size-and-alignment
-[undefined behavior]: ../behavior-considered-undefined.md
-[while expressions]: ../expressions/loop-expr.md#predicate-loops
+[大小和对齐]: ../type-layout.md#size-and-alignment
+[未定义行为]: ../behavior-considered-undefined.md
+[while 表达式]: ../expressions/loop-expr.md#predicate-loops

@@ -1,13 +1,13 @@
 r[subtype]
-# Subtyping and variance
+# 子类型与型变
 
 r[subtype.intro]
-Subtyping is implicit and can occur at any stage in type checking or inference.
+子类型关系是隐式的，可以在类型检查或推断的任何阶段发生。
 
 r[subtype.kinds]
-Subtyping is restricted to two cases: variance with respect to lifetimes and between types with higher ranked lifetimes. If we were to erase lifetimes from types, then the only subtyping would be due to type equality.
+子类型仅限于两种情况：关于生命周期的型变，以及具有高阶生命周期的类型之间的子类型关系。如果我们从类型中抹去生命周期，那么唯一的子类型关系将是基于类型相等的关系。
 
-Consider the following example: string literals always have `'static` lifetime. Nevertheless, we can assign `s` to `t`:
+考虑以下示例：字符串字面量始终具有 `'static` 生命周期。尽管如此，我们可以将 `s` 赋值给 `t`：
 
 ```rust
 fn bar<'a>() {
@@ -16,98 +16,97 @@ fn bar<'a>() {
 }
 ```
 
-Since `'static` outlives the lifetime parameter `'a`, `&'static str` is a subtype of `&'a str`.
+由于 `'static` 比生命周期参数 `'a` 存活得更久，`&'static str` 是 `&'a str` 的子类型。
 
 r[subtype.higher-ranked]
-[Higher-ranked]&#32;[function pointers] and [trait objects] have another subtype relation. They are subtypes of types that are given by substitutions of the higher-ranked lifetimes. Some examples:
+[高阶][Higher-ranked]&#32;[函数指针][function pointers]和 [trait 对象][trait objects]有另一种子类型关系。它们是由高阶生命周期替换后得到的类型的子类型。一些示例：
 
 ```rust
-// Here 'a is substituted for 'static
+// 这里 'a 被替换为 'static
 let subtype: &(for<'a> fn(&'a i32) -> &'a i32) = &((|x| x) as fn(&_) -> &_);
 let supertype: &(fn(&'static i32) -> &'static i32) = subtype;
 
-// This works similarly for trait objects
+// 这对 trait 对象同样有效
 let subtype: &(dyn for<'a> Fn(&'a i32) -> &'a i32) = &|x| x;
 let supertype: &(dyn Fn(&'static i32) -> &'static i32) = subtype;
 
-// We can also substitute one higher-ranked lifetime for another
+// 我们也可以将一个高阶生命周期替换为另一个
 let subtype: &(for<'a, 'b> fn(&'a i32, &'b i32)) = &((|x, y| {}) as fn(&_, &_));
 let supertype: &for<'c> fn(&'c i32, &'c i32) = subtype;
 ```
 
 r[subtyping.variance]
-## Variance
+## 型变
 
 r[subtyping.variance.intro]
-Variance is a property that generic types have with respect to their arguments. A generic type's *variance* in a parameter is how the subtyping of the parameter affects the subtyping of the type.
+型变是泛型类型相对于其参数所具有的一种性质。泛型类型在某个参数上的*型变*描述了该参数的子类型关系如何影响该类型的子类型关系。
 
 r[subtyping.variance.covariant]
-* `F<T>` is *covariant* over `T` if `T` being a subtype of `U` implies that `F<T>` is a subtype of `F<U>` (subtyping "passes through")
+* 如果 `T` 是 `U` 的子类型意味着 `F<T>` 是 `F<U>` 的子类型，则称 `F<T>` 对 `T` 是*协变*的（子类型"穿透"）
 
 r[subtyping.variance.contravariant]
-* `F<T>` is *contravariant* over `T` if `T` being a subtype of `U` implies that `F<U>` is a subtype of `F<T>`
+* 如果 `T` 是 `U` 的子类型意味着 `F<U>` 是 `F<T>` 的子类型，则称 `F<T>` 对 `T` 是*逆变*的
 
 r[subtyping.variance.invariant]
-* `F<T>` is *invariant* over `T` otherwise (no subtyping relation can be derived)
+* 否则 `F<T>` 对 `T` 是*不变*的（不能推导出子类型关系）
 
 r[subtyping.variance.builtin-types]
-Variance of types is automatically determined as follows
+类型的型变按以下规则自动确定：
 
-| Type                          | Variance in `'a`  | Variance in `T`   |
-|-------------------------------|-------------------|-------------------|
-| `&'a T`                       | covariant         | covariant         |
-| `&'a mut T`                   | covariant         | invariant         |
-| `*const T`                    |                   | covariant         |
-| `*mut T`                      |                   | invariant         |
-| `[T]` and `[T; n]`            |                   | covariant         |
-| `fn() -> T`                   |                   | covariant         |
-| `fn(T) -> ()`                 |                   | contravariant     |
-| `std::cell::UnsafeCell<T>`    |                   | invariant         |
-| `std::marker::PhantomData<T>` |                   | covariant         |
-| `dyn Trait<T> + 'a`           | covariant         | invariant         |
+| 类型                          | `'a` 中的型变  | `T` 中的型变   |
+|-------------------------------|----------------|----------------|
+| `&'a T`                       | 协变           | 协变           |
+| `&'a mut T`                   | 协变           | 不变           |
+| `*const T`                    |                | 协变           |
+| `*mut T`                      |                | 不变           |
+| `[T]` 和 `[T; n]`             |                | 协变           |
+| `fn() -> T`                   |                | 协变           |
+| `fn(T) -> ()`                 |                | 逆变           |
+| `std::cell::UnsafeCell<T>`    |                | 不变           |
+| `std::marker::PhantomData<T>` |                | 协变           |
+| `dyn Trait<T> + 'a`           | 协变           | 不变           |
 
 r[subtyping.variance.user-composite-types]
-The variance of other `struct`, `enum`, and `union` types is decided by looking at the variance of the types of their fields. If the parameter is used in positions with different variances then the parameter is invariant. For example the following struct is covariant in `'a` and `T` and invariant in `'b`, `'c`, and `U`.
+其他 `struct`、`enum` 和 `union` 类型的型变通过其字段类型的型变来决定。如果参数被用在具有不同型变的位置上，则该参数是不变的。例如，以下结构体在 `'a` 和 `T` 上是协变的，在 `'b`、`'c` 和 `U` 上是不变的。
 
 ```rust
 use std::cell::UnsafeCell;
 struct Variance<'a, 'b, 'c, T, U: 'a> {
-    x: &'a U,               // This makes `Variance` covariant in 'a, and would
-                            // make it covariant in U, but U is used later
-    y: *const T,            // Covariant in T
-    z: UnsafeCell<&'b f64>, // Invariant in 'b
-    w: *mut U,              // Invariant in U, makes the whole struct invariant
+    x: &'a U,               // 这使得 `Variance` 在 'a 上协变，并且会使
+                            // 它在 U 上协变，但 U 在后面被使用了
+    y: *const T,            // 在 T 上协变
+    z: UnsafeCell<&'b f64>, // 在 'b 上不变
+    w: *mut U,              // 在 U 上不变，使得整个结构体不变
 
-    f: fn(&'c ()) -> &'c () // Both co- and contravariant, makes 'c invariant
-                            // in the struct.
+    f: fn(&'c ()) -> &'c () // 同时协变和逆变，使得 'c 在结构体中不变
 }
 ```
 
 r[subtyping.variance.builtin-composite-types]
-When used outside of an `struct`, `enum`, or `union`, the variance for parameters is checked at each location separately.
+当在 `struct`、`enum` 或 `union` 之外使用时，参数的型变在各个位置独立检查。
 
 ```rust
 # use std::cell::UnsafeCell;
 fn generic_tuple<'short, 'long: 'short>(
-    // 'long is used inside of a tuple in both a co- and invariant position.
+    // 'long 在元组中同时被用在协变和不变位置。
     x: (&'long u32, UnsafeCell<&'long u32>),
 ) {
-    // As the variance at these positions is computed separately,
-    // we can freely shrink 'long in the covariant position.
+    // 由于这些位置的型变是独立计算的，
+    // 我们可以在协变位置自由缩短 'long。
     let _: (&'short u32, UnsafeCell<&'long u32>) = x;
 }
 
 fn takes_fn_ptr<'short, 'middle: 'short>(
-    // 'middle is used in both a co- and contravariant position.
+    // 'middle 同时被用在协变和逆变位置。
     f: fn(&'middle ()) -> &'middle (),
 ) {
-    // As the variance at these positions is computed separately,
-    // we can freely shrink 'middle in the covariant position
-    // and extend it in the contravariant position.
+    // 由于这些位置的型变是独立计算的，
+    // 我们可以在协变位置自由缩短 'middle，
+    // 并在逆变位置扩展它。
     let _: fn(&'static ()) -> &'short () = f;
 }
 ```
 
-[function pointers]: types/function-pointer.md
-[Higher-ranked]: ../nomicon/hrtb.html
-[trait objects]: types/trait-object.md
+[函数指针]: types/function-pointer.md
+[高阶]: ../nomicon/hrtb.html
+[trait 对象]: types/trait-object.md

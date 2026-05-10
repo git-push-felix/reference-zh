@@ -1,17 +1,14 @@
 r[attributes.testing]
-# Testing attributes
+# 测试属性
 
-The following [attributes] are used for specifying functions for performing
-tests. Compiling a crate in "test" mode enables building the test functions
-along with a test harness for executing the tests. Enabling the test mode also
-enables the [`test` conditional compilation option].
+以下[属性][attributes]用于指定执行测试的函数。在"test"模式下编译 crate 会启用测试函数的构建以及用于执行测试的测试框架。启用测试模式还会启用 [`test` 条件编译选项][`test` conditional compilation option]。
 
 <!-- template:attributes -->
 r[attributes.testing.test]
-## The `test` attribute
+## `test` 属性
 
 r[attributes.testing.test.intro]
-The *`test` [attribute][attributes]* marks a function to be executed as a test.
+*`test` [属性][attributes]* 将一个函数标记为作为测试执行。
 
 > [!EXAMPLE]
 > ```rust,no_run
@@ -24,40 +21,40 @@ The *`test` [attribute][attributes]* marks a function to be executed as a test.
 > ```
 
 r[attributes.testing.test.syntax]
-The `test` attribute uses the [MetaWord] syntax.
+`test` 属性使用 [MetaWord] 语法。
 
 r[attributes.testing.test.allowed-positions]
-The `test` attribute may only be applied to [free functions] that are monomorphic, that take no arguments, and where the return type implements the [`Termination`] trait.
+`test` 属性只能应用于单态的、不接收参数的[自由函数][free functions]，并且其返回类型必须实现 [`Termination`] trait。
 
 > [!NOTE]
-> Some of types that implement the [`Termination`] trait include:
+> 实现 [`Termination`] trait 的一些类型包括：
 > * `()`
 > * `Result<T, E> where T: Termination, E: Debug`
 
 r[attributes.testing.test.duplicates]
-Only the first use of `test` on a function has effect.
+只有第一次在函数上使用 `test` 才有效。
 
 > [!NOTE]
-> `rustc` lints against any use following the first. This may become an error in the future.
+> `rustc` 会对第一次之后的使用发出 lint 警告。这可能在将来成为错误。
 
 <!-- TODO: This is a minor lie. Currently rustc warns that duplicates are ignored, but it then generates multiple test entries with the same name. I would vote for rejecting this in the future. -->
 
 r[attributes.testing.test.stdlib]
-The `test` attribute is exported from the standard library prelude as [`std::prelude::v1::test`].
+`test` 属性从标准库预导入中导出为 [`std::prelude::v1::test`]。
 
 r[attributes.testing.test.enabled]
-These functions are only compiled when in test mode.
+这些函数仅在测试模式下编译。
 
 > [!NOTE]
-> The test mode is enabled by passing the `--test` argument to `rustc` or using `cargo test`.
+> 测试模式通过向 `rustc` 传递 `--test` 参数或使用 `cargo test` 启用。
 
 r[attributes.testing.test.success]
-The test harness calls the returned value's [`report`] method, and classifies the test as passed or failed depending on whether the resulting [`ExitCode`] represents successful termination.
-In particular:
-* Tests that return `()` pass as long as they terminate and do not panic.
-* Tests that return a `Result<(), E>` pass as long as they return `Ok(())`.
-* Tests that return `ExitCode::SUCCESS` pass, and tests that return `ExitCode::FAILURE` fail.
-* Tests that do not terminate neither pass nor fail.
+测试框架调用返回值的 [`report`] 方法，根据结果 [`ExitCode`] 是否表示成功终止将测试分类为通过或失败。
+特别是：
+* 返回 `()` 的测试只要终止且不发生 panic 就通过。
+* 返回 `Result<(), E>` 的测试只要返回 `Ok(())` 就通过。
+* 返回 `ExitCode::SUCCESS` 的测试通过，返回 `ExitCode::FAILURE` 的测试失败。
+* 不终止的测试既不通不过也不失败。
 
 > [!EXAMPLE]
 > ```rust,no_run
@@ -66,18 +63,18 @@ In particular:
 > # fn do_the_thing(s: &i32) -> io::Result<()> { Ok(()) }
 > #[test]
 > fn test_the_thing() -> io::Result<()> {
->     let state = setup_the_thing()?; // expected to succeed
->     do_the_thing(&state)?;          // expected to succeed
+>     let state = setup_the_thing()?; // 预期成功
+>     do_the_thing(&state)?;          // 预期成功
 >     Ok(())
 > }
 > ```
 
 <!-- template:attributes -->
 r[attributes.testing.ignore]
-## The `ignore` attribute
+## `ignore` 属性
 
 r[attributes.testing.ignore.intro]
-The *`ignore` [attribute][attributes]* can be used with the [`test` attribute][attributes.testing.test] to tell the test harness to not execute that function as a test.
+*`ignore` [属性][attributes]* 可以与 [`test` 属性][attributes.testing.test]一起使用，告知测试框架不要将该函数作为测试执行。
 
 > [!EXAMPLE]
 > ```rust,no_run
@@ -89,13 +86,13 @@ The *`ignore` [attribute][attributes]* can be used with the [`test` attribute][a
 > ```
 
 > [!NOTE]
-> The `rustc` test harness supports the `--include-ignored` flag to force ignored tests to be run.
+> `rustc` 测试框架支持 `--include-ignored` 标志来强制运行被忽略的测试。
 
 r[attributes.testing.ignore.syntax]
-The `ignore` attribute uses the [MetaWord] and [MetaNameValueStr] syntaxes.
+`ignore` 属性使用 [MetaWord] 和 [MetaNameValueStr] 语法。
 
 r[attributes.testing.ignore.reason]
-The [MetaNameValueStr] form of the `ignore` attribute provides a way to specify a reason why the test is ignored.
+`ignore` 属性的 [MetaNameValueStr] 形式提供了一种指定测试被忽略原因的方法。
 
 > [!EXAMPLE]
 > ```rust,no_run
@@ -107,26 +104,26 @@ The [MetaNameValueStr] form of the `ignore` attribute provides a way to specify 
 > ```
 
 r[attributes.testing.ignore.allowed-positions]
-The `ignore` attribute may only be applied to functions annotated with the `test` attribute.
+`ignore` 属性只能应用于标注了 `test` 属性的函数。
 
 > [!NOTE]
-> `rustc` ignores use in other positions but lints against it. This may become an error in the future.
+> `rustc` 忽略其他位置的用法但会发出 lint 警告。这可能在将来成为错误。
 
 r[attributes.testing.ignore.duplicates]
-Only the first use of `ignore` on a function has effect.
+只有第一次在函数上使用 `ignore` 才有效。
 
 > [!NOTE]
-> `rustc` lints against any use following the first. This may become an error in the future.
+> `rustc` 会对第一次之后的使用发出 lint 警告。这可能在将来成为错误。
 
 r[attributes.testing.ignore.behavior]
-Ignored tests are still compiled when in test mode, but they are not executed.
+被忽略的测试在测试模式下仍会被编译，但不会被运行。
 
 <!-- template:attributes -->
 r[attributes.testing.should_panic]
-## The `should_panic` attribute
+## `should_panic` 属性
 
 r[attributes.testing.should_panic.intro]
-The *`should_panic` [attribute][attributes]* causes a test to pass only if the [test function][attributes.testing.test] to which the attribute is applied panics.
+*`should_panic` [属性][attributes]* 使测试仅在应用该属性的[测试函数][attributes.testing.test]发生 panic 时通过。
 
 > [!EXAMPLE]
 > ```rust,no_run
@@ -138,7 +135,7 @@ The *`should_panic` [attribute][attributes]* causes a test to pass only if the [
 > ```
 
 r[attributes.testing.should_panic.syntax]
-The `should_panic` attribute has these forms:
+`should_panic` 属性有以下形式：
 
 - [MetaWord]
   > [!EXAMPLE]
@@ -148,7 +145,7 @@ The `should_panic` attribute has these forms:
   > fn mytest() { panic!("error: some message, and more"); }
   > ```
 
-- [MetaNameValueStr] --- The given string must appear within the panic message for the test to pass.
+- [MetaNameValueStr] --- 给定的字符串必须出现在 panic 消息中，测试才能通过。
   > [!EXAMPLE]
   > ```rust,no_run
   > #[test]
@@ -156,7 +153,7 @@ The `should_panic` attribute has these forms:
   > fn mytest() { panic!("error: some message, and more"); }
   > ```
 
-- [MetaListNameValueStr] --- As with the [MetaNameValueStr] syntax, the given string must appear within the panic message.
+- [MetaListNameValueStr] --- 与 [MetaNameValueStr] 语法一样，给定的字符串必须出现在 panic 消息中。
   > [!EXAMPLE]
   > ```rust,no_run
   > #[test]
@@ -165,22 +162,22 @@ The `should_panic` attribute has these forms:
   > ```
 
 r[attributes.testing.should_panic.allowed-positions]
-The `should_panic` attribute may only be applied to functions annotated with the `test` attribute.
+`should_panic` 属性只能应用于标注了 `test` 属性的函数。
 
 > [!NOTE]
-> `rustc` ignores use in other positions but lints against it. This may become an error in the future.
+> `rustc` 忽略其他位置的用法但会发出 lint 警告。这可能在将来成为错误。
 
 r[attributes.testing.should_panic.duplicates]
-Only the first use of `should_panic` on a function has effect.
+只有第一次在函数上使用 `should_panic` 才有效。
 
 > [!NOTE]
-> `rustc` lints against any use following the first with a future-compatibility warning. This may become an error in the future.
+> `rustc` 会对第一次之后的使用发出未来兼容性警告的 lint。这可能在将来成为错误。
 
 r[attributes.testing.should_panic.expected]
-When the [MetaNameValueStr] form or the [MetaListNameValueStr] form with the `expected` key is used, the given string must appear somewhere within the panic message for the test to pass.
+当使用 [MetaNameValueStr] 形式或带有 `expected` 键的 [MetaListNameValueStr] 形式时，给定的字符串必须出现在 panic 消息的某处，测试才能通过。
 
 r[attributes.testing.should_panic.return]
-The return type of the test function must be `()`.
+测试函数的返回类型必须是 `()`。
 
 [`Termination`]: std::process::Termination
 [`report`]: std::process::Termination::report

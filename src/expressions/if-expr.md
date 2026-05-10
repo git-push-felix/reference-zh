@@ -1,5 +1,5 @@
 r[expr.if]
-# `if` expressions
+# `if` 表达式
 
 r[expr.if.syntax]
 ```grammar,expressions
@@ -26,30 +26,30 @@ LetChainCondition ->
     | AssignmentExpression
     | CompoundAssignmentExpression
 ```
-<!-- TODO: The struct exception above needs clarification, see https://github.com/rust-lang/reference/issues/1808
-     The chain grammar could use some work, see https://github.com/rust-lang/reference/issues/1811
+<!-- TODO: 上面的结构体例外需要澄清，参见 https://github.com/rust-lang/reference/issues/1808
+     链式语法可能需要改进，参见 https://github.com/rust-lang/reference/issues/1811
 -->
 
 r[expr.if.intro]
-The syntax of an `if` expression is a sequence of one or more condition operands separated by `&&`, followed by a consequent block, any number of `else if` conditions and blocks, and an optional trailing `else` block.
+`if` 表达式的语法是由 `&&` 分隔的一个或多个条件操作数的序列，后跟一个结果块，任意数量的 `else if` 条件和块，以及一个可选的尾部 `else` 块。
 
 r[expr.if.condition]
-Condition operands must be either an [Expression] with a [boolean type] or a conditional `let` match.
+条件操作数必须是一个具有[布尔类型]的[表达式][Expression]或一个条件 `let` 匹配。
 
 r[expr.if.condition-true]
-If all of the condition operands evaluate to `true` and all of the `let` patterns successfully match their [scrutinee]s, the consequent block is executed and any subsequent `else if` or `else` block is skipped.
+如果所有条件操作数都求值为 `true` 且所有 `let` 模式都成功匹配其[受检者]，则执行结果块，并跳过任何后续的 `else if` 或 `else` 块。
 
 r[expr.if.else-if]
-If any condition operand evaluates to `false` or any `let` pattern does not match its scrutinee, the consequent block is skipped and any subsequent `else if` condition is evaluated.
+如果任何条件操作数求值为 `false` 或任何 `let` 模式未匹配其受检者，则跳过结果块，并求值任何后续的 `else if` 条件。
 
 r[expr.if.else]
-If all `if` and `else if` conditions evaluate to `false` then any `else` block is executed.
+如果所有 `if` 和 `else if` 条件都求值为 `false`，则执行 `else` 块（如果有的话）。
 
 r[expr.if.result]
-An `if` expression evaluates to the same value as the executed block, or `()` if no block is evaluated.
+`if` 表达式求值为与执行的块相同的值，如果没有块被执行则求值为 `()`。
 
 r[expr.if.type]
-An `if` expression must have the same type in all situations.
+`if` 表达式在所有情况下必须具有相同的类型。
 
 ```rust
 # let x = 3;
@@ -61,7 +61,7 @@ if x == 4 {
     println!("x is something else");
 }
 
-// `if` can be used as an expression.
+// `if` 可以用作表达式。
 let y = if 12 * 15 > 150 {
     "Bigger"
 } else {
@@ -71,25 +71,24 @@ assert_eq!(y, "Bigger");
 ```
 
 r[expr.if.diverging]
-An `if` expression [diverges] if either the condition expression diverges or if all arms diverge.
+如果条件表达式发散或所有分支都发散，则 `if` 表达式[发散][diverges]。
 
 ```rust,no_run
 fn diverging_condition() -> ! {
-    // Diverges because the condition expression diverges
+    // 因为条件表达式发散而发散
     if loop {} {
         ()
     } else {
         ()
     };
-    // The semicolon above is important: The type of the `if` expression is
-    // `()`, despite being diverging. When the final body expression is
-    // elided, the type of the body is inferred to ! because the function body
-    // diverges. Without the semicolon, the `if` would be the tail expression
-    // with type `()`, which would fail to match the return type `!`.
+    // 上面的分号很重要：`if` 表达式的类型是 `()`，
+    // 尽管它发散了。当最终体表达式被省略时，体的类型
+    // 被推断为 !，因为函数体发散。如果没有分号，
+    // `if` 将是类型为 `()` 的尾部表达式，这将无法匹配返回类型 `!`。
 }
 
 fn diverging_arms() -> ! {
-    // Diverges because all arms diverge
+    // 因为所有分支都发散而发散
     if true {
         loop {}
     } else {
@@ -99,25 +98,25 @@ fn diverging_arms() -> ! {
 ```
 
 r[expr.if.let]
-## `if let` patterns
+## `if let` 模式
 
 r[expr.if.let.intro]
-`let` patterns in an `if` condition allow binding new variables into scope when the pattern matches successfully.
+`if` 条件中的 `let` 模式允许在模式成功匹配时将新变量绑定到作用域中。
 
-The following examples illustrate bindings using `let` patterns:
+以下示例展示了使用 `let` 模式的绑定：
 
 ```rust
 let dish = ("Ham", "Eggs");
 
-// This body will be skipped because the pattern is refuted.
+// 因为模式被反驳，此体将被跳过。
 if let ("Bacon", b) = dish {
     println!("Bacon is served with {}", b);
 } else {
-    // This block is evaluated instead.
+    // 改为执行此块。
     println!("No bacon will be served");
 }
 
-// This body will execute.
+// 此体将执行。
 if let ("Ham", b) = dish {
     println!("Ham is served with {}", b);
 }
@@ -128,7 +127,7 @@ if let _ = 5 {
 ```
 
 r[expr.if.let.or-pattern]
-Multiple patterns may be specified with the `|` operator. This has the same semantics as with `|` in [`match` expressions]:
+可以使用 `|` 运算符指定多个模式。这与 [`match` 表达式]中的 `|` 具有相同的语义：
 
 ```rust
 enum E {
@@ -143,18 +142,18 @@ if let E::X(n) | E::Y(n) = v {
 ```
 
 r[expr.if.chains]
-## Chains of conditions
+## 条件链
 
 r[expr.if.chains.intro]
-Multiple condition operands can be separated with `&&`.
+多个条件操作数可以用 `&&` 分隔。
 
 r[expr.if.chains.order]
-Similar to a `&&` [LazyBooleanExpression], each operand is evaluated from left-to-right until an operand evaluates as `false` or a `let` match fails, in which case the subsequent operands are not evaluated.
+类似于 `&&` [LazyBooleanExpression]，每个操作数从左到右求值，直到某个操作数求值为 `false` 或 `let` 匹配失败，在这种情况下后续操作数不会被求值。
 
 r[expr.if.chains.bindings]
-The bindings of each pattern are put into scope to be available for the next condition operand and the consequent block.
+每个模式的绑定被放入作用域，以供下一个条件操作数和结果块使用。
 
-The following is an example of chaining multiple expressions, mixing `let` bindings and boolean expressions, and with expressions able to reference pattern bindings from previous expressions:
+以下是链式多个表达式的示例，混合了 `let` 绑定和布尔表达式，并且表达式可以引用先前表达式的模式绑定：
 
 ```rust
 fn single() {
@@ -169,7 +168,7 @@ fn single() {
 }
 ```
 
-The above is equivalent to the following without using chains of conditions:
+上面的代码等价于以下不使用条件链的代码：
 
 ```rust
 fn nested() {
@@ -186,19 +185,19 @@ fn nested() {
 ```
 
 r[expr.if.chains.or]
-If any condition operand is a `let` pattern, then none of the condition operands can be a `||` [lazy boolean operator expression][expr.bool-logic] due to ambiguity and precedence with the `let` scrutinee. If a `||` expression is needed, then parentheses can be used. For example:
+如果任何条件操作数是 `let` 模式，则由于与 `let` 受检者的歧义和优先级，所有条件操作数都不能是 `||` [惰性布尔运算符表达式][expr.bool-logic]。如果需要 `||` 表达式，可以使用括号。例如：
 
 ```rust
 # let foo = Some(123);
 # let condition1 = true;
 # let condition2 = false;
-// Parentheses are required here.
+// 此处需要括号。
 if let Some(x) = foo && (condition1 || condition2) { /*...*/ }
 ```
 
 r[expr.if.edition2024]
 > [!EDITION-2024]
-> Before the 2024 edition, let chains are not supported. That is, the [LetChain] grammar is not allowed in an `if` expression.
+> 在 2024 版本之前，不支持 let 链。即 [LetChain] 语法在 `if` 表达式中是不允许的。
 
 [`match` expressions]: match-expr.md
 [boolean type]: ../types/boolean.md

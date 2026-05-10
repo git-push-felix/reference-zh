@@ -1,5 +1,5 @@
 r[type.array]
-# Array types
+# 数组类型
 
 r[type.array.syntax]
 ```grammar,types
@@ -7,26 +7,26 @@ ArrayType -> `[` Type `;` Expression `]`
 ```
 
 r[type.array.intro]
-An array is a fixed-size sequence of `N` elements of type `T`. The array type is written as `[T; N]`.
+数组是包含 `N` 个类型为 `T` 的元素的固定大小序列。数组类型写作 `[T; N]`。
 
 r[type.array.constraint]
-The size is a [constant expression] that evaluates to a [`usize`].
+大小是一个求值为 [`usize`] 的[常量表达式]。
 
-Examples:
+示例：
 
 ```rust
-// A stack-allocated array
+// 栈分配的数组
 let array: [i32; 3] = [1, 2, 3];
 
-// A heap-allocated array, coerced to a slice
+// 堆分配的数组，强制转换为切片
 let boxed_array: Box<[i32]> = Box::new([1, 2, 3]);
 ```
 
 r[type.array.index]
-All elements of arrays are always initialized, and access to an array is always bounds-checked in safe methods and operators.
+数组的所有元素始终是初始化的，并且在安全方法和运算符中访问数组时始终进行边界检查。
 
 > [!NOTE]
-> The [`Vec<T>`] standard library type provides a heap-allocated resizable array type.
+> [`Vec<T>`] 标准库类型提供了一种堆分配的可变大小数组类型。
 
 [`usize`]: numeric.md#machine-dependent-integer-types
-[constant expression]: ../const_eval.md#constant-expressions
+[常量表达式]: ../const_eval.md#constant-expressions

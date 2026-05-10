@@ -1,10 +1,10 @@
 r[paths]
-# Paths
+# 路径
 
 r[paths.intro]
-A *path* is a sequence of one or more path segments separated by `::` tokens. Paths are used to refer to [items], values, [types], [macros], and [attributes].
+*路径*是由 `::` 分隔的一个或多个路径段组成的序列。路径用于引用[程序项][items]、值、[类型][types]、[宏][macros]和[属性][attributes]。
 
-Two examples of simple paths consisting of only identifier segments:
+仅由标识符段组成的简单路径的两个示例：
 
 <!-- ignore: syntax fragment -->
 ```rust,ignore
@@ -12,10 +12,10 @@ x;
 x::y::z;
 ```
 
-## Types of paths
+## 路径的类型
 
 r[paths.simple]
-### Simple paths
+### 简单路径
 
 r[paths.simple.syntax]
 ```grammar,paths
@@ -27,7 +27,7 @@ SimplePathSegment ->
 ```
 
 r[paths.simple.intro]
-Simple paths are used in [visibility] markers, [attributes], [macros][mbe], and [`use`] items. For example:
+简单路径用于[可见性][visibility]标记、[属性][attributes]、[宏][mbe]和 [`use`] 项。例如：
 
 ```rust
 use std::io::{self, Write};
@@ -38,7 +38,7 @@ mod m {
 ```
 
 r[paths.expr]
-### Paths in expressions
+### 表达式中的路径
 
 r[paths.expr.syntax]
 ```grammar,paths
@@ -72,10 +72,10 @@ GenericArgsBounds ->
 ```
 
 r[paths.expr.intro]
-Paths in expressions allow for paths with generic arguments to be specified. They are used in various places in [expressions] and [patterns].
+表达式中的路径允许指定带有泛型参数的路径。它们用于[表达式][expressions]和[模式][patterns]中的各种位置。
 
 r[paths.expr.turbofish]
-The `::` token is required before the opening `<` for generic arguments to avoid ambiguity with the less-than operator. This is colloquially known as "turbofish" syntax.
+在泛型参数的开头 `<` 之前需要 `::`，以避免与小于运算符歧义。这俗称"turbofish"语法。
 
 ```rust
 (0..10).collect::<Vec<_>>();
@@ -83,10 +83,10 @@ Vec::<u8>::with_capacity(1024);
 ```
 
 r[paths.expr.argument-order]
-The order of generic arguments is restricted to lifetime arguments, then type arguments, then const arguments, then equality constraints.
+泛型参数的顺序限制为生命周期参数，然后是类型参数，然后是常量参数，然后是等式约束。
 
 r[paths.expr.complex-const-params]
-Const arguments must be surrounded by braces unless they are a [literal], an [inferred const], or a single segment path. An [inferred const] may not be surrounded by braces.
+常量参数必须用花括号包围，除非它们是[字面量][literal]、[推断常量][inferred const]或单段路径。[推断常量][inferred const]不能使用花括号包围。
 
 ```rust
 mod m {
@@ -95,27 +95,27 @@ mod m {
 const C: usize = m::C;
 fn f<const N: usize>() -> [u8; N] { [0; N] }
 
-let _ = f::<1>(); // Literal.
-let _: [_; 1] = f::<_>(); // Inferred const.
-let _: [_; 1] = f::<(((_)))>(); // Inferred const.
-let _ = f::<C>(); // Single segment path.
-let _ = f::<{ m::C }>(); // Multi-segment path must be braced.
+let _ = f::<1>(); // 字面量。
+let _: [_; 1] = f::<_>(); // 推断常量。
+let _: [_; 1] = f::<(((_)))>(); // 推断常量。
+let _ = f::<C>(); // 单段路径。
+let _ = f::<{ m::C }>(); // 多段路径必须使用花括号。
 ```
 
 ```rust,compile_fail
 fn f<const N: usize>() -> [u8; N] { [0; _] }
 let _: [_; 1] = f::<{ _ }>();
-//                    ^ ERROR `_` not allowed here
+//                    ^ 错误：此处不允许 `_`
 ```
 
 > [!NOTE]
-> In a generic argument list, an [inferred const] is parsed as an [inferred type][InferredType] but then semantically treated as a separate kind of [const generic argument].
+> 在泛型参数列表中，[推断常量][inferred const]被解析为[推断类型][InferredType]，但随后在语义上被视为一种单独的[常量泛型参数][const generic argument]。
 
 r[paths.expr.impl-trait-params]
-The synthetic type parameters corresponding to `impl Trait` types are implicit, and these cannot be explicitly specified.
+对应于 `impl Trait` 类型的合成类型参数是隐式的，不能显式指定。
 
 r[paths.qualified]
-## Qualified paths
+## 限定路径
 
 r[paths.qualified.syntax]
 ```grammar,paths
@@ -127,7 +127,7 @@ QualifiedPathInType -> QualifiedPathType (`::` TypePathSegment)+
 ```
 
 r[paths.qualified.intro]
-Fully qualified paths allow for disambiguating the path for [trait implementations] and for specifying [canonical paths](#canonical-paths). When used in a type specification, it supports using the type syntax specified below.
+完全限定路径允许消除 [trait 实现][trait implementations]的路径歧义，并允许指定[规范路径](#规范路径)。在类型规范中使用时，它支持使用下面指定的类型语法。
 
 ```rust
 struct S;
@@ -142,13 +142,13 @@ trait T2 {
     fn f() { println!("T2 f"); }
 }
 impl T2 for S {}
-S::f();  // Calls the inherent impl.
-<S as T1>::f();  // Calls the T1 trait function.
-<S as T2>::f();  // Calls the T2 trait function.
+S::f();  // 调用固有 impl。
+<S as T1>::f();  // 调用 T1 trait 函数。
+<S as T2>::f();  // 调用 T2 trait 函数。
 ```
 
 r[paths.type]
-### Paths in types
+### 类型中的路径
 
 r[paths.type.syntax]
 ```grammar,paths
@@ -162,10 +162,10 @@ TypePathFnInputs -> Type (`,` Type)* `,`?
 ```
 
 r[paths.type.intro]
-Type paths are used within type definitions, trait bounds, and qualified paths.
+类型路径用于类型定义、trait 约束和限定路径中。
 
 r[paths.type.turbofish]
-Although the `::` token is allowed before the generics arguments, it is not required because there is no ambiguity like there is in [PathInExpression].
+尽管在泛型参数之前允许使用 `::`，但不是必需的，因为这里不像 [PathInExpression] 中存在歧义。
 
 ```rust
 # mod ops {
@@ -184,43 +184,43 @@ type G = std::boxed::Box<dyn std::ops::FnOnce(isize) -> isize>;
 ```
 
 r[paths.qualifiers]
-## Path qualifiers
+## 路径限定符
 
-Paths can be denoted with various leading qualifiers to change the meaning of how it is resolved.
+路径可以使用各种前导限定符来表示，以改变其解析方式的含义。
 
 > [!NOTE]
-> [`use` declarations] have additional behaviors and restrictions for `self`, `super`, `crate`, and `$crate`.
+> [`use` 声明][use declarations]对 `self`、`super`、`crate` 和 `$crate` 有额外的行为和限制。
 
 r[paths.qualifiers.global-root]
 ### `::`
 
 r[paths.qualifiers.global-root.intro]
-Paths starting with `::` are considered to be *global paths* where the segments of the path start being resolved from a place which differs based on edition. Each identifier in the path must resolve to an item.
+以 `::` 开头的路径被视为*全局路径*，路径段的解析起点根据版次不同而有所差异。路径中的每个标识符必须解析为一个项。
 
 r[paths.qualifiers.global-root.edition2018]
 > [!EDITION-2018]
-> In the 2015 Edition, identifiers resolve from the "crate root" (`crate::` in the 2018 edition), which contains a variety of different items, including external crates, default crates such as `std` or `core`, and items in the top level of the crate (including `use` imports).
+> 在 2015 版次中，标识符从"crate 根"（2018 版次中的 `crate::`）解析，其中包含各种不同的项，包括外部 crate、默认 crate 如 `std` 或 `core`，以及 crate 顶层的项（包括 `use` 导入）。
 >
-> Beginning with the 2018 Edition, paths starting with `::` resolve from crates in the [extern prelude]. That is, they must be followed by the name of a crate.
+> 从 2018 版次开始，以 `::` 开头的路径从[外部 crate 预导入][extern prelude]中的 crate 解析。也就是说，它们必须后跟一个 crate 的名称。
 
 ```rust
 pub fn foo() {
-    // In the 2018 edition, this accesses `std` via the extern prelude.
-    // In the 2015 edition, this accesses `std` via the crate root.
+    // 在 2018 版次中，这通过外部 crate 预导入访问 `std`。
+    // 在 2015 版次中，这通过 crate 根访问 `std`。
     let now = ::std::time::Instant::now();
     println!("{:?}", now);
 }
 ```
 
 ```rust,edition2015
-// 2015 Edition
+// 2015 版次
 mod a {
     pub fn foo() {}
 }
 mod b {
     pub fn foo() {
-        ::a::foo(); // call `a`'s foo function
-        // In Rust 2018, `::a` would be interpreted as the crate `a`.
+        ::a::foo(); // 调用 `a` 的 foo 函数
+        // 在 Rust 2018 中，`::a` 将被解释为 crate `a`。
     }
 }
 # fn main() {}
@@ -230,36 +230,36 @@ r[paths.qualifiers.mod-self]
 ### `self`
 
 r[paths.qualifiers.mod-self.intro]
-`self` resolves the path relative to the current module.
+`self` 将路径相对于当前模块解析。
 
 r[paths.qualifiers.mod-self.restriction]
-`self` may only be used as the first segment of a path (without a preceding `::`) or as the last segment (preceded by `::`).
+`self` 只能作为路径的第一个段（前面没有 `::`）或最后一个段（前面有 `::`）使用。
 
 r[paths.qualifiers.mod-self.trailing]
-When `self` appears as the last segment of a path, it refers to the entity named by the preceding segment. The preceding path must resolve to a [module], [enumeration], or [trait].
+当 `self` 作为路径的最后一个段出现时，它引用前面段命名的实体。前面的路径必须解析为[模块][module]、[枚举][enumeration]或 [trait]。
 
 ```rust
 mod m {
     pub enum E { V1 }
     pub trait Tr {}
-    pub(in crate::m::self) fn g() {} // OK: Modules can be parents of `self`.
+    pub(in crate::m::self) fn g() {} // 正确：模块可以是 `self` 的父级。
 }
-type Ty = m::E::self; // OK: Enumerations can be parents of `self`.
-fn f<T: m::Tr::self>() {} // OK: Traits can be parents of `self`.
+type Ty = m::E::self; // 正确：枚举可以是 `self` 的父级。
+fn f<T: m::Tr::self>() {} // 正确：trait 可以是 `self` 的父级。
 # fn main() { let _: Ty = m::E::V1; }
 ```
 
 ```rust,compile_fail,E0223
 struct S;
-type Ty = S::self; // ERROR: Structs cannot be parents of `self`.
+type Ty = S::self; // 错误：结构体不能是 `self` 的父级。
 # fn main() {}
 ```
 
 > [!NOTE]
-> See [items.use.self] for additional rules about `self` in `use` declarations.
+> 有关 `use` 声明中 `self` 的附加规则，请参见 [items.use.self]。
 
 r[paths.qualifiers.self-pat]
-In a method body, a path which consists of a single `self` segment resolves to the method's self parameter.
+在方法体中，仅由单个 `self` 段组成的路径解析为方法的 self 参数。
 
 ```rust
 fn foo() {}
@@ -279,60 +279,58 @@ r[paths.qualifiers.type-self]
 ### `Self`
 
 r[paths.qualifiers.type-self.intro]
-`Self`, with a capital "S", is used to refer to the current type being implemented or defined. It may be used in the following situations:
+`Self`（大写 "S"）用于引用当前正在实现或定义的类型。它可以在以下情况下使用：
 
 r[paths.qualifiers.type-self.trait]
-* In a [trait] definition, it refers to the type implementing the trait.
+* 在 [trait] 定义中，它引用实现该 trait 的类型。
 
 r[paths.qualifiers.type-self.impl]
-* In an [implementation], it refers to the type being implemented. When implementing a tuple or unit [struct], it also refers to the constructor in the [value namespace].
+* 在[实现][implementation]中，它引用正在实现的类型。当实现元组或单元[结构体][struct]时，它也引用[值命名空间][value namespace]中的构造函数。
 
 r[paths.qualifiers.type-self.type]
-* In the definition of a [struct], [enumeration], or [union], it refers to the type being defined. The definition is not allowed to be infinitely recursive (there must be an indirection).
+* 在 [struct]、[枚举][enumeration] 或 [union] 的定义中，它引用正在定义的类型。定义不允许无限递归（必须存在间接引用）。
 
 r[paths.qualifiers.type-self.scope]
-The scope of `Self` behaves similarly to a generic parameter; see the [`Self` scope] section for more details.
+`Self` 的作用域行为类似于泛型参数；更多细节请参见 [`Self` 作用域][`Self` scope]部分。
 
 r[paths.qualifiers.type-self.allowed-positions]
-`Self` can only be used as the first segment, without a preceding `::`.
+`Self` 只能作为第一个段使用，前面不能有 `::`。
 
 r[paths.qualifiers.type-self.no-generics]
-The `Self` path cannot include generic arguments (as in `Self::<i32>`).
+`Self` 路径不能包含泛型参数（如 `Self::<i32>`）。
 
 ```rust
 trait T {
     type Item;
     const C: i32;
-    // `Self` will be whatever type that implements `T`.
+    // `Self` 将是实现 `T` 的任何类型。
     fn new() -> Self;
-    // `Self::Item` will be the type alias in the implementation.
+    // `Self::Item` 将是实现中的类型别名。
     fn f(&self) -> Self::Item;
 }
 struct S;
 impl T for S {
     type Item = i32;
     const C: i32 = 9;
-    fn new() -> Self {           // `Self` is the type `S`.
+    fn new() -> Self {           // `Self` 是类型 `S`。
         S
     }
-    fn f(&self) -> Self::Item {  // `Self::Item` is the type `i32`.
-        Self::C                  // `Self::C` is the constant value `9`.
+    fn f(&self) -> Self::Item {  // `Self::Item` 是类型 `i32`。
+        Self::C                  // `Self::C` 是常量值 `9`。
     }
 }
 
-// `Self` is in scope within the generics of a trait definition,
-// to refer to the type being defined.
+// `Self` 在 trait 定义的泛型中处于作用域中，
+// 用于引用正在定义的类型。
 trait Add<Rhs = Self> {
     type Output;
-    // `Self` can also reference associated items of the
-    // type being implemented.
+    // `Self` 也可以引用正在实现的类型的关联项。
     fn add(self, rhs: Rhs) -> Self::Output;
 }
 
 struct NonEmptyList<T> {
     head: T,
-    // A struct can reference itself (as long as it is not
-    // infinitely recursive).
+    // 结构体可以引用自身（只要不是无限递归）。
     tail: Option<Box<Self>>,
 }
 ```
@@ -341,10 +339,10 @@ r[paths.qualifiers.super]
 ### `super`
 
 r[paths.qualifiers.super.intro]
-`super` in a path resolves to the parent module.
+路径中的 `super` 解析为父模块。
 
 r[paths.qualifiers.super.allowed-positions]
-It may only be used in leading segments of the path, possibly after an initial `self` segment.
+它只能用于路径的前导段中，可能位于初始 `self` 段之后。
 
 ```rust
 mod a {
@@ -352,14 +350,14 @@ mod a {
 }
 mod b {
     pub fn foo() {
-        super::a::foo(); // call a's foo function
+        super::a::foo(); // 调用 a 的 foo 函数
     }
 }
 # fn main() {}
 ```
 
 r[paths.qualifiers.super.repetition]
-`super` may be repeated several times after the first `super` or `self` to refer to ancestor modules.
+`super` 可以在第一个 `super` 或 `self` 之后重复多次，以引用祖先模块。
 
 ```rust
 mod a {
@@ -368,8 +366,8 @@ mod a {
     mod b {
         mod c {
             fn foo() {
-                super::super::foo(); // call a's foo function
-                self::super::super::foo(); // call a's foo function
+                super::super::foo(); // 调用 a 的 foo 函数
+                self::super::super::foo(); // 调用 a 的 foo 函数
             }
         }
     }
@@ -381,10 +379,10 @@ r[paths.qualifiers.crate]
 ### `crate`
 
 r[paths.qualifiers.crate.intro]
-`crate` resolves the path relative to the current crate.
+`crate` 将路径相对于当前 crate 解析。
 
 r[paths.qualifiers.crate.allowed-positions]
-`crate` can only be used as the first segment, without a preceding `::`.
+`crate` 只能作为第一个段使用，前面不能有 `::`。
 
 ```rust
 fn foo() {}
@@ -400,10 +398,10 @@ r[paths.qualifiers.macro-crate]
 ### `$crate`
 
 r[paths.qualifiers.macro-crate.allowed-positions]
-[`$crate`] is only used within [macro transcribers], and can only be used as the first segment, without a preceding `::`.
+[`$crate`] 仅在[宏转录器][macro transcribers]中使用，并且只能作为第一个段使用，前面不能有 `::`。
 
 r[paths.qualifiers.macro-crate.hygiene]
-[`$crate`] will expand to a path to access items from the top level of the crate where the macro is defined, regardless of which crate the macro is invoked.
+[`$crate`] 将展开为访问定义该宏的 crate 顶层项的路径，无论该宏是在哪个 crate 中被调用的。
 
 ```rust
 pub fn increment(x: u32) -> u32 {
@@ -418,34 +416,34 @@ macro_rules! inc {
 ```
 
 r[paths.canonical]
-## Canonical paths
+## 规范路径
 
 r[paths.canonical.intro]
-Each item defined in a module or implementation has a *canonical path* that corresponds to where within its crate it is defined.
+在模块或实现中定义的每个项都有一个*规范路径*，对应于其在其 crate 内的定义位置。
 
 r[paths.canonical.alias]
-All other paths to these items are aliases.
+所有这些项的其他路径都是别名。
 
 r[paths.canonical.def]
-The canonical path is defined as a *path prefix* appended by the path segment the item itself defines.
+规范路径定义为*路径前缀*加上该项本身定义的路径段。
 
 r[paths.canonical.non-canonical]
-[Implementations] and [use declarations] do not have canonical paths, although the items that implementations define do have them. Items defined in block expressions do not have canonical paths. Items defined in a module that does not have a canonical path do not have a canonical path. Associated items defined in an implementation that refers to an item without a canonical path, e.g. as the implementing type, the trait being implemented, a type parameter or bound on a type parameter, do not have canonical paths.
+[实现][implementations]和 [use 声明][use declarations]没有规范路径，尽管实现定义的项有规范路径。在块表达式中定义的项没有规范路径。在没有规范路径的模块中定义的项没有规范路径。在引用没有规范路径的项的实现中定义的关联项（例如作为实现类型、被实现的 trait、类型参数或类型参数上的约束）没有规范路径。
 
 r[paths.canonical.module-prefix]
-The path prefix for modules is the canonical path to that module.
+模块的路径前缀是该模块的规范路径。
 
 r[paths.canonical.bare-impl-prefix]
-For bare implementations, it is the canonical path of the item being implemented surrounded by <span class="parenthetical">angle (`<>`)</span> brackets.
+对于裸实现，它是被实现项的规范路径，用<span class="parenthetical">尖括号（`<>`）</span>包围。
 
 r[paths.canonical.trait-impl-prefix]
-For [trait implementations], it is the canonical path of the item being implemented followed by `as` followed by the canonical path to the trait all surrounded in <span class="parenthetical">angle (`<>`)</span> brackets.
+对于 [trait 实现][trait implementations]，它是被实现项的规范路径后跟 `as`，再后跟 trait 的规范路径，全部用<span class="parenthetical">尖括号（`<>`）</span>包围。
 
 r[paths.canonical.local-canonical-path]
-The canonical path is only meaningful within a given crate. There is no global namespace across crates; an item's canonical path merely identifies it within the crate.
+规范路径仅在给定 crate 内有意义。跨 crate 没有全局命名空间；项的规范路径仅在其 crate 内标识它。
 
 ```rust
-// Comments show the canonical path of the item.
+// 注释显示该项的规范路径。
 
 mod a { // crate::a
     pub struct Struct; // crate::a::Struct
@@ -465,22 +463,22 @@ mod a { // crate::a
 
 mod without { // crate::without
     fn canonicals() { // crate::without::canonicals
-        struct OtherStruct; // None
+        struct OtherStruct; // 无
 
-        trait OtherTrait { // None
-            fn g(&self); // None
+        trait OtherTrait { // 无
+            fn g(&self); // 无
         }
 
         impl OtherTrait for OtherStruct {
-            fn g(&self) {} // None
+            fn g(&self) {} // 无
         }
 
         impl OtherTrait for crate::a::Struct {
-            fn g(&self) {} // None
+            fn g(&self) {} // 无
         }
 
         impl crate::a::Trait for OtherStruct {
-            fn f(&self) {} // None
+            fn f(&self) {} // 无
         }
     }
 }

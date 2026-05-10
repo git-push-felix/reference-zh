@@ -1,133 +1,116 @@
 r[attributes.diagnostics]
-# Diagnostic attributes
+# 诊断属性
 
-The following [attributes] are used for controlling or generating diagnostic
-messages during compilation.
+以下[属性][attributes]用于控制或生成编译期间的诊断消息。
 
 r[attributes.diagnostics.lint]
-## Lint check attributes
+## Lint 检查属性
 
-A lint check names a potentially undesirable coding pattern, such as
-unreachable code or omitted documentation.
+Lint 检查命名了一种潜在的不受欢迎的编码模式，例如不可达代码或遗漏的文档。
 
 r[attributes.diagnostics.lint.level]
-The lint attributes `allow`,
-`expect`, `warn`, `deny`, and `forbid` use the [MetaListPaths] syntax
-to specify a list of lint names to change the lint level for the entity
-to which the attribute applies.
+lint 属性 `allow`、`expect`、`warn`、`deny` 和 `forbid` 使用 [MetaListPaths] 语法来指定一个 lint 名称列表，以更改应用该属性的实体的 lint 级别。
 
-For any lint check `C`:
+对于任何 lint 检查 `C`：
 
 r[attributes.diagnostics.lint.allow]
-* `#[allow(C)]` overrides the check for `C` so that violations will go
-   unreported.
+* `#[allow(C)]` 覆盖对 `C` 的检查，使得违规不会被报告。
 
 r[attributes.diagnostics.lint.expect]
-* `#[expect(C)]` indicates that lint `C` is expected to be emitted. The
-  attribute will suppress the emission of `C` or issue a warning, if the
-  expectation is unfulfilled.
+* `#[expect(C)]` 指示预期会发出 lint `C`。该属性将抑制 `C` 的发出，或者如果预期未被满足则发出警告。
 
 r[attributes.diagnostics.lint.warn]
-* `#[warn(C)]` warns about violations of `C` but continues compilation.
+* `#[warn(C)]` 对 `C` 的违规发出警告但继续编译。
 
 r[attributes.diagnostics.lint.deny]
-* `#[deny(C)]` signals an error after encountering a violation of `C`,
+* `#[deny(C)]` 在遇到 `C` 的违规后发出错误信号，
 
 r[attributes.diagnostics.lint.forbid]
-* `#[forbid(C)]` is the same as `deny(C)`, but also forbids changing the lint
-   level afterwards,
+* `#[forbid(C)]` 与 `deny(C)` 相同，但也禁止之后更改 lint 级别，
 
 > [!NOTE]
-> The lint checks supported by `rustc` can be found via `rustc -W help`, along with their default settings and are documented in the [rustc book].
+> `rustc` 支持的 lint 检查可通过 `rustc -W help` 找到，以及它们的默认设置，并在 [rustc 书][rustc book]中有文档记录。
 
 ```rust
 pub mod m1 {
-    // Missing documentation is ignored here
+    // 此处忽略缺少文档
     #[allow(missing_docs)]
     pub fn undocumented_one() -> i32 { 1 }
 
-    // Missing documentation signals a warning here
+    // 此处缺少文档发出警告
     #[warn(missing_docs)]
     pub fn undocumented_too() -> i32 { 2 }
 
-    // Missing documentation signals an error here
+    // 此处缺少文档发出错误
     #[deny(missing_docs)]
     pub fn undocumented_end() -> i32 { 3 }
 }
 ```
 
 r[attributes.diagnostics.lint.override]
-Lint attributes can override the level specified from a previous attribute, as
-long as the level does not attempt to change a forbidden lint
-(except for `deny`, which is allowed inside a `forbid` context, but ignored).
-Previous attributes are those from a higher level in the syntax tree, or from a
-previous attribute on the same entity as listed in left-to-right source order.
+Lint 属性可以覆盖前一个属性指定的级别，只要该级别不试图更改已禁止的 lint（除了 `deny`，在 `forbid` 上下文中允许但被忽略）。前一个属性是语法树中更高级别的属性，或按从左到右源顺序在同一实体上的前一个属性。
 
-This example shows how one can use `allow` and `warn` to toggle a particular
-check on and off:
+此示例展示了如何使用 `allow` 和 `warn` 来切换特定检查的开关：
 
 ```rust
 #[warn(missing_docs)]
 pub mod m2 {
     #[allow(missing_docs)]
     pub mod nested {
-        // Missing documentation is ignored here
+        // 此处忽略缺少文档
         pub fn undocumented_one() -> i32 { 1 }
 
-        // Missing documentation signals a warning here,
-        // despite the allow above.
+        // 此处缺少文档发出警告，
+        // 尽管上面有 allow。
         #[warn(missing_docs)]
         pub fn undocumented_two() -> i32 { 2 }
     }
 
-    // Missing documentation signals a warning here
+    // 此处缺少文档发出警告
     pub fn undocumented_too() -> i32 { 3 }
 }
 ```
 
-This example shows how one can use `forbid` to disallow uses of `allow` or
-`expect` for that lint check:
+此示例展示了如何使用 `forbid` 来禁止对该 lint 检查使用 `allow` 或 `expect`：
 
 ```rust,compile_fail
 #[forbid(missing_docs)]
 pub mod m3 {
-    // Attempting to toggle warning signals an error here
+    // 尝试切换警告在此处发出错误
     #[allow(missing_docs)]
-    /// Returns 2.
+    /// 返回 2。
     pub fn undocumented_too() -> i32 { 2 }
 }
 ```
 
 > [!NOTE]
-> `rustc` allows setting lint levels on the [command-line][rustc-lint-cli], and also supports [setting caps][rustc-lint-caps] on the lints that are reported.
+> `rustc` 允许在[命令行][rustc-lint-cli]上设置 lint 级别，还支持设置报告的 lint 的[上限][rustc-lint-caps]。
 
 r[attributes.diagnostics.lint.reason]
-### Lint reasons
+### Lint 原因
 
-All lint attributes support an additional `reason` parameter, to give context why
-a certain attribute was added. This reason will be displayed as part of the lint
-message if the lint is emitted at the defined level.
+所有 lint 属性都支持一个额外的 `reason` 参数，用于说明添加某个属性的原因。如果 lint 在定义的级别上发出，此原因将作为 lint 消息的一部分显示。
 
 ```rust,edition2015,compile_fail
-// `keyword_idents` is allowed by default. Here we deny it to
-// avoid migration of identifiers when we update the edition.
+// `keyword_idents` 默认是 allow 的。此处我们将其 deny 以避免
+// 在更新版次时迁移标识符。
 #![deny(
     keyword_idents,
     reason = "we want to avoid these idents to be future compatible"
 )]
 
-// This name was allowed in Rust's 2015 edition. We still aim to avoid
-// this to be future compatible and not confuse end users.
+// 此名称在 Rust 2015 版次中是允许的。我们仍然希望避免
+// 此名称以保持未来兼容性并且不混淆最终用户。
 fn dyn() {}
 ```
 
-Here is another example, where the lint is allowed with a reason:
+另一个示例，其中 lint 被 allow 并带有原因：
 
 ```rust
 use std::path::PathBuf;
 
 pub fn get_path() -> PathBuf {
-    // The `reason` parameter on `allow` attributes acts as documentation for the reader.
+    // `allow` 属性上的 `reason` 参数充当读者的文档。
     #[allow(unused_mut, reason = "this is only modified on some platforms")]
     let mut file_name = PathBuf::from("git");
 
@@ -139,81 +122,68 @@ pub fn get_path() -> PathBuf {
 ```
 
 r[attributes.diagnostics.expect]
-### The `#[expect]` attribute
+### `#[expect]` 属性
 
 r[attributes.diagnostics.expect.intro]
-The `#[expect(C)]` attribute creates a lint expectation for lint `C`. The
-expectation will be fulfilled, if a `#[warn(C)]` attribute at the same location
-would result in a lint emission. If the expectation is unfulfilled, because
-lint `C` would not be emitted, the `unfulfilled_lint_expectations` lint will
-be emitted at the attribute.
+`#[expect(C)]` 属性为 lint `C` 创建一个 lint 预期。如果同一位置的 `#[warn(C)]` 属性会导致 lint 发出，则该预期将被满足。如果预期未满足，因为 lint `C` 不会被发出，则 `unfulfilled_lint_expectations` lint 将在该属性处发出。
 
 ```rust
 fn main() {
-    // This `#[expect]` attribute creates a lint expectation, that the `unused_variables`
-    // lint would be emitted by the following statement. This expectation is
-    // unfulfilled, since the `question` variable is used by the `println!` macro.
-    // Therefore, the `unfulfilled_lint_expectations` lint will be emitted at the
-    // attribute.
+    // 此 `#[expect]` 属性创建一个 lint 预期，即以下语句会发出
+    // `unused_variables` lint。此预期未满足，因为 `question` 变量被
+    // `println!` 宏使用。因此，`unfulfilled_lint_expectations` lint
+    // 将在该属性处发出。
     #[expect(unused_variables)]
     let question = "who lives in a pineapple under the sea?";
     println!("{question}");
 
-    // This `#[expect]` attribute creates a lint expectation that will be fulfilled, since
-    // the `answer` variable is never used. The `unused_variables` lint, that would usually
-    // be emitted, is suppressed. No warning will be issued for the statement or attribute.
+    // 此 `#[expect]` 属性创建一个将被满足的 lint 预期，因为
+    // `answer` 变量从未被使用。通常会发出的 `unused_variables` lint
+    // 被抑制。不会为该语句或属性发出警告。
     #[expect(unused_variables)]
     let answer = "SpongeBob SquarePants!";
 }
 ```
 
 r[attributes.diagnostics.expect.fulfillment]
-The lint expectation is only fulfilled by lint emissions which have been suppressed by
-the `expect` attribute. If the lint level is modified in the scope with other level
-attributes like `allow` or `warn`, the lint emission will be handled accordingly and the
-expectation will remain unfulfilled.
+Lint 预期仅由已被 `expect` 属性抑制的 lint 发出来满足。如果在该作用域中使用其他级别属性（如 `allow` 或 `warn`）修改了 lint 级别，则 lint 发出将相应地处理，而预期将保持未满足。
 
 ```rust
 #[expect(unused_variables)]
 fn select_song() {
-    // This will emit the `unused_variables` lint at the warn level
-    // as defined by the `warn` attribute. This will not fulfill the
-    // expectation above the function.
+    // 这将在 warn 级别发出 `unused_variables` lint，
+    // 如 `warn` 属性所定义。这不会满足函数上方的预期。
     #[warn(unused_variables)]
     let song_name = "Crab Rave";
 
-    // The `allow` attribute suppresses the lint emission. This will not
-    // fulfill the expectation as it has been suppressed by the `allow`
-    // attribute and not the `expect` attribute above the function.
+    // `allow` 属性抑制 lint 发出。这不会满足预期，因为它
+    // 已被 `allow` 属性抑制，而不是函数上方的 `expect` 属性。
     #[allow(unused_variables)]
     let song_creator = "Noisestorm";
 
-    // This `expect` attribute will suppress the `unused_variables` lint emission
-    // at the variable. The `expect` attribute above the function will still not
-    // be fulfilled, since this lint emission has been suppressed by the local
-    // expect attribute.
+    // 此 `expect` 属性将抑制此变量处的 `unused_variables` lint 发出。
+    // 函数上方的 `expect` 属性仍然不会被满足，因为此 lint 发出
+    // 已被局部的 expect 属性抑制。
     #[expect(unused_variables)]
     let song_version = "Monstercat Release";
 }
 ```
 
 r[attributes.diagnostics.expect.independent]
-If the `expect` attribute contains several lints, each one is expected separately. For a
-lint group it's enough if one lint inside the group has been emitted:
+如果 `expect` 属性包含多个 lint，每个 lint 被单独预期。对于 lint 组，只要组内有一个 lint 被发出就足够了：
 
 ```rust
-// This expectation will be fulfilled by the unused value inside the function
-// since the emitted `unused_variables` lint is inside the `unused` lint group.
+// 此预期将被函数内部的未使用值满足，因为发出的
+// `unused_variables` lint 在 `unused` lint 组内。
 #[expect(unused)]
 pub fn thoughts() {
     let unused = "I'm running out of examples";
 }
 
 pub fn another_example() {
-    // This attribute creates two lint expectations. The `unused_mut` lint will be
-    // suppressed and with that fulfill the first expectation. The `unused_variables`
-    // wouldn't be emitted, since the variable is used. That expectation will therefore
-    // be unsatisfied, and a warning will be emitted.
+    // 此属性创建两个 lint 预期。`unused_mut` lint 将被抑制，
+    // 从而满足第一个预期。`unused_variables` 不会被发出，
+    // 因为变量被使用了。因此该预期将未被满足，并将发出警告。
     #[expect(unused_mut, unused_variables)]
     let mut link = "https://www.rust-lang.org/";
 
@@ -222,74 +192,65 @@ pub fn another_example() {
 ```
 
 > [!NOTE]
-> The behavior of `#[expect(unfulfilled_lint_expectations)]` is currently defined to always generate the `unfulfilled_lint_expectations` lint.
+> `#[expect(unfulfilled_lint_expectations)]` 的行为目前定义为始终生成 `unfulfilled_lint_expectations` lint。
 
 r[attributes.diagnostics.lint.group]
-### Lint groups
+### Lint 组
 
-Lints may be organized into named groups so that the level of related lints
-can be adjusted together. Using a named group is equivalent to listing out the
-lints within that group.
+Lint 可以组织成命名组，以便相关 lint 的级别可以一起调整。使用命名组等效于列出该组内的 lint。
 
 ```rust,compile_fail
-// This allows all lints in the "unused" group.
+// 这将 allow "unused" 组中的所有 lint。
 #[allow(unused)]
-// This overrides the "unused_must_use" lint from the "unused"
-// group to deny.
+// 这将覆盖 "unused" 组中的 "unused_must_use" lint 为 deny。
 #[deny(unused_must_use)]
 fn example() {
-    // This does not generate a warning because the "unused_variables"
-    // lint is in the "unused" group.
+    // 这不生成警告，因为 "unused_variables" lint
+    // 在 "unused" 组中。
     let x = 1;
-    // This generates an error because the result is unused and
-    // "unused_must_use" is marked as "deny".
-    std::fs::remove_file("some_file"); // ERROR: unused `Result` that must be used
+    // 这生成一个错误，因为结果未被使用且
+    // "unused_must_use" 被标记为 "deny"。
+    std::fs::remove_file("some_file"); // 错误：未使用的必须被使用的 `Result`
 }
 ```
 
 r[attributes.diagnostics.lint.group.warnings]
-There is a special group named "warnings" which includes all lints at the
-"warn" level. The "warnings" group ignores attribute order and applies to all
-lints that would otherwise warn within the entity.
+有一个特殊的组名为 "warnings"，包含所有处于 "warn" 级别的 lint。"warnings" 组忽略属性顺序，应用于实体内所有原本会发出警告的 lint。
 
 ```rust,compile_fail
 # unsafe fn an_unsafe_fn() {}
-// The order of these two attributes does not matter.
+// 这两个属性的顺序不重要。
 #[deny(warnings)]
-// The unsafe_code lint is normally "allow" by default.
+// unsafe_code lint 默认通常是 "allow"。
 #[warn(unsafe_code)]
 fn example_err() {
-    // This is an error because the `unsafe_code` warning has
-    // been lifted to "deny".
-    unsafe { an_unsafe_fn() } // ERROR: use of `unsafe` block
+    // 这是一个错误，因为 `unsafe_code` 警告已被提升为 "deny"。
+    unsafe { an_unsafe_fn() } // 错误：使用了 `unsafe` 块
 }
 ```
 
 r[attributes.diagnostics.lint.tool]
-### Tool lint attributes
+### 工具 lint 属性
 
 r[attributes.diagnostics.lint.tool.intro]
-Tool lints allows using scoped lints, to `allow`, `warn`, `deny` or `forbid`
-lints of certain tools.
+工具 lint 允许使用作用域限定 lint，以 `allow`、`warn`、`deny` 或 `forbid` 某些工具的 lint。
 
 r[attributes.diagnostics.lint.tool.activation]
-Tool lints only get checked when the associated tool is active. If a lint
-attribute, such as `allow`, references a nonexistent tool lint, the compiler
-will not warn about the nonexistent lint until you use the tool.
+工具 lint 仅在关联的工具处于活动状态时才被检查。如果 lint 属性（如 `allow`）引用了一个不存在的工具 lint，编译器不会警告该不存在的 lint，直到你使用该工具。
 
-Otherwise, they work just like regular lint attributes:
+否则，它们的工作方式与常规 lint 属性完全相同：
 
 ```rust
-// set the entire `pedantic` clippy lint group to warn
+// 将整个 `pedantic` clippy lint 组设置为 warn
 #![warn(clippy::pedantic)]
-// silence warnings from the `filter_map` clippy lint
+// 静默 `filter_map` clippy lint 的警告
 #![allow(clippy::filter_map)]
 
 fn main() {
     // ...
 }
 
-// silence the `cmp_nan` clippy lint just for this function
+// 仅为这个函数静默 `cmp_nan` clippy lint
 #[allow(clippy::cmp_nan)]
 fn foo() {
     // ...
@@ -297,42 +258,27 @@ fn foo() {
 ```
 
 > [!NOTE]
-> `rustc` currently recognizes the tool lints for "[clippy]" and "[rustdoc]".
+> `rustc` 目前识别 "[clippy]" 和 "[rustdoc]" 的工具 lint。
 
 r[attributes.diagnostics.deprecated]
-## The `deprecated` attribute
+## `deprecated` 属性
 
 r[attributes.diagnostics.deprecated.intro]
-The *`deprecated` attribute* marks an item as deprecated. `rustc` will issue
-warnings on use of `#[deprecated]` items. `rustdoc` will show item
-deprecation, including the `since` version and `note`, if available.
+*`deprecated` 属性*将项标记为已弃用。`rustc` 将在使用 `#[deprecated]` 项时发出警告。`rustdoc` 将显示项弃用信息，包括 `since` 版本和 `note`（如果可用）。
 
 r[attributes.diagnostics.deprecated.syntax]
-The `deprecated` attribute has several forms:
+`deprecated` 属性有多种形式：
 
-- `deprecated` --- Issues a generic message.
-- `deprecated = "message"` --- Includes the given string in the deprecation
-  message.
-- [MetaListNameValueStr] syntax with two optional fields:
-  - `since` --- Specifies a version number when the item was deprecated. `rustc`
-    does not currently interpret the string, but external tools like [Clippy]
-    may check the validity of the value.
-  - `note` --- Specifies a string that should be included in the deprecation
-    message. This is typically used to provide an explanation about the
-    deprecation and preferred alternatives.
+- `deprecated` --- 发出一条通用消息。
+- `deprecated = "message"` --- 在弃用消息中包含给定的字符串。
+- [MetaListNameValueStr] 语法，带有两个可选字段：
+  - `since` --- 指定项被弃用的版本号。`rustc` 目前不解释该字符串，但外部工具如 [Clippy] 可能会检查值的有效性。
+  - `note` --- 指定应包含在弃用消息中的字符串。这通常用于提供关于弃用的解释和首选的替代方案。
 
 r[attributes.diagnostic.deprecated.allowed-positions]
-The `deprecated` attribute may be applied to any [item], [trait item], [enum
-variant], [struct field], [external block item], or [macro definition]. It
-cannot be applied to [trait implementation items][trait-impl]. When applied to an item
-containing other items, such as a [module] or [implementation], all child
-items inherit the deprecation attribute.
-<!-- NOTE: It is only rejected for trait impl items
-(AnnotationKind::Prohibited). In all other locations, it is silently ignored.
-Tuple struct fields are ignored.
--->
+`deprecated` 属性可以应用于任何[项][item]、[trait 项][trait item]、[枚举变体][enum variant]、[结构体字段][struct field]、[外部块项][external block item]或[宏定义][macro definition]。它不能应用于 [trait 实现项][trait-impl]。当应用于包含其他项的项（如[模块][module]或[实现][implementation]）时，所有子项继承该弃用属性。
 
-Here is an example:
+以下是一个示例：
 
 ```rust
 #[deprecated(since = "5.2.0", note = "foo was rarely used. Users should instead use bar")]
@@ -341,19 +287,19 @@ pub fn foo() {}
 pub fn bar() {}
 ```
 
-The [RFC][1270-deprecation.md] contains motivations and more details.
+[RFC][1270-deprecation.md] 包含动机和更多细节。
 
 [1270-deprecation.md]: https://github.com/rust-lang/rfcs/blob/master/text/1270-deprecation.md
 
 <!-- template:attributes -->
 r[attributes.diagnostics.must_use]
-## The `must_use` attribute
+## `must_use` 属性
 
 r[attributes.diagnostics.must_use.intro]
-The *`must_use` [attribute]* marks a value that should be used.
+*`must_use` [属性][attribute]* 标记一个应该被使用的值。
 
 r[attributes.diagnostics.must_use.syntax]
-The `must_use` attribute uses the [MetaWord] and [MetaNameValueStr] syntaxes.
+`must_use` 属性使用 [MetaWord] 和 [MetaNameValueStr] 语法。
 
 > [!EXAMPLE]
 > ```rust
@@ -365,61 +311,61 @@ The `must_use` attribute uses the [MetaWord] and [MetaNameValueStr] syntaxes.
 > ```
 
 r[attributes.diagnostics.must_use.allowed-positions]
-The `must_use` attribute may be applied to a:
+`must_use` 属性可以应用于：
 
-- [Struct]
-- [Enumeration]
-- [Union]
-- [Function]
+- [结构体][Struct]
+- [枚举][Enumeration]
+- [联合体][Union]
+- [函数][Function]
 - [Trait]
 
 > [!NOTE]
-> `rustc` ignores use in other positions but lints against it. This may become an error in the future.
+> `rustc` 忽略其他位置的用法但会发出 lint 警告。这可能在将来成为错误。
 
 r[attributes.diagnostics.must_use.duplicates]
-The `must_use` attribute may be used only once on an item.
+`must_use` 属性在一个项上只能使用一次。
 
 > [!NOTE]
-> `rustc` lints against any use following the first. This may become an error in the future.
+> `rustc` 会对第一次之后的使用发出 lint 警告。这可能在将来成为错误。
 
 r[attributes.diagnostics.must_use.message]
-The `must_use` attribute may include a message by using the [MetaNameValueStr] syntax, e.g., `#[must_use = "example message"]`. The message may be emitted as part of the lint.
+`must_use` 属性可以使用 [MetaNameValueStr] 语法包含一条消息，例如 `#[must_use = "example message"]`。该消息可能作为 lint 的一部分发出。
 
 r[attributes.diagnostics.must_use.type]
-When the attribute is applied to a [struct], [enumeration], or [union], if the [expression] of an [expression statement] has that type, the use triggers the `unused_must_use` lint.
+当该属性应用于[结构体][struct]、[枚举][enumeration]或[联合体][union]时，如果[表达式语句][expression statement]的[表达式][expression]具有该类型，则使用会触发 `unused_must_use` lint。
 
 ```rust,compile_fail
 #![deny(unused_must_use)]
 #[must_use]
 struct MustUse();
-MustUse(); // ERROR: Unused value that must be used.
+MustUse(); // 错误：必须被使用的未使用值。
 ```
 
 r[attributes.diagnostics.must_use.type.uninhabited]
-As an exception to [attributes.diagnostics.must_use.type], the lint does not fire for `Result<(), E>` when `E` is [uninhabited] or for `ControlFlow<B, ()>` when `B` is [uninhabited]. A `#[non_exhaustive]` type from an external crate is not considered uninhabited for this purpose, because it may gain constructors in the future.
+作为 [attributes.diagnostics.must_use.type] 的例外，当 `E` 是[无人居住的][uninhabited]或 `B` 是无人居住的时，对于 `Result<(), E>` 或 `ControlFlow<B, ()>` 不触发该 lint。来自外部 crate 的 `#[non_exhaustive]` 类型在此目的下不被视为无人居住的，因为它可能在未来获得构造函数。
 
 ```rust
 #![deny(unused_must_use)]
 # use core::ops::ControlFlow;
 enum Empty {}
 fn f1() -> Result<(), Empty> { Ok(()) }
-f1(); // OK: `Empty` is uninhabited.
+f1(); // 正确：`Empty` 是无人居住的。
 fn f2() -> ControlFlow<Empty, ()> { ControlFlow::Continue(()) }
-f2(); // OK: `Empty` is uninhabited.
+f2(); // 正确：`Empty` 是无人居住的。
 ```
 
 r[attributes.diagnostics.must_use.fn]
-If the [expression] of an [expression statement] is a [call expression] or [method call expression] whose function operand is a function to which the attribute is applied, the use triggers the `unused_must_use` lint.
+如果[表达式语句][expression statement]的[表达式][expression]是[调用表达式][call expression]或[方法调用表达式][method call expression]，且其函数操作数是应用了该属性的函数，则使用会触发 `unused_must_use` lint。
 
 ```rust,compile_fail
 #![deny(unused_must_use)]
 #[must_use]
 fn f() {}
-f(); // ERROR: Unused return value that must be used.
+f(); // 错误：必须被使用的未使用返回值。
 ```
 
 r[attributes.diagnostics.must_use.trait]
-If the [expression] of an [expression statement] is a [call expression] or [method call expression] whose function operand is a function that returns an [impl trait] or a [dyn trait] type where one or more traits in the bound are marked with the attribute, the use triggers the `unused_must_use` lint.
+如果[表达式语句][expression statement]的[表达式][expression]是[调用表达式][call expression]或[方法调用表达式][method call expression]，且其函数操作数是一个返回 [impl trait] 或 [dyn trait] 类型的函数，而该类型的约束中有一个或多个 trait 被标记了该属性，则使用会触发 `unused_must_use` lint。
 
 ```rust,compile_fail
 #![deny(unused_must_use)]
@@ -427,11 +373,11 @@ If the [expression] of an [expression statement] is a [call expression] or [meth
 trait Tr {}
 impl Tr for () {}
 fn f() -> impl Tr {}
-f(); // ERROR: Unused implementor that must be used.
+f(); // 错误：必须被使用的未使用实现者。
 ```
 
 r[attributes.diagnostics.must_use.trait-function]
-When the attribute is applied to a function in a trait declaration, the rules described in [attributes.diagnostics.must_use.fn] also apply when the function operand of the [call expression] or [method call expression] is an implementation of that function.
+当该属性应用于 trait 声明中的函数时，[attributes.diagnostics.must_use.fn] 中描述的规则在[调用表达式][call expression]或[方法调用表达式][method call expression]的函数操作数是该函数的实现时也适用。
 
 ```rust,compile_fail
 #![deny(unused_must_use)]
@@ -444,7 +390,7 @@ impl Tr for () {
     fn use_me(&self) {}
 }
 
-().use_me(); // ERROR: Unused return value that must be used.
+().use_me(); // 错误：必须被使用的未使用返回值。
 ```
 
 ```rust,compile_fail
@@ -459,24 +405,24 @@ impl Tr for () {
 # }
 #
 <() as Tr>::use_me(&());
-//          ^^^^^^^^^^^ ERROR: Unused return value that must be used.
+//          ^^^^^^^^^^^ 错误：必须被使用的未使用返回值。
 ```
 
 r[attributes.diagnostics.must_use.block-expr]
-When checking the [expression] of an [expression statement] for [attributes.diagnostics.must_use.type], [attributes.diagnostics.must_use.fn], [attributes.diagnostics.must_use.trait], and [attributes.diagnostics.must_use.trait-function], the lint looks through [block expressions][block expression] (including [`unsafe` blocks] and [labeled block expressions]) to the trailing expression of each. This applies recursively for nested block expressions.
+在针对 [attributes.diagnostics.must_use.type]、[attributes.diagnostics.must_use.fn]、[attributes.diagnostics.must_use.trait] 和 [attributes.diagnostics.must_use.trait-function] 检查[表达式语句][expression statement]的[表达式][expression]时，该 lint 会穿透[块表达式][block expression]（包括 [`unsafe` 块][`unsafe` blocks]和[带标签块表达式][labeled block expressions]）到每个块的尾部表达式。这递归地适用于嵌套块表达式。
 
 ```rust,compile_fail
 #![deny(unused_must_use)]
 #[must_use]
 fn f() {}
 
-{ f() };        // ERROR: The lint looks through block expressions.
-unsafe { f() }; // ERROR: The lint looks through `unsafe` blocks.
-{ { f() } };    // ERROR: The lint looks through nested blocks.
+{ f() };        // 错误：lint 穿透块表达式。
+unsafe { f() }; // 错误：lint 穿透 `unsafe` 块。
+{ { f() } };    // 错误：lint 穿透嵌套块。
 ```
 
 r[attributes.diagnostics.must_use.trait-impl-function]
-When used on a function in a trait implementation, the attribute does nothing.
+当用于 trait 实现中的函数时，该属性没有任何作用。
 
 ```rust
 #![deny(unused_must_use)]
@@ -485,32 +431,31 @@ trait Tr {
 }
 
 impl Tr for () {
-    #[must_use] // This has no effect.
+    #[must_use] // 这没有效果。
     fn f(&self) {}
 }
 
-().f(); // OK.
+().f(); // 正确。
 ```
 
 > [!NOTE]
-> `rustc` lints against use on functions in trait implementations. This may become an error in the future.
+> `rustc` 会对 trait 实现中的函数使用发出 lint 警告。这可能在将来成为错误。
 
 r[attributes.diagnostics.must_use.wrapping-suppression]
 > [!NOTE]
-> Wrapping the result of a `#[must_use]` function in certain expressions can suppress the [fn-based check][attributes.diagnostics.must_use.fn], because the [expression] of the [expression statement] is not a [call expression] or [method call expression] to a `#[must_use]` function.  The [type-based check][attributes.diagnostics.must_use.type] still applies if the type of the overall expression is `#[must_use]`.
+> 将 `#[must_use]` 函数的结果包装在某种表达式中可以抑制[基于函数的检查][attributes.diagnostics.must_use.fn]，因为[表达式语句][expression statement]的[表达式][expression]不是对 `#[must_use]` 函数的[调用表达式][call expression]或[方法调用表达式][method call expression]。如果整体表达式的类型是 `#[must_use]`，则[基于类型的检查][attributes.diagnostics.must_use.type]仍然适用。
 >
 > ```rust
 > #![deny(unused_must_use)]
 > #[must_use]
 > fn f() {}
 >
-> // The fn-based check does not fire for any of these, because the
-> // expression of the expression statement is not a call to a
-> // `#[must_use]` function.
-> (f(),);                    // Expression is a tuple, not a call.
-> Some(f());                 // Callee `Some` is not `#[must_use]`.
-> if true { f() } else {};   // Expression is an `if`, not a call.
-> match true {               // Expression is a `match`, not a call.
+> // 基于函数的检查不会对以下任何情况触发，因为
+> // 表达式语句的表达式不是对 `#[must_use]` 函数的调用。
+> (f(),);                    // 表达式是元组，不是调用。
+> Some(f());                 // 被调用者 `Some` 不是 `#[must_use]`。
+> if true { f() } else {};   // 表达式是 `if`，不是调用。
+> match true {               // 表达式是 `match`，不是调用。
 >     _ => f()
 > };
 > ```
@@ -521,79 +466,75 @@ r[attributes.diagnostics.must_use.wrapping-suppression]
 > struct MustUse;
 > fn g() -> MustUse { MustUse }
 >
-> // Despite the `if` expression not being a call, the type-based check
-> // fires because the type of the expression is `MustUse`, which has
-> // the `#[must_use]` attribute.
-> if true { g() } else { MustUse }; // ERROR: Must be used.
+> // 尽管 `if` 表达式不是调用，基于类型的检查会触发，
+> // 因为表达式的类型是 `MustUse`，该类型具有
+> // `#[must_use]` 属性。
+> if true { g() } else { MustUse }; // 错误：必须被使用。
 > ```
 
 r[attributes.diagnostics.must_use.underscore-idiom]
 > [!NOTE]
-> Using a [let statement] or [destructuring assignment] with a pattern of `_` when a must-used value is purposely discarded is idiomatic.
+> 当有意丢弃一个 must-used 值时，使用模式为 `_` 的 [let 语句][let statement]或[解构赋值][destructuring assignment]是惯用的。
 >
 > ```rust
 > #![deny(unused_must_use)]
 > #[must_use]
 > fn f() {}
-> let _ = f(); // OK.
-> _ = f(); // OK.
+> let _ = f(); // 正确。
+> _ = f(); // 正确。
 > ```
 
 r[attributes.diagnostic.namespace]
-## The `diagnostic` tool attribute namespace
+## `diagnostic` 工具属性命名空间
 
 r[attributes.diagnostic.namespace.intro]
-The `#[diagnostic]` attribute namespace is a home for attributes to influence compile-time error messages.
-The hints provided by these attributes are not guaranteed to be used.
+`#[diagnostic]` 属性命名空间是影响编译时错误消息的属性的集合。这些属性提供的提示不保证被使用。
 
 r[attributes.diagnostic.namespace.unknown-invalid-syntax]
-Unknown attributes in this namespace are accepted, though they may emit warnings for unused attributes.
-Additionally, invalid inputs to known attributes will typically be a warning (see the attribute definitions for details).
-This is meant to allow adding or discarding attributes and changing inputs in the future to allow changes without the need to keep the non-meaningful attributes or options working.
+此命名空间中的未知属性被接受，尽管可能发出未使用属性的警告。此外，对已知属性的无效输入通常将是警告（详见属性定义）。这意味着允许在未来添加或丢弃属性和更改输入，而无需保持无意义的属性或选项正常工作。
 
 r[attributes.diagnostic.on_unimplemented]
-### The `diagnostic::on_unimplemented` attribute
+### `diagnostic::on_unimplemented` 属性
 
 r[attributes.diagnostic.on_unimplemented.intro]
-The `#[diagnostic::on_unimplemented]` attribute is a hint to the compiler to supplement the error message that would normally be generated in scenarios where a trait is required but not implemented on a type.
+`#[diagnostic::on_unimplemented]` 属性是对编译器的提示，用于补充在需要 trait 但类型未实现该 trait 的情况下通常会生成的错误消息。
 
 r[attributes.diagnostic.on_unimplemented.allowed-positions]
-The attribute should be placed on a [trait declaration], though it is not an error to be located in other positions.
+该属性应放置在 [trait 声明][trait declaration]上，尽管放在其他位置也不是错误。
 
 r[attributes.diagnostic.on_unimplemented.syntax]
-The attribute uses the [MetaListNameValueStr] syntax to specify its inputs, though any malformed input to the attribute is not considered as an error to provide both forwards and backwards compatibility.
+该属性使用 [MetaListNameValueStr] 语法来指定其输入，尽管对属性任何格式错误的输入不被视为错误，以提供向前和向后兼容性。
 
 r[attributes.diagnostic.on_unimplemented.keys]
-The following keys have the given meaning:
-* `message` --- The text for the top level error message.
-* `label` --- The text for the label shown inline in the broken code in the error message.
-* `note` --- Provides additional notes.
+以下键具有给定的含义：
+* `message` --- 顶层错误消息的文本。
+* `label` --- 在错误消息的损坏代码中内联显示的标签文本。
+* `note` --- 提供附加注释。
 
 r[attributes.diagnostic.on_unimplemented.note-repetition]
-The `note` option can appear several times, which results in several note messages being emitted.
+`note` 选项可以出现多次，这将导致发出多条注释消息。
 
 r[attributes.diagnostic.on_unimplemented.repetition]
-If any of the other options appears several times the first occurrence of the relevant option specifies the actually used value. Subsequent occurrences generates a warning.
+如果任何其他选项出现多次，相关选项的第一次出现指定实际使用的值。后续出现会生成警告。
 
 r[attributes.diagnostic.on_unimplemented.unknown-keys]
-A warning is generated for any unknown keys.
+任何未知键都会生成警告。
 
 r[attributes.diagnostic.on_unimplemented.format-string]
-All three options accept a string as an argument, interpreted using the same formatting as a [`std::fmt`] string.
+所有三个选项都接受字符串作为参数，使用与 [`std::fmt`] 字符串相同的格式进行解释。
 
 r[attributes.diagnostic.on_unimplemented.format-parameters]
-Format parameters with the given named parameter will be replaced with the following text:
-* `{Self}` --- The name of the type implementing the trait.
-* `{` *GenericParameterName* `}` --- The name of the generic argument's type for the given generic parameter.
+带有给定命名参数的格式参数将被替换为以下文本：
+* `{Self}` --- 实现 trait 的类型的名称。
+* `{` *GenericParameterName* `}` --- 给定泛型参数的泛型参数类型的名称。
 
 r[attributes.diagnostic.on_unimplemented.invalid-formats]
-Any other format parameter will generate a warning, but will otherwise be included in the string as-is.
+任何其他格式参数将生成警告，但否则将按原样包含在字符串中。
 
 r[attributes.diagnostic.on_unimplemented.invalid-string]
-Invalid format strings may generate a warning, but are otherwise allowed, but may not display as intended.
-Format specifiers may generate a warning, but are otherwise ignored.
+无效的格式字符串可能生成警告，但其他方面是允许的，但可能不会按预期显示。格式说明符可能生成警告，但其他方面被忽略。
 
-In this example:
+在此示例中：
 
 ```rust,compile_fail,E0277
 #[diagnostic::on_unimplemented(
@@ -611,7 +552,7 @@ fn main() {
 }
 ```
 
-the compiler may generate an error message which looks like this:
+编译器可能生成如下错误消息：
 
 ```text
 error[E0277]: My Message for `ImportantTrait<i32>` implemented for `String`
@@ -628,23 +569,23 @@ error[E0277]: My Message for `ImportantTrait<i32>` implemented for `String`
 ```
 
 r[attributes.diagnostic.do_not_recommend]
-### The `diagnostic::do_not_recommend` attribute
+### `diagnostic::do_not_recommend` 属性
 
 r[attributes.diagnostic.do_not_recommend.intro]
-The `#[diagnostic::do_not_recommend]` attribute is a hint to the compiler to not show the annotated trait implementation as part of a diagnostic message.
+`#[diagnostic::do_not_recommend]` 属性是对编译器的提示，不要在诊断消息中显示标注的 trait 实现。
 
 > [!NOTE]
-> Suppressing the recommendation can be useful if you know that the recommendation would normally not be useful to the programmer. This often occurs with broad, blanket impls. The recommendation may send the programmer down the wrong path, or the trait implementation may be an internal detail that you don't want to expose, or the bounds may not be able to be satisfied by the programmer.
+> 如果你知道该推荐通常对程序员没有帮助，抑制推荐可能会有用。这通常发生在广泛的毯式 impl 上。推荐可能会将程序员引向错误的方向，或者 trait 实现可能是你不想暴露的内部细节，或者约束可能无法被程序员满足。
 >
-> For example, in an error message about a type not implementing a required trait, the compiler may find a trait implementation that would satisfy the requirements if it weren't for specific bounds in the trait implementation. The compiler may tell the user that there is an impl, but the problem is the bounds in the trait implementation. The `#[diagnostic::do_not_recommend]` attribute can be used to tell the compiler to *not* tell the user about the trait implementation, and instead simply tell the user the type doesn't implement the required trait.
+> 例如，在关于类型未实现所需 trait 的错误消息中，编译器可能会找到一个如果没有 trait 实现中的特定约束就能满足要求的 trait 实现。编译器可能会告诉用户存在一个 impl，但问题在于 trait 实现中的约束。`#[diagnostic::do_not_recommend]` 属性可以用来告诉编译器*不要*告诉用户关于该 trait 实现的信息，而是简单地告诉用户该类型未实现所需的 trait。
 
 r[attributes.diagnostic.do_not_recommend.allowed-positions]
-The attribute should be placed on a [trait implementation item][trait-impl], though it is not an error to be located in other positions.
+该属性应放置在 [trait 实现项][trait-impl]上，尽管放在其他位置也不是错误。
 
 r[attributes.diagnostic.do_not_recommend.syntax]
-The attribute does not accept any arguments, though unexpected arguments are not considered as an error.
+该属性不接受任何参数，但意外参数不被视为错误。
 
-In the following example, there is a trait called `AsExpression` which is used for casting arbitrary types to the `Expression` type used in an SQL library. There is a method called `check` which takes an `AsExpression`.
+在以下示例中，有一个称为 `AsExpression` 的 trait，用于将任意类型转换为 SQL 库中使用的 `Expression` 类型。有一个名为 `check` 的方法，它接受一个 `AsExpression`。
 
 ```rust,compile_fail,E0277
 # pub trait Expression {
@@ -679,7 +620,7 @@ In the following example, there is a trait called `AsExpression` which is used f
 #
 # impl<T> Foo for T where T: Expression {}
 
-// Uncomment this line to change the recommendation.
+// 取消此行注释以更改推荐。
 // #[diagnostic::do_not_recommend]
 impl<T, ST> AsExpression<ST> for T
 where
@@ -702,7 +643,7 @@ fn main() {
 }
 ```
 
-The `SelectInt` type's `check` method is expecting an `Integer` type. Calling it with an i32 type works, as it gets converted to an `Integer` by the `AsExpression` trait. However, calling it with a string does not, and generates a an error that may look like this:
+`SelectInt` 类型的 `check` 方法期望一个 `Integer` 类型。用 i32 类型调用它可以工作，因为它通过 `AsExpression` trait 被转换为 `Integer`。然而，用字符串调用它不会工作，并生成可能如下所示的错误：
 
 ```text
 error[E0277]: the trait bound `&str: Expression` is not satisfied
@@ -724,7 +665,7 @@ note: required for `&str` to implement `AsExpression<Integer>`
    |        ------------------------ unsatisfied trait bound introduced here
 ```
 
-By adding the `#[diagnostic::do_not_recommend]` attribute to the blanket `impl` for `AsExpression`, the message changes to:
+通过将 `#[diagnostic::do_not_recommend]` 属性添加到 `AsExpression` 的毯式 `impl` 中，消息变为：
 
 ```text
 error[E0277]: the trait bound `&str: AsExpression<Integer>` is not satisfied
@@ -738,7 +679,7 @@ error[E0277]: the trait bound `&str: AsExpression<Integer>` is not satisfied
    = help: for that trait implementation, expected `Text`, found `Integer`
 ```
 
-The first error message includes a somewhat confusing error message about the relationship of `&str` and `Expression`, as well as the unsatisfied trait bound in the blanket impl. After adding `#[diagnostic::do_not_recommend]`, it no longer considers the blanket impl for the recommendation. The message should be a little clearer, with an indication that a string cannot be converted to an `Integer`.
+第一条错误消息包含有关 `&str` 和 `Expression` 关系以及毯式 impl 中未满足的 trait 约束的有些令人困惑的错误消息。添加 `#[diagnostic::do_not_recommend]` 后，它不再为该推荐考虑毯式 impl。消息应该更清晰一些，表明字符串无法转换为 `Integer`。
 
 [Clippy]: https://github.com/rust-lang/rust-clippy
 [`Drop`]: ../special-types-and-traits.md#drop

@@ -1,5 +1,5 @@
 r[expr.range]
-# Range expressions
+# 区间表达式
 
 r[expr.range.syntax]
 ```grammar,expressions
@@ -25,18 +25,18 @@ RangeToInclusiveExpr -> `..=` Expression
 ```
 
 r[expr.range.behavior]
-The `..` and `..=` operators will construct an object of one of the `std::ops::Range` (or `core::ops::Range`) variants, according to the following table:
+`..` 和 `..=` 运算符将根据下表构造 `std::ops::Range`（或 `core::ops::Range`）变体之一的对象：
 
-| Production             | Syntax        | Type                         | Range                 |
-|------------------------|---------------|------------------------------|-----------------------|
-| [RangeExpr]            | start`..`end  | [std::ops::Range]            | start &le; x &lt; end |
-| [RangeFromExpr]        | start`..`     | [std::ops::RangeFrom]        | start &le; x          |
-| [RangeToExpr]          | `..`end       | [std::ops::RangeTo]          |            x &lt; end |
-| [RangeFullExpr]        | `..`          | [std::ops::RangeFull]        |            -          |
-| [RangeInclusiveExpr]   | start`..=`end | [std::ops::RangeInclusive]   | start &le; x &le; end |
-| [RangeToInclusiveExpr] | `..=`end      | [std::ops::RangeToInclusive] |            x &le; end |
+| 产生式                 | 语法          | 类型                         | 区间                   |
+|------------------------|---------------|------------------------------|------------------------|
+| [RangeExpr]            | start`..`end  | [std::ops::Range]            | start &le; x &lt; end  |
+| [RangeFromExpr]        | start`..`     | [std::ops::RangeFrom]        | start &le; x           |
+| [RangeToExpr]          | `..`end       | [std::ops::RangeTo]          |            x &lt; end  |
+| [RangeFullExpr]        | `..`          | [std::ops::RangeFull]        |            -           |
+| [RangeInclusiveExpr]   | start`..=`end | [std::ops::RangeInclusive]   | start &le; x &le; end  |
+| [RangeToInclusiveExpr] | `..=`end      | [std::ops::RangeToInclusive] |            x &le; end  |
 
-Examples:
+示例：
 
 ```rust
 1..2;   // std::ops::Range
@@ -48,7 +48,7 @@ Examples:
 ```
 
 r[expr.range.equivalence]
-The following expressions are equivalent.
+以下表达式是等价的。
 
 ```rust
 let x = std::ops::Range {start: 0, end: 10};
@@ -58,7 +58,7 @@ assert_eq!(x, y);
 ```
 
 r[expr.range.for]
-Ranges can be used in `for` loops:
+区间可用于 `for` 循环：
 
 ```rust
 for i in 1..11 {

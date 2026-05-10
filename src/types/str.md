@@ -1,8 +1,8 @@
 r[type.str]
-# String slice type
+# 字符串切片类型
 
 r[type.str.intro]
-The string slice (`str`) type represents a sequence of characters.
+字符串切片（`str`）类型表示一个字符序列。
 
 ```rust
 let greeting1: &str = "Hello, world!";
@@ -10,16 +10,16 @@ let greeting2: &str = "你好，世界";
 ```
 
 > [!NOTE]
-> See [the standard library docs][`str`] for information on the impls of the `str` type.
+> 有关 `str` 类型的实现信息，请参阅[标准库文档][`str`]。
 
 r[type.str.value]
-A value of type `str` is represented in the same way as `[u8]`, a slice of 8-bit unsigned bytes.
+`str` 类型的值以与 `[u8]`（8 位无符号字节切片）相同的方式表示。
 
 > [!NOTE]
-> The standard library makes extra assumptions about `str`: methods working on `str` assume and ensure that the data it contains is valid UTF-8. Calling a `str` method with a non-UTF-8 buffer can cause [undefined behavior] now or in the future.
+> 标准库对 `str` 有额外的假定：操作 `str` 的方法假定并确保其中包含的数据是有效的 UTF-8。使用非 UTF-8 缓冲区调用 `str` 方法可能现在或将来引发[未定义行为]。
 
 r[type.str.unsized]
-A `str` is a [dynamically sized type]. It can only be instantiated through a pointer type, such as `&str`. The layout of `&str` is the same as the layout of `&[u8]`.
+`str` 是[动态大小类型]。它只能通过指针类型（如 `&str`）进行实例化。`&str` 的布局与 `&[u8]` 的布局相同。
 
-[undefined behavior]: ../behavior-considered-undefined.md
-[dynamically sized type]: ../dynamically-sized-types.md
+[未定义行为]: ../behavior-considered-undefined.md
+[动态大小类型]: ../dynamically-sized-types.md
