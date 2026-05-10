@@ -1,43 +1,38 @@
 r[abi]
-# Application binary interface (ABI)
+# 应用程序二进制接口（ABI）
 
 r[abi.intro]
-This section documents features that affect the ABI of the compiled output of
-a crate.
+本节记录了影响 crate 编译输出的 ABI 的特性。
 
-See *[extern functions]* for information on specifying the ABI for exporting
-functions. See *[external blocks]* for information on specifying the ABI for
-linking external libraries.
+相关信息请参阅 *[extern 函数][extern functions]* 以了解如何指定导出函数的 ABI，参阅 *[外部块][external blocks]* 以了解如何指定链接外部库的 ABI。
 
 <!-- template:attributes -->
 r[abi.used]
-## The `used` attribute
+## `used` 属性
 
 r[abi.used.intro]
-The *`used` [attribute]* forces a [static] to be kept in the output object file (.o, .rlib, etc., excluding final binaries) even if it's never used or referenced by any other item in the crate. The linker, however, is still free to remove it.
+*`used` [属性][attribute]* 强制将一个 [static] 保留在输出目标文件（.o、.rlib 等，但不包括最终二进制文件）中，即使它在 crate 中从未被其他程序项使用或引用。不过，链接器仍然可以自由地移除它。
 
 > [!EXAMPLE]
 > ```rust
 > // lib.rs
 >
-> // This is kept because of `#[used]`.
+> // 因为有 `#[used]`，此静态项被保留。
 > #[used]
 > static S1: u8 = 0;
 >
-> // This is removable because it's unused.
+> // 因为未使用，此静态项可被移除。
 > #[allow(dead_code)]
 > static S2: u8 = 0;
 >
-> // This is kept because it's publicly reachable.
+> // 因为可被公开访问，此静态项被保留。
 > pub static S3: u8 = 0;
 >
-> // This is kept because it's referenced by a publicly
-> // reachable function.
+> // 因为被一个可公开访问的函数引用，此静态项被保留。
 > static S4: u8 = 0;
 > #[unsafe(no_mangle)] pub fn f4() -> &'static u8 { &S4 }
 >
-> // This is removable because it's referenced only by a
-> // private, unused (dead) function.
+> // 因为只被一个私有的、未使用的（死）函数引用，此静态项可被移除。
 > static S5: u8 = 0;
 > #[allow(dead_code)]
 > fn f5() -> &'static u8 { &S5 }
@@ -53,32 +48,28 @@ The *`used` [attribute]* forces a [static] to be kept in the output object file 
 > ```
 
 r[abi.used.syntax]
-The `used` attribute uses the [MetaWord] syntax.
+`used` 属性使用 [MetaWord] 语法。
 
 r[abi.used.allowed-positions]
-The `used` attribute may only be applied to [`static` items].
+`used` 属性只能应用于 [`static` 程序项][`static` items]。
 
 r[abi.used.duplicates]
-Only the first use of `used` on an item has effect.
+只有程序项上的第一次 `used` 使用才有效。
 
 > [!NOTE]
-> `rustc` lints against any use following the first.
+> `rustc` 会对第一次之后的任何使用给出 lint 警告。
 
 r[abi.no_mangle]
-## The `no_mangle` attribute
+## `no_mangle` 属性
 
 r[abi.no_mangle.intro]
-The *`no_mangle` attribute* may be used on any [item] to disable standard
-symbol name mangling. The symbol for the item will be the identifier of the
-item's name.
+*`no_mangle` 属性*可用于任何[程序项][item]，以禁用在符号名称上应用标准的名称修饰。该程序项的符号将是该程序项名称的标识符。
 
 r[abi.no_mangle.publicly-exported]
-Additionally, the item will be publicly exported from the produced library or
-object file, similar to the [`used` attribute](#the-used-attribute).
+此外，该程序项将从生成的库或目标文件中公开导出，类似于 [`used` 属性](#the-used-attribute)。
 
 r[abi.no_mangle.unsafe]
-This attribute is unsafe as an unmangled symbol may collide with another symbol
-with the same name (or with a well-known symbol), leading to undefined behavior.
+此属性是不安全的，因为未修饰的符号可能与另一个同名符号（或已知符号）冲突，导致未定义行为。
 
 ```rust
 #[unsafe(no_mangle)]
@@ -87,17 +78,16 @@ extern "C" fn foo() {}
 
 r[abi.no_mangle.edition2024]
 > [!EDITION-2024]
-> Before the 2024 edition it is allowed to use the `no_mangle` attribute without the `unsafe` qualification.
+> 在 2024 版之前，允许在不使用 `unsafe` 限定的情况下使用 `no_mangle` 属性。
 
 r[abi.link_section]
-## The `link_section` attribute
+## `link_section` 属性
 
 r[abi.link_section.intro]
-The *`link_section` attribute* specifies the section of the object file that a
-[function] or [static]'s content will be placed into.
+*`link_section` 属性*指定将[函数][function]或 [static] 的内容放入目标文件的哪个节中。
 
 r[abi.link_section.syntax]
-The `link_section` attribute uses the [MetaNameValueStr] syntax to specify the section name.
+`link_section` 属性使用 [MetaNameValueStr] 语法来指定节名称。
 
 <!-- no_run: don't link. The format of the section name is platform-specific. -->
 ```rust,no_run
@@ -109,28 +99,26 @@ pub static VAR1: u32 = 1;
 ```
 
 r[abi.link_section.unsafe]
-This attribute is unsafe as it allows users to place data and code into sections
-of memory not expecting them, such as mutable data into read-only areas.
+此属性是不安全的，因为它允许用户将数据和代码放入未预期它们的内存节中，例如将可变数据放入只读区域。
 
 r[abi.link_section.duplicates]
-Only the first use of `link_section` on an item has effect.
+只有程序项上的第一次 `link_section` 使用才有效。
 
 > [!NOTE]
-> `rustc` lints against any use following the first with a future-compatibility warning. This may become an error in the future.
+> `rustc` 会对第一次之后的任何使用给出未来兼容性警告。这在未来可能成为错误。
 
 r[abi.link_section.edition2024]
 > [!EDITION-2024]
-> Before the 2024 edition it is allowed to use the `link_section` attribute without the `unsafe` qualification.
+> 在 2024 版之前，允许在不使用 `unsafe` 限定的情况下使用 `link_section` 属性。
 
 r[abi.export_name]
-## The `export_name` attribute
+## `export_name` 属性
 
 r[abi.export_name.intro]
-The *`export_name` attribute* specifies the name of the symbol that will be
-exported on a [function] or [static].
+*`export_name` 属性*指定将在[函数][function]或 [static] 上导出的符号名称。
 
 r[abi.export_name.syntax]
-The `export_name `attribute uses the [MetaNameValueStr] syntax to specify the symbol name.
+`export_name` 属性使用 [MetaNameValueStr] 语法来指定符号名称。
 
 ```rust
 #[unsafe(export_name = "exported_symbol_name")]
@@ -138,19 +126,17 @@ pub fn name_in_rust() { }
 ```
 
 r[abi.export_name.unsafe]
-This attribute is unsafe as a symbol with a custom name may collide with another
-symbol with the same name (or with a well-known symbol), leading to undefined
-behavior.
+此属性是不安全的，因为具有自定义名称的符号可能与另一个同名符号（或已知符号）冲突，导致未定义行为。
 
 r[abi.export_name.duplicates]
-Only the first use of `export_name` on an item has effect.
+只有程序项上的第一次 `export_name` 使用才有效。
 
 > [!NOTE]
-> `rustc` lints against any use following the first with a future-compatibility warning. This may become an error in the future.
+> `rustc` 会对第一次之后的任何使用给出未来兼容性警告。这在未来可能成为错误。
 
 r[abi.export_name.edition2024]
 > [!EDITION-2024]
-> Before the 2024 edition it is allowed to use the `export_name` attribute without the `unsafe` qualification.
+> 在 2024 版之前，允许在不使用 `unsafe` 限定的情况下使用 `export_name` 属性。
 
 [attribute]: attributes.md
 [extern functions]: items/functions.md#extern-function-qualifier

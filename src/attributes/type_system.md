@@ -85,8 +85,8 @@ r[attributes.type-system.non_exhaustive.construction]
 
 <!-- ignore: requires external crates -->
 ```rust,ignore
-// These are types defined in an upstream crate that have been annotated as
-// `#[non_exhaustive]`.
+// 这些是在上游 crate 中定义并标注了
+// `#[non_exhaustive]` 的类型。
 use upstream::{Config, Token, Id, Error, Message};
 
 // 无法构造 `Config` 的实例；如果在 `upstream` 的新版本中添加了新字段，
@@ -123,8 +123,8 @@ r[attributes.type-system.non_exhaustive.match]
 
 <!-- ignore: requires external crates -->
 ```rust, ignore
-// These are types defined in an upstream crate that have been annotated as
-// `#[non_exhaustive]`.
+// 这些是在上游 crate 中定义并标注了
+// `#[non_exhaustive]` 的类型。
 use upstream::{Config, Token, Id, Error, Message};
 
 // 不能在没有包含通配分支的情况下匹配非穷尽枚举。

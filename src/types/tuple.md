@@ -14,7 +14,7 @@ r[type.tuple.intro]
 元组类型的语法由括号括起的、逗号分隔的类型列表构成。
 
 r[type.tuple.restriction]
-1-元组需要在元素类型之后添加逗号，以与[括号类型]消除歧义。
+1-元组需要在元素类型之后添加逗号，以与[括号类型][parenthesized type]消除歧义。
 
 r[type.tuple.field-number]
 元组类型的字段数量等于类型列表的长度。这个字段数量确定了元组的*元数*。具有 `n` 个字段的元组称为 *n-元组*。例如，具有 2 个字段的元组是 2-元组。
@@ -35,15 +35,15 @@ r[type.tuple.unit]
 * `(i32, f64, Vec<String>, Option<bool>)`
 
 r[type.tuple.constructor]
-此类型的值使用[元组表达式]构造。此外，如果没有其他有意义的求值结果，各种表达式将产生单元值。
+此类型的值使用[元组表达式][tuple expression]构造。此外，如果没有其他有意义的求值结果，各种表达式将产生单元值。
 
 r[type.tuple.access]
-元组字段可以通过[元组索引表达式]或[模式匹配]来访问。
+元组字段可以通过[元组索引表达式][tuple index expression]或[模式匹配][pattern matching]来访问。
 
 [^1]: 如果内部类型等价，结构类型始终等价。关于元组的命名版本，请参见[元组结构体][tuple structs]。
 
-[括号类型]: ../types.md#parenthesized-types
-[模式匹配]: ../patterns.md#tuple-patterns
-[元组表达式]: ../expressions/tuple-expr.md#tuple-expressions
-[元组索引表达式]: ../expressions/tuple-expr.md#tuple-indexing-expressions
+[parenthesized type]: ../types.md#parenthesized-types
+[pattern matching]: ../patterns.md#tuple-patterns
+[tuple expression]: ../expressions/tuple-expr.md#tuple-expressions
+[tuple index expression]: ../expressions/tuple-expr.md#tuple-indexing-expressions
 [tuple structs]: ./struct.md

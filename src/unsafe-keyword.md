@@ -39,7 +39,7 @@ r[unsafe.block]
 ## 不安全块（`unsafe {}`）
 
 r[unsafe.block.intro]
-代码块可以用 `unsafe` 关键字作为前缀，以允许使用[不安全操作]章节中定义的那些不安全动作，例如调用其他不安全函数或解引用裸指针。
+代码块可以用 `unsafe` 关键字作为前缀，以允许使用[不安全操作][Unsafety]章节中定义的那些不安全动作，例如调用其他不安全函数或解引用裸指针。
 
 r[unsafe.block.fn-body]
 默认情况下，不安全函数体也被视为一个不安全块；
@@ -60,7 +60,7 @@ Rust 的类型系统是对动态安全需求的保守近似，因此在某些情
 通过使用 `unsafe` 块将反向链接表示为裸指针，可以在不使用引用计数的情况下实现。
 （请参阅["Learn Rust With Entirely Too Many Linked Lists"](https://rust-unofficial.github.io/too-many-lists/) 来深入探索这个具体示例。）
 
-[不安全操作]: unsafety.md
+[Unsafety]: unsafety.md
 
 r[unsafe.trait]
 ## 不安全 trait（`unsafe trait`）
@@ -87,17 +87,17 @@ r[unsafe.impl]
 r[unsafe.extern]
 ## 不安全外部块（`unsafe extern`）
 
-声明[外部块]的程序员必须确保其中包含的项的签名是正确的。未能做到这一点可能导致未定义行为。通过书写 `unsafe extern` 来表明此义务已被履行。
+声明[外部块][external block]的程序员必须确保其中包含的项的签名是正确的。未能做到这一点可能导致未定义行为。通过书写 `unsafe extern` 来表明此义务已被履行。
 
 r[unsafe.extern.edition2024]
 > [!EDITION-2024]
 > 在 2024 版之前，`extern` 块允许不用 `unsafe` 修饰。
 
-[外部块]: items/external-blocks.md
+[external block]: items/external-blocks.md
 
 r[unsafe.attribute]
 ## 不安全属性（`#[unsafe(attr)]`）
 
-[不安全属性]是指具有额外安全条件、使用时必须遵守的属性。编译器无法检查这些条件是否已被满足。为了断言它们已被满足，这些属性必须包裹在 `unsafe(..)` 中，例如 `#[unsafe(no_mangle)]`。
+[不安全属性][unsafe attribute]是指具有额外安全条件、使用时必须遵守的属性。编译器无法检查这些条件是否已被满足。为了断言它们已被满足，这些属性必须包裹在 `unsafe(..)` 中，例如 `#[unsafe(no_mangle)]`。
 
-[不安全属性]: attributes.md
+[unsafe attribute]: attributes.md

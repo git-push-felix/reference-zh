@@ -116,7 +116,7 @@ r[type.recursive]
 ## 递归类型
 
 r[type.recursive.intro]
-名义类型——[结构体][structs]、[枚举][enumerations]和[联合体][unions]——可以是递归的。也就是说，每个 `enum` 变体或 `struct` 或 `union` 字段可以直接或间接地引用外围的 `enum` 或 `struct` 类型自身。
+名义类型------[结构体][structs]、[枚举][enumerations]和[联合体][unions]------可以是递归的。也就是说，每个 `enum` 变体或 `struct` 或 `union` 字段可以直接或间接地引用外围的 `enum` 或 `struct` 类型自身。
 
 r[type.recursive.constraint]
 此类递归有若干限制：

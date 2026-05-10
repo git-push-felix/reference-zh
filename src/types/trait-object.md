@@ -45,7 +45,7 @@ r[type.trait-object.alias]
 如果两个 trait 对象类型的基础 trait 互为别名，且自动 trait 集合相同，生命周期边界也相同，则这两个类型互为别名。例如，`dyn Trait + Send + UnwindSafe` 与 `dyn Trait + UnwindSafe + Send` 相同。
 
 r[type.trait-object.unsized]
-由于该值具体是哪个类型是不透明的，trait 对象是[动态大小类型]。与所有 <abbr title="动态大小类型">DST</abbr> 一样，trait 对象通过某种指针类型使用；例如 `&dyn SomeTrait` 或 `Box<dyn SomeTrait>`。指向 trait 对象的指针的每个实例包括：
+由于该值具体是哪个类型是不透明的，trait 对象是[动态大小类型][dynamically sized types]。与所有 <abbr title="动态大小类型">DST</abbr> 一样，trait 对象通过某种指针类型使用；例如 `&dyn SomeTrait` 或 `Box<dyn SomeTrait>`。指向 trait 对象的指针的每个实例包括：
 
  - 一个指向实现了 `SomeTrait` 的类型 `T` 的实例的指针
  - 一个*虚方法表*，通常简称为 *vtable*，对于 `SomeTrait` 及其 `T` 实现的[超 trait][supertraits] 的每个方法，包含一个指向 `T` 的实现（即函数指针）的指针。
@@ -82,5 +82,5 @@ r[type.trait-object.lifetime-bounds]
 [auto traits]: ../special-types-and-traits.md#auto-traits
 [defaults]: ../lifetime-elision.md#default-trait-object-lifetimes
 [dyn compatible]: ../items/traits.md#dyn-compatibility
-[动态大小类型]: ../dynamically-sized-types.md
+[dynamically sized types]: ../dynamically-sized-types.md
 [supertraits]: ../items/traits.md#supertraits

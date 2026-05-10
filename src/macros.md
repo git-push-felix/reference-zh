@@ -56,13 +56,13 @@ r[macro.invocation.item-statement]
 当作为项或语句使用时，对于不使用花括号的情况，应使用 [MacroInvocationSemi] 形式，在末尾需要有一个分号。在宏调用或 [`macro_rules`] 定义之前绝不允许出现[可见性限定符][Visibility qualifiers]。
 
 ```rust
-// Used as an expression.
+// 作为表达式使用。
 let x = vec![1,2,3];
 
-// Used as a statement.
+// 作为语句使用。
 println!("Hello!");
 
-// Used in a pattern.
+// 在模式中使用。
 macro_rules! pat {
     ($i:ident) => (Some($i))
 }
@@ -71,18 +71,18 @@ if let pat!(x) = Some(1) {
     assert_eq!(x, 1);
 }
 
-// Used in a type.
+// 在类型中使用。
 macro_rules! Tuple {
     { $A:ty, $B:ty } => { ($A, $B) };
 }
 
 type N2 = Tuple!(i32, i32);
 
-// Used as an item.
+// 作为程序项使用。
 # use std::cell::RefCell;
 thread_local!(static FOO: RefCell<u32> = RefCell::new(1));
 
-// Used as an associated item.
+// 作为关联程序项使用。
 macro_rules! const_maker {
     ($t:ty, $v:tt) => { const CONST: $t = $v; };
 }
@@ -90,11 +90,11 @@ trait T {
     const_maker!{i32, 7}
 }
 
-// Macro calls within macros.
+// 宏中嵌套宏调用。
 macro_rules! example {
     () => { println!("Macro call in a macro!") };
 }
-// Outer macro `example` is expanded, then inner macro `println` is expanded.
+// 外层宏 `example` 先展开，然后内层宏 `println` 展开。
 example!();
 ```
 

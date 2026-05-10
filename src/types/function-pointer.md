@@ -45,7 +45,7 @@ r[type.fn-pointer.coercion]
 函数指针可以通过从[函数项][function items]和非捕获、非异步[闭包][closures]强制转换来创建。
 
 r[type.fn-pointer.qualifiers]
-`unsafe` 限定符表示该类型的值是一个[不安全函数]，`extern` 限定符表示它是一个[外部函数]。
+`unsafe` 限定符表示该类型的值是一个[不安全函数][unsafe function]，`extern` 限定符表示它是一个[外部函数][extern function]。
 
 r[type.fn-pointer.constraint-variadic]
 要使函数为可变参数函数，其 `extern` ABI 必须是 [items.extern.variadic.conventions] 中列出的之一。
@@ -53,11 +53,11 @@ r[type.fn-pointer.constraint-variadic]
 r[type.fn-pointer.attributes]
 ## 函数指针参数上的属性
 
-函数指针参数上的属性遵循与[常规函数参数]相同的规则和限制。
+函数指针参数上的属性遵循与[常规函数参数][regular function parameters]相同的规则和限制。
 
 [`extern`]: ../items/external-blocks.md
 [closures]: closure.md
-[外部函数]: ../items/functions.md#extern-function-qualifier
+[extern function]: ../items/functions.md#extern-function-qualifier
 [function items]: function-item.md
-[不安全函数]: ../unsafe-keyword.md
-[常规函数参数]: ../items/functions.md#attributes-on-function-parameters
+[unsafe function]: ../unsafe-keyword.md
+[regular function parameters]: ../items/functions.md#attributes-on-function-parameters

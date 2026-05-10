@@ -10,7 +10,7 @@ r[type.array.intro]
 数组是包含 `N` 个类型为 `T` 的元素的固定大小序列。数组类型写作 `[T; N]`。
 
 r[type.array.constraint]
-大小是一个求值为 [`usize`] 的[常量表达式]。
+大小是一个求值为 [`usize`] 的[常量表达式][constant expression]。
 
 示例：
 
@@ -29,4 +29,4 @@ r[type.array.index]
 > [`Vec<T>`] 标准库类型提供了一种堆分配的可变大小数组类型。
 
 [`usize`]: numeric.md#machine-dependent-integer-types
-[常量表达式]: ../const_eval.md#constant-expressions
+[constant expression]: ../const_eval.md#constant-expressions

@@ -58,7 +58,7 @@ r[coerce.site.constructor]
   ```
 
 r[coerce.site.return]
-* 函数结果——要么是块的最后一行（如果没有用分号结束），要么是 `return` 语句中的任何表达式
+* 函数结果------要么是块的最后一行（如果没有用分号结束），要么是 `return` 语句中的任何表达式
 
   例如，在以下代码中 `x` 被强转为类型 `&dyn Display`：
 

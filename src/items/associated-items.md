@@ -11,7 +11,7 @@ AssociatedItem ->
 ```
 
 r[items.associated.intro]
-*关联程序项*是在 [trait][traits] 中声明或在[实现][implementations]中定义的程序项。之所以这样称呼，是因为它们定义在关联类型上——即实现中的类型。
+*关联程序项*是在 [trait][traits] 中声明或在[实现][implementations]中定义的程序项。之所以这样称呼，是因为它们定义在关联类型上------即实现中的类型。
 
 r[items.associated.kinds]
 它们是可以在模块中声明的程序项种类的子集。具体来说，有[关联函数][associated functions]（包括方法）、[关联类型][associated types]和[关联常量][associated constants]。

@@ -52,7 +52,7 @@ r[layout.primitive.platform-specific-alignment]
 原始类型的对齐方式是平台相关的。在大多数情况下，它们的对齐方式等于其大小，但也可能更小。特别地，`i128` 和 `u128` 通常对齐到 4 或 8 字节，尽管它们的大小为 16；在许多 32 位平台上，`i64`、`u64` 和 `f64` 仅对齐到 4 字节，而不是 8。
 
 r[layout.primitive.integer-alignment]
-保证相同指示大小的定宽有符号和无符号整数变体的对齐方式相同——即，对于给定大小 `N`，`align_of::<uN>() == align_of::<iN>()`。
+保证相同指示大小的定宽有符号和无符号整数变体的对齐方式相同------即，对于给定大小 `N`，`align_of::<uN>() == align_of::<iN>()`。
 
 r[layout.pointer]
 ## 指针与引用布局
@@ -218,10 +218,10 @@ r[layout.repr.c.struct.size-field-offset]
 fn padding_needed_for(offset: usize, alignment: usize) -> usize {
     let misalignment = offset % alignment;
     if misalignment > 0 {
-        // round up to next multiple of `alignment`
+        // 向上取整到 `alignment` 的下一个倍数
         alignment - misalignment
     } else {
-        // already a multiple of `alignment`
+        // 已经是 `alignment` 的倍数
         0
     }
 }
@@ -231,9 +231,9 @@ struct.alignment = struct.fields().map(|field| field.alignment).max();
 let current_offset = 0;
 
 for field in struct.fields_in_declaration_order() {
-    // Increase the current offset so that it's a multiple of the alignment
-    // of this field. For the first field, this will always be zero.
-    // The skipped bytes are called padding bytes.
+    // 增加当前偏移量使其成为此字段对齐方式的倍数。
+    // 对于第一个字段，此值将始终为零。
+    // 跳过的字节称为填充字节。
     current_offset += padding_needed_for(current_offset, field.alignment);
 
     struct[field].offset = current_offset;

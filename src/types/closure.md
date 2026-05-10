@@ -2,7 +2,7 @@ r[type.closure]
 # 闭包类型
 
 r[type.closure.intro]
-[闭包表达式]生成一个闭包值，其类型是唯一的、匿名的，无法被写出。闭包类型大致等价于一个包含被捕获值的结构体。例如，以下闭包：
+[闭包表达式][closure expression]生成一个闭包值，其类型是唯一的、匿名的，无法被写出。闭包类型大致等价于一个包含被捕获值的结构体。例如，以下闭包：
 
 ```rust
 #[derive(Debug)]
@@ -57,20 +57,20 @@ r[type.closure.capture]
 ## 捕获模式
 
 r[type.closure.capture.intro]
-*捕获模式*决定了环境中的[位置表达式]如何被借用或移动到闭包中。捕获模式有：
+*捕获模式*决定了环境中的[位置表达式][place expression]如何被借用或移动到闭包中。捕获模式有：
 
-1. 不可变借用 (`ImmBorrow`) --- 位置表达式被捕获为[共享引用]。
+1. 不可变借用 (`ImmBorrow`) --- 位置表达式被捕获为[共享引用][shared reference]。
 2. 唯一不可变借用 (`UniqueImmBorrow`) --- 类似于不可变借用，但必须是唯一的，如[下文](#唯一不可变借用于捕获)所述。
-3. 可变借用 (`MutBorrow`) --- 位置表达式被捕获为[可变引用]。
-4. 移动 (`ByValue`) --- 位置表达式通过[移动值]的方式被捕获到闭包中。
+3. 可变借用 (`MutBorrow`) --- 位置表达式被捕获为[可变引用][mutable reference]。
+4. 移动 (`ByValue`) --- 位置表达式通过[移动值][moving the value]的方式被捕获到闭包中。
 
 r[type.closure.capture.precedence]
 环境中的位置表达式从第一个与闭包体内捕获值的使用方式兼容的模式开始被捕获。模式不受闭包周围代码的影响，例如所涉及的变量或字段的生命周期，或闭包自身的生命周期。
 
-[移动值]: ../expressions.md#moved-and-copied-types
-[可变引用]: pointer.md#mutable-references-mut
-[位置表达式]: ../expressions.md#place-expressions-and-value-expressions
-[共享引用]: pointer.md#references--and-mut
+[moving the value]: ../expressions.md#moved-and-copied-types
+[mutable reference]: pointer.md#mutable-references-mut
+[place expression]: ../expressions.md#place-expressions-and-value-expressions
+[shared reference]: pointer.md#references--and-mut
 
 r[type.closure.capture.copy]
 ### `Copy` 值
@@ -95,7 +95,7 @@ r[type.closure.capture.precision.capture-path]
 *捕获路径*是一个序列，以环境中的变量开始，后面跟随零个或多个从该变量开始的位置投影。
 
 r[type.closure.capture.precision.place-projection]
-*位置投影*是[字段访问]、[元组索引]、[解引用]（和自动解引用）、[数组或切片索引]表达式，或应用于变量的[模式解构]。
+*位置投影*是[字段访问][field access]、[元组索引][tuple index]、[解引用][dereference]（和自动解引用）、[数组或切片索引][array or slice index]表达式，或应用于变量的[模式解构][pattern destructuring]。
 
 > [!NOTE]
 > 在 `rustc` 中，模式解构会脱糖为一系列解引用和字段或元素访问。
@@ -119,11 +119,11 @@ c();
 
 此处捕获路径是局部变量 `s`，后跟字段访问 `.f1`，再后跟元组索引 `.1`。此闭包捕获 `s.f1.1` 的不可变借用。
 
-[字段访问]: ../expressions/field-expr.md
-[模式解构]: patterns.destructure
-[元组索引]: ../expressions/tuple-expr.md#tuple-indexing-expressions
-[解引用]: ../expressions/operator-expr.md#the-dereference-operator
-[数组或切片索引]: ../expressions/array-expr.md#array-and-slice-indexing-expressions
+[field access]: ../expressions/field-expr.md
+[pattern destructuring]: patterns.destructure
+[tuple index]: ../expressions/tuple-expr.md#tuple-indexing-expressions
+[dereference]: ../expressions/operator-expr.md#the-dereference-operator
+[array or slice index]: ../expressions/array-expr.md#array-and-slice-indexing-expressions
 
 r[type.closure.capture.precision.shared-prefix]
 ### 共享前缀
@@ -181,7 +181,7 @@ r[type.closure.capture.precision.wildcard]
 ### 通配符模式绑定
 
 r[type.closure.capture.precision.wildcard.reads]
-闭包仅捕获需要被读取的数据。使用[通配符模式]绑定值不会读取该值，因此该位置不会被捕获。
+闭包仅捕获需要被读取的数据。使用[通配符模式][wildcard pattern]绑定值不会读取该值，因此该位置不会被捕获。
 
 ```rust,no_run
 struct S; // 非 `Copy` 类型。
@@ -276,7 +276,7 @@ let c = || {
 };
 ```
 
-[通配符模式]: ../patterns.md#wildcard-pattern
+[wildcard pattern]: ../patterns.md#wildcard-pattern
 
 r[type.closure.capture.precision.discriminants]
 ### 判别值读取的捕获
@@ -493,7 +493,7 @@ c();
 r[type.closure.capture.precision.unaligned]
 ### 对未对齐 `struct` 的引用
 
-由于创建对结构中未对齐字段的引用是[未定义行为]，闭包仅会捕获到达使用了 [`packed` 表示法]的结构体中第一次字段访问之前（但不包括）的捕获路径前缀。这包括所有字段，即使那些是对齐的，以防将来结构体中的任何字段发生变化时产生兼容性问题。
+由于创建对结构中未对齐字段的引用是[未定义行为][undefined behavior]，闭包仅会捕获到达使用了 [`packed` 表示法][the `packed` representation]的结构体中第一次字段访问之前（但不包括）的捕获路径前缀。这包括所有字段，即使那些是对齐的，以防将来结构体中的任何字段发生变化时产生兼容性问题。
 
 ```rust
 #[repr(packed)]
@@ -536,8 +536,8 @@ let a = t.0;
 c();
 ```
 
-[未定义行为]: ../behavior-considered-undefined.md
-[`packed` 表示法]: ../type-layout.md#the-alignment-modifiers
+[undefined behavior]: ../behavior-considered-undefined.md
+[the `packed` representation]: ../type-layout.md#the-alignment-modifiers
 
 r[type.closure.capture.precision.box-deref]
 ### `Box` 与其他 `Deref` 实现
@@ -735,7 +735,7 @@ r[type.closure.traits.behavior]
 [`Send`]: ../special-types-and-traits.md#send
 [`Sized`]: ../special-types-and-traits.md#sized
 [`Sync`]: ../special-types-and-traits.md#sync
-[闭包表达式]: ../expressions/closure-expr.md
+[closure expression]: ../expressions/closure-expr.md
 [derived]: ../attributes/derive.md
 
 r[type.closure.drop-order]

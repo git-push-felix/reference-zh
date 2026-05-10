@@ -38,7 +38,7 @@ r[type.numeric.int.size.usize]
 `usize` 类型是一种无符号整数类型，其位数与平台的指针类型相同。它可以表示进程中的每个内存地址。
 
 > [!NOTE]
-> 虽然 `usize` 可以表示每个*地址*，但将*指针*转换为 `usize` 不一定是可逆操作。有关更多信息，请参阅[类型转换表达式]、[`std::ptr`] 以及特别是[来源][std::ptr#provenance]的文档。
+> 虽然 `usize` 可以表示每个*地址*，但将*指针*转换为 `usize` 不一定是可逆操作。有关更多信息，请参阅[类型转换表达式][type cast expressions]、[`std::ptr`] 以及特别是[来源][std::ptr#provenance]的文档。
 
 r[type.numeric.int.size.isize]
 `isize` 类型是一种有符号二进制补码整数类型，其位数与平台的指针类型相同。对象和数组大小的理论上限是最大 `isize` 值。这确保了 `isize` 可用于计算指向同一对象或数组的指针之间的差值，并且可以寻址对象内的每个字节以及对象末尾之后一个字节。
@@ -54,4 +54,4 @@ r[type.numeric.validity]
 
 对于每个数值类型 `T`，`T` 的位有效性等价于 `[u8; size_of::<T>()]` 的位有效性。未初始化的字节不是有效的 `u8`。
 
-[类型转换表达式]: ../expressions/operator-expr.md#type-cast-expressions
+[type cast expressions]: ../expressions/operator-expr.md#type-cast-expressions

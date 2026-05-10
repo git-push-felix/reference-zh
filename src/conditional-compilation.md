@@ -296,32 +296,31 @@ r[cfg.attr.intro]
 
 > [!EXAMPLE]
 > ```rust
-> // The function is only included in the build when compiling for macOS
+> // 此函数仅在为 macOS 编译时才包含在构建中。
 > #[cfg(target_os = "macos")]
 > fn macos_only() {
 >   // ...
 > }
 >
-> // This function is only included when either foo or bar is defined
+> // 此函数仅在 foo 或 bar 被定义时才包含。
 > #[cfg(any(foo, bar))]
 > fn needs_foo_or_bar() {
 >   // ...
 > }
 >
-> // This function is only included when compiling for a unixish OS with a 32-bit
-> // architecture
+> // 此函数仅在为 32 位架构的 Unix 类 OS 编译时才包含。
 > #[cfg(all(unix, target_pointer_width = "32"))]
 > fn on_32bit_unix() {
 >   // ...
 > }
 >
-> // This function is only included when foo is not defined
+> // 此函数仅在 foo 未定义时才包含。
 > #[cfg(not(foo))]
 > fn needs_not_foo() {
 >   // ...
 > }
 >
-> // This function is only included when the panic strategy is set to unwind
+> // 此函数仅在恐慌策略设置为 unwind 时才包含。
 > #[cfg(panic = "unwind")]
 > fn when_unwinding() {
 >   // ...
@@ -352,12 +351,12 @@ r[cfg.attr.crate-level-attrs]
 >
 > <!-- ignore: test infrastructure can't handle no_std -->
 > ```rust,ignore
-> // This `no_std` attribute is kept even though the crate-level `cfg`
-> // attribute is false.
+> // 虽然 crate 级别的 `cfg`
+> // 属性为 false，此 `no_std` 属性仍然保留。
 > #![no_std]
 > #![cfg(false)]
 >
-> // This function is not included.
+> // 此函数不会被包含。
 > pub fn example() {}
 > ```
 
@@ -408,7 +407,7 @@ r[cfg.cfg_attr.attribute-list]
 > #[cfg_attr(feature = "magic", sparkles, crackles)]
 > fn bewitched() {}
 >
-> // When the `magic` feature flag is enabled, the above will expand to:
+> // 当 `magic` 特性标志被启用时，以上内容将展开为：
 > #[sparkles]
 > #[crackles]
 > fn bewitched() {}

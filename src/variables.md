@@ -16,7 +16,7 @@ r[variable.param-mut]
 r[variable.init]
 局部变量在分配时并不初始化。相反，整个栈帧的全部局部变量在进入栈帧时以未初始化状态一次性分配。函数内的后续语句可以初始化这些局部变量，也可以不初始化。局部变量只有在通过所有可达的控制流路径被初始化后才能使用。
 
-在下面的示例中，`init_after_if` 在 [`if` 表达式]之后被初始化，而 `uninit_after_if` 则没有，因为在 `else` 分支中它没有被初始化。
+在下面的示例中，`init_after_if` 在 [`if` 表达式][`if` expression]之后被初始化，而 `uninit_after_if` 则没有，因为在 `else` 分支中它没有被初始化。
 
 ```rust
 # fn random_bool() -> bool { true }
@@ -36,4 +36,4 @@ fn initialization_example() {
 }
 ```
 
-[`if` 表达式]: expressions/if-expr.md#if-expressions
+[`if` expression]: expressions/if-expr.md#if-expressions
