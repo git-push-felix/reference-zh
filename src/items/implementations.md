@@ -1,5 +1,5 @@
 r[items.impl]
-# Implementations
+# 实现
 
 r[items.impl.syntax]
 ```grammar,items
@@ -21,37 +21,37 @@ TraitImpl ->
 ```
 
 r[items.impl.intro]
-An _implementation_ is an item that associates items with an _implementing type_. Implementations are defined with the keyword `impl` and contain functions that belong to an instance of the type that is being implemented or to the type statically.
+*实现*是将程序项与*实现类型*关联起来的程序项。实现用关键字 `impl` 定义，包含属于被实现类型的实例或静态地属于该类型的函数。
 
 r[items.impl.kinds]
-There are two types of implementations:
+有两种类型的实现：
 
-- inherent implementations
-- [trait] implementations
+- 固有实现
+- [trait] 实现
 
 r[items.impl.inherent]
-## Inherent implementations
+## 固有实现 {#inherent-implementations}
 
 r[items.impl.inherent.intro]
-An inherent implementation is defined as the sequence of the `impl` keyword, generic type declarations, a path to a nominal type, a where clause, and a bracketed set of associable items.
+固有实现的定义是：`impl` 关键字、泛型类型声明、指向具名类型的路径、where 子句以及一对花括号内的一组可关联程序项。
 
 r[items.impl.inherent.implementing-type]
-The nominal type is called the _implementing type_ and the associable items are the _associated items_ to the implementing type.
+具名类型称为*实现类型*，可关联程序项是实现类型的*关联程序项*。
 
 r[items.impl.inherent.associated-items]
-Inherent implementations associate the contained items to the implementing type.
+固有实现将包含的程序项与实现类型关联起来。
 
 r[items.impl.inherent.associated-items.allowed-items]
-Inherent implementations can contain [associated functions] (including [methods]) and [associated constants].
+固有实现可以包含[关联函数][associated functions]（包括[方法][methods]）和[关联常量][associated constants]。
 
 r[items.impl.inherent.type-alias]
-They cannot contain associated type aliases.
+它们不能包含关联类型别名。
 
 r[items.impl.inherent.associated-item-path]
-The [path] to an associated item is any path to the implementing type, followed by the associated item's identifier as the final path component.
+关联程序项的[路径][path]是指向实现类型的任意路径，后跟关联程序项的标识符作为最后的路径组件。
 
 r[items.impl.inherent.coherence]
-A type can also have multiple inherent implementations. An implementing type must be defined within the same crate as the original type definition.
+一个类型也可以有多个固有实现。实现类型必须与原始类型定义在同一个 crate 中定义。
 
 ``` rust
 pub mod color {
@@ -73,39 +73,39 @@ mod values {
 
 pub use self::color::Color;
 fn main() {
-    // Actual path to the implementing type and impl in the same module.
+    // 实际路径到同一模块中的实现类型和 impl。
     color::Color::WHITE;
 
-    // Impl blocks in different modules are still accessed through a path to the type.
+    // 不同模块中的 impl 块仍然通过指向类型的路径来访问。
     color::Color::red();
 
-    // Re-exported paths to the implementing type also work.
+    // 指向实现类型的重导出路径也有效。
     Color::red();
 
-    // Does not work, because use in `values` is not pub.
+    // 无效，因为 `values` 中的 use 不是 pub。
     // values::Color::red();
 }
 ```
 
 r[items.impl.trait]
-## Trait implementations
+## trait 实现 {#trait-implementations}
 
 r[items.impl.trait.intro]
-A _trait implementation_ is defined like an inherent implementation except that the optional generic type declarations are followed by a [trait], followed by the keyword `for`, followed by a path to a nominal type.
+*trait 实现*的定义方式与固有实现类似，不同之处在于可选的泛型类型声明后跟一个 [trait]，再后跟关键字 `for`，再后跟指向具名类型的路径。
 
-<!-- To understand this, you have to back-reference to the previous section. :( -->
+<!-- 要理解这一点，你必须回顾前一小节。:( -->
 
 r[items.impl.trait.implemented-trait]
-The trait is known as the _implemented trait_. The implementing type implements the implemented trait.
+trait 称为*被实现的 trait*。实现类型实现被实现的 trait。
 
 r[items.impl.trait.def-requirement]
-A trait implementation must define all non-default associated items declared by the implemented trait, may redefine default associated items defined by the implemented trait, and cannot define any other items.
+trait 实现必须定义被实现的 trait 声明的所有非默认关联程序项，可以重新定义被实现的 trait 定义的默认关联程序项，并且不能定义任何其他程序项。
 
 r[items.impl.trait.associated-item-path]
-The path to the associated items is `<` followed by a path to the implementing type followed by `as` followed by a path to the trait followed by `>` as a path component followed by the associated item's path component.
+关联程序项的路径是 `<` 后跟指向实现类型的路径，再后跟 `as`，再后跟指向 trait 的路径，再后跟 `>` 作为路径组件，再后跟关联程序项的路径组件。
 
 r[items.impl.trait.safety]
-[Unsafe traits] require the trait implementation to begin with the `unsafe` keyword.
+[Unsafe trait][Unsafe traits] 要求 trait 实现以 `unsafe` 关键字开头。
 
 ```rust
 # #[derive(Copy, Clone)]
@@ -140,43 +140,43 @@ impl Shape for Circle {
 ```
 
 r[items.impl.trait.coherence]
-### Trait implementation coherence
+### trait 实现的一致性 {#trait-implementation-coherence}
 
 r[items.impl.trait.coherence.intro]
-A trait implementation is considered incoherent if either the orphan rules check fails or there are overlapping implementation instances.
+如果孤儿规则检查失败或存在重叠的实现实例，则 trait 实现被认为是不一致的。
 
 r[items.impl.trait.coherence.overlapping]
-Two trait implementations overlap when there is a non-empty intersection of the traits the implementation is for, the implementations can be instantiated with the same type. <!-- This is probably wrong? Source: No two implementations can be instantiable with the same set of types for the input type parameters. -->
+当实现所针对的 trait 的交集非空，并且这些实现可以用相同的类型实例化时，两个 trait 实现会重叠。<!-- 这可能不对？来源：没有两个实现可以用相同的输入类型参数集进行实例化。 -->
 
 r[items.impl.trait.orphan-rule]
-#### Orphan rules
+#### 孤儿规则 {#orphan-rules}
 
 r[items.impl.trait.orphan-rule.intro]
-The *orphan rule* states that a trait implementation is only allowed if either the trait or at least one of the types in the implementation is defined in the current crate. It prevents conflicting trait implementations across different crates and is key to ensuring coherence.
+*孤儿规则*规定，只有 trait 或实现中的至少一个类型在当前 crate 中定义时，才允许该 trait 实现。它防止了跨不同 crate 的冲突 trait 实现，是确保一致性的关键。
 
-An orphan implementation is one that implements a foreign trait for a foreign type. If these were freely allowed, two crates could implement the same trait for the same type in incompatible ways, creating a situation where adding or updating a dependency could break compilation due to conflicting implementations.
+孤儿实现是指为外部类型实现外部 trait 的实现。如果这些被自由允许，两个 crate 可能会以不兼容的方式为同一类型实现相同的 trait，从而造成添加或更新依赖项可能因冲突实现而导致编译中断的情况。
 
-The orphan rule enables library authors to add new implementations to their traits without fear that they'll break downstream code. Without these restrictions, a library couldn't add an implementation like `impl<T: Display> MyTrait for T` without potentially conflicting with downstream implementations.
+孤儿规则使库作者能够为其 trait 添加新的实现，而不必担心会破坏下游代码。如果没有这些限制，库就不能添加 `impl<T: Display> MyTrait for T` 这样的实现，而不会与下游实现产生潜在冲突。
 
 r[items.impl.trait.orphan-rule.def]
-Given `impl<P1..=Pn> Trait<T1..=Tn> for T0`, an `impl` is valid only if at least one of the following is true:
+给定 `impl<P1..=Pn> Trait<T1..=Tn> for T0`，只有当以下至少一项成立时，`impl` 才有效：
 
-- `Trait` is a [local trait]
-- All of
-  - At least one of the types `T0..=Tn` must be a [local type]. Let `Ti` be the first such type.
-  - No [uncovered type] parameters `P1..=Pn` may appear in `T0..Ti` (excluding `Ti`)
+- `Trait` 是[本地 trait][local trait]
+- 以下全部：
+  - 类型 `T0..=Tn` 中至少有一个必须是[本地类型][local type]。令 `Ti` 为第一个这样的类型。
+  - 在 `T0..Ti`（不包括 `Ti`）中不能出现[未覆盖类型][uncovered type]参数 `P1..=Pn`
 
 r[items.impl.trait.uncovered-param]
-Only the appearance of *uncovered* type parameters is restricted.
+只有*未覆盖*类型参数的出现受限。
 
 r[items.impl.trait.fundamental]
-Note that for the purposes of coherence, [fundamental types] are special. The `T` in `Box<T>` is not considered covered, and `Box<LocalType>` is considered local.
+请注意，就一致性而言，[基本类型][fundamental types]是特殊的。`Box<T>` 中的 `T` 不被视为已覆盖，而 `Box<LocalType>` 被视为本地类型。
 
 r[items.impl.generics]
-## Generic implementations
+## 泛型实现 {#generic-implementations}
 
 r[items.impl.generics.intro]
-An implementation can take [generic parameters], which can be used in the rest of the implementation. Implementation parameters are written directly after the `impl` keyword.
+实现可以接受[泛型参数][generic parameters]，这些参数可以在实现的其余部分中使用。实现参数直接写在 `impl` 关键字之后。
 
 ```rust
 # trait Seq<T> { fn dummy(&self, _: T) { } }
@@ -184,21 +184,21 @@ impl<T> Seq<T> for Vec<T> {
     /* ... */
 }
 impl Seq<bool> for u32 {
-    /* Treat the integer as a sequence of bits */
+    /* 将整数视为位序列 */
 }
 ```
 
 r[items.impl.generics.use]
-Generic parameters *constrain* an implementation if the parameter appears at least once in one of:
+如果泛型参数至少出现在以下一项中，则该泛型参数*约束*该实现：
 
-* The implemented trait, if it has one
-* The implementing type
-* As an [associated type] in the [bounds] of a type that contains another parameter that constrains the implementation
+* 被实现的 trait，如果有的话
+* 实现类型
+* 作为包含另一个约束该实现的参数的类型的[约束][bounds]中的[关联类型][associated type]
 
 r[items.impl.generics.constrain]
-Type and const parameters must always constrain the implementation. Lifetimes must constrain the implementation if the lifetime is used in an associated type.
+类型参数和 const 参数必须始终约束该实现。生命周期参数如果用于关联类型中则必须约束该实现。
 
-Examples of constraining situations:
+约束情况的示例：
 
 ```rust
 # trait Trait{}
@@ -207,56 +207,55 @@ Examples of constraining situations:
 # struct Struct;
 # struct GenericStruct<T>(T);
 # struct ConstGenericStruct<const N: usize>([(); N]);
-// T constrains by being an argument to GenericTrait.
+// T 作为 GenericTrait 的参数来约束。
 impl<T> GenericTrait<T> for i32 { /* ... */ }
 
-// T constrains by being an argument to GenericStruct
+// T 作为 GenericStruct 的参数来约束
 impl<T> Trait for GenericStruct<T> { /* ... */ }
 
-// Likewise, N constrains by being an argument to ConstGenericStruct
+// 类似地，N 作为 ConstGenericStruct 的参数来约束
 impl<const N: usize> Trait for ConstGenericStruct<N> { /* ... */ }
 
-// T constrains by being in an associated type in a bound for type `U` which is
-// itself a generic parameter constraining the trait.
+// T 通过在类型 `U` 的约束中的关联类型来约束，
+// `U` 本身是约束该 trait 的泛型参数。
 impl<T, U> GenericTrait<U> for u32 where U: HasAssocType<Ty = T> { /* ... */ }
 
-// Like previous, except the type is `(U, isize)`. `U` appears inside the type
-// that includes `T`, and is not the type itself.
+// 与上面类似，只是类型是 `(U, isize)`。`U` 出现在
+// 包含 `T` 的类型内部，而不是该类型本身。
 impl<T, U> GenericStruct<U> where (U, isize): HasAssocType<Ty = T> { /* ... */ }
 ```
 
-Examples of non-constraining situations:
+非约束情况的示例：
 
 ```rust,compile_fail
-// The rest of these are errors, since they have type or const parameters that
-// do not constrain.
+// 以下都是错误，因为它们具有不约束的类型或 const 参数。
 
-// T does not constrain since it does not appear at all.
+// T 不约束，因为它根本没有出现。
 impl<T> Struct { /* ... */ }
 
-// N does not constrain for the same reason.
+// N 不约束，原因相同。
 impl<const N: usize> Struct { /* ... */ }
 
-// Usage of T inside the implementation does not constrain the impl.
+// 在实现内部使用 T 不约束该 impl。
 impl<T> Struct {
     fn uses_t(t: &T) { /* ... */ }
 }
 
-// T is used as an associated type in the bounds for U, but U does not constrain.
+// T 在 U 的约束中用作关联类型，但 U 不约束。
 impl<T, U> Struct where U: HasAssocType<Ty = T> { /* ... */ }
 
-// T is used in the bounds, but not as an associated type, so it does not constrain.
+// T 用于约束中，但不是作为关联类型，因此不约束。
 impl<T, U> GenericTrait<U> for u32 where U: GenericTrait<T> {}
 ```
 
-Example of an allowed unconstraining lifetime parameter:
+允许的不约束生命周期参数示例：
 
 ```rust
 # struct Struct;
 impl<'a> Struct {}
 ```
 
-Example of a disallowed unconstraining lifetime parameter:
+不允许的不约束生命周期参数示例：
 
 ```rust,compile_fail
 # struct Struct;
@@ -267,9 +266,9 @@ impl<'a> HasAssocType for Struct {
 ```
 
 r[items.impl.attributes]
-## Attributes on implementations
+## 实现上的属性 {#attributes-on-implementations}
 
-Implementations may contain outer [attributes] before the `impl` keyword and inner [attributes] inside the brackets that contain the associated items. Inner attributes must come before any associated items. The attributes that have meaning here are [`cfg`], [`deprecated`], [`doc`], and [the lint check attributes].
+实现可以在 `impl` 关键字之前包含外部[属性][attributes]，在包含关联程序项的花括号内包含内部[属性][attributes]。内部属性必须在任何关联程序项之前。此处有意义的属性有 [`cfg`]、[`deprecated`]、[`doc`] 和 [lint 检查属性][the lint check attributes]。
 
 [trait]: traits.md
 [associated constants]: associated-items.md#associated-constants

@@ -1,5 +1,5 @@
 r[items.use]
-# Use declarations
+# use 声明
 
 r[items.use.syntax]
 ```grammar,items
@@ -12,31 +12,31 @@ UseTree ->
 ```
 
 r[items.use.intro]
-A _use declaration_ creates one or more local name bindings synonymous with some other [path]. Usually a `use` declaration is used to shorten the path required to refer to a module item. These declarations may appear in [modules] and [blocks], usually at the top. A `use` declaration is also sometimes called an _import_, or, if it is public, a _re-export_.
+*use 声明*创建一个或多个与其他[路径][path]同义的本地名称绑定。通常，`use` 声明用于缩短引用模块程序项所需的路径。这些声明可以出现在[模块][modules]和[块][blocks]中，通常位于顶部。`use` 声明有时也称为*导入*，如果它是公开的，则称为*重导出*。
 
 [path]: ../paths.md
 [modules]: modules.md
 [blocks]: ../expressions/block-expr.md
 
 r[items.use.forms]
-Use declarations support a number of convenient shortcuts:
+use 声明支持许多便捷的快捷方式：
 
 r[items.use.forms.multiple]
-* Simultaneously binding a list of paths with a common prefix, using the brace syntax `use a::b::{c, d, e::f, g::h::i};`
+* 使用花括号语法同时绑定具有公共前缀的路径列表：`use a::b::{c, d, e::f, g::h::i};`
 
 r[items.use.forms.self]
-* Simultaneously binding a list of paths with a common prefix and their common parent module, using the `self` keyword, such as `use a::b::{self, c, d::e};`
+* 使用 `self` 关键字同时绑定具有公共前缀的路径列表及其公共父模块：`use a::b::{self, c, d::e};`
 
 r[items.use.forms.as]
-* Rebinding the target name as a new local name, using the syntax `use p::q::r as x;`. This can also be used with the last two features: `use a::b::{self as ab, c as abc}`.
+* 使用语法 `use p::q::r as x;` 将目标名称重新绑定为新的本地名称。这也可以与前两个特性一起使用：`use a::b::{self as ab, c as abc}`。
 
 r[items.use.forms.glob]
-* Binding all paths matching a given prefix, using the asterisk wildcard syntax `use a::b::*;`.
+* 使用星号通配符语法绑定匹配给定前缀的所有路径：`use a::b::*;`。
 
 r[items.use.forms.nesting]
-* Nesting groups of the previous features multiple times, such as `use a::b::{self as ab, c, d::{*, e::f}};`
+* 多次嵌套前述特性的分组：`use a::b::{self as ab, c, d::{*, e::f}};`
 
-An example of `use` declarations:
+`use` 声明示例：
 
 ```rust
 use std::collections::hash_map::{self, HashMap};
@@ -45,14 +45,14 @@ fn foo<T>(_: T){}
 fn bar(map1: HashMap<String, usize>, map2: hash_map::HashMap<String, usize>){}
 
 fn main() {
-    // use declarations can also exist inside of functions
+    // use 声明也可以存在于函数内部
     use std::option::Option::{Some, None};
 
-    // Equivalent to 'foo(vec![std::option::Option::Some(1.0f64),
+    // 等价于 'foo(vec![std::option::Option::Some(1.0f64),
     // std::option::Option::None]);'
     foo(vec![Some(1.0f64), None]);
 
-    // Both `hash_map` and `HashMap` are in scope.
+    // `hash_map` 和 `HashMap` 都在作用域中。
     let map1 = HashMap::new();
     let map2 = hash_map::HashMap::new();
     bar(map1, map2);
@@ -60,15 +60,15 @@ fn main() {
 ```
 
 r[items.use.visibility]
-## `use` Visibility
+## `use` 可见性 {#use-visibility}
 
 r[items.use.visibility.intro]
-Like items, `use` declarations are private to the containing module, by default. Also like items, a `use` declaration can be public, if qualified by the `pub` keyword. Such a `use` declaration serves to _re-export_ a name. A public `use` declaration can therefore _redirect_ some public name to a different target definition: even a definition with a private canonical path, inside a different module.
+与程序项一样，`use` 声明默认对包含它的模块是私有的。也与程序项一样，如果被 `pub` 关键字限定，`use` 声明可以是公开的。这样的 `use` 声明用于*重导出*一个名称。因此，公开的 `use` 声明可以将某个公开名称*重定向*到不同的目标定义：即使是一个位于不同模块内、具有私有规范路径的定义。
 
 r[items.use.visibility.unambiguous]
-If a sequence of such redirections form a cycle or cannot be resolved unambiguously, they represent a compile-time error.
+如果这样一系列重定向形成循环或无法无歧义地解析，则它们表示编译时错误。
 
-An example of re-exporting:
+重导出示例：
 
 ```rust
 mod quux {
@@ -85,44 +85,44 @@ fn main() {
 }
 ```
 
-In this example, the module `quux` re-exports two public names defined in `foo`.
+在此示例中，模块 `quux` 重导出了 `foo` 中定义的两个公开名称。
 
 r[items.use.path]
-## `use` Paths
+## `use` 路径 {#use-paths}
 
 r[items.use.path.intro]
-The [paths] that are allowed in a `use` item follow the [SimplePath] grammar and are similar to the paths that may be used in an expression. They may create bindings for:
+`use` 程序项中允许的[路径][paths]遵循 [SimplePath] 语法，并且类似于表达式中可以使用的路径。它们可以为以下内容创建绑定：
 
-* Nameable [items]
-* [Enum variants]
-* [Built-in types]
-* [Attributes]
-* [Derive macros]
+* 可命名的[程序项][items]
+* [枚举变体][Enum variants]
+* [内置类型][Built-in types]
+* [属性][Attributes]
+* [Derive 宏][Derive macros]
 * [`macro_rules`]
 
 r[items.use.path.disallowed]
-They cannot import [associated items], [generic parameters], [local variables], paths with [`Self`], or [tool attributes]. More restrictions are described below.
+它们不能导入[关联程序项][associated items]、[泛型参数][generic parameters]、[局部变量][local variables]、带有 [`Self`] 的路径或[工具属性][tool attributes]。更多限制如下所述。
 
 r[items.use.path.namespace]
-`use` will create bindings for all [namespaces] from the imported entities, with the exception that a `self` import will only import from the type namespace (as described below). For example, the following illustrates creating bindings for the same name in two namespaces:
+`use` 将为导入实体的所有[命名空间][namespaces]创建绑定，但 `self` 导入只从类型命名空间导入（如下所述）为例外。例如，以下示例展示了在两个命名空间中为同一个名称创建绑定：
 
 ```rust
 mod stuff {
     pub struct Foo(pub i32);
 }
 
-// Imports the `Foo` type and the `Foo` constructor.
+// 导入 `Foo` 类型和 `Foo` 构造器。
 use stuff::Foo;
 
 fn example() {
-    let ctor = Foo; // Uses `Foo` from the value namespace.
-    let x: Foo = ctor(123); // Uses `Foo` From the type namespace.
+    let ctor = Foo; // 使用值命名空间中的 `Foo`。
+    let x: Foo = ctor(123); // 使用类型命名空间中的 `Foo`。
 }
 ```
 
 r[items.use.path.edition2018]
 > [!EDITION-2018]
-> In the 2015 edition, `use` paths are relative to the crate root. For example:
+> 在 2015 版本中，`use` 路径相对于 crate 根。例如：
 >
 > ```rust,edition2015
 > mod foo {
@@ -130,25 +130,25 @@ r[items.use.path.edition2018]
 >     pub mod baz { pub fn foobaz() {} }
 > }
 > mod bar {
->     // Resolves `foo` from the crate root.
+>     // 从 crate 根解析 `foo`。
 >     use foo::example::iter;
->     // The `::` prefix explicitly resolves `foo`
->     // from the crate root.
+>     // `::` 前缀显式地从 crate 根
+>     // 解析 `foo`。
 >     use ::foo::baz::foobaz;
 > }
 >
 > # fn main() {}
 > ```
 >
-> The 2015 edition does not allow use declarations to reference the [extern prelude]. Thus, [`extern crate`] declarations are still required in 2015 to reference an external crate in a `use` declaration. Beginning with the 2018 edition, `use` declarations can specify an external crate dependency the same way `extern crate` can.
+> 2015 版本不允许 use 声明引用[外部预导入][extern prelude]。因此，在 2015 中仍然需要 [`extern crate`] 声明才能在 `use` 声明中引用外部 crate。从 2018 版本开始，`use` 声明可以像 `extern crate` 一样指定外部 crate 依赖项。
 
 r[items.use.as]
-## `as` renames
+## `as` 重命名 {#as-renames}
 
-The `as` keyword can be used to change the name of an imported entity. For example:
+`as` 关键字可用于更改导入实体的名称。例如：
 
 ```rust
-// Creates a non-public alias `bar` for the function `foo`.
+// 为函数 `foo` 创建非公开别名 `bar`。
 use inner::foo as bar;
 
 mod inner {
@@ -157,13 +157,13 @@ mod inner {
 ```
 
 r[items.use.multiple-syntax]
-## Brace syntax
+## 花括号语法 {#brace-syntax}
 
 r[items.use.multiple-syntax.intro]
-Braces can be used in the last segment of the path to import multiple entities from the previous segment, or, if there are no previous segments, from the current scope. Braces can be nested, creating a tree of paths, where each grouping of segments is logically combined with its parent to create a full path.
+花括号可以用在路径的最后一段，以从前一段导入多个实体，或者，如果没有前一段，则从当前作用域导入。花括号可以嵌套，创建路径树，其中每个段分组都与父级逻辑组合以创建完整路径。
 
 ```rust
-// Creates bindings to:
+// 创建以下内容的绑定：
 // - `std::collections::BTreeSet`
 // - `std::collections::hash_map`
 // - `std::collections::hash_map::HashMap`
@@ -171,18 +171,18 @@ use std::collections::{BTreeSet, hash_map::{self, HashMap}};
 ```
 
 r[items.use.multiple-syntax.empty]
-An empty brace does not import anything, though the leading path is validated that it is accessible.
-<!-- This is slightly wrong, see: https://github.com/rust-lang/rust/issues/61826 -->
+空花括号不导入任何内容，尽管会验证前导路径是否可访问。
+<!-- 这不太对，参见: https://github.com/rust-lang/rust/issues/61826 -->
 
 r[items.use.multiple-syntax.edition2018]
 > [!EDITION-2018]
-> In the 2015 edition, paths are relative to the crate root, so an import such as `use {foo, bar};` will import the names `foo` and `bar` from the crate root, whereas starting in 2018, those names are relative to the current scope.
+> 在 2015 版本中，路径相对于 crate 根，因此 `use {foo, bar};` 这样的导入将从 crate 根导入名称 `foo` 和 `bar`，而从 2018 开始，这些名称相对于当前作用域。
 
 r[items.use.self]
-## `self` imports
+## `self` 导入 {#self-imports}
 
 r[items.use.self.intro]
-The keyword `self` may be used within [brace syntax] to create a binding of the parent entity under its own name.
+关键字 `self` 可以在[花括号语法][brace syntax]中使用，以在其自身名称下创建父实体的绑定。
 
 ```rust
 mod stuff {
@@ -190,7 +190,7 @@ mod stuff {
     pub fn bar() {}
 }
 mod example {
-    // Creates a binding for `stuff` and `foo`.
+    // 创建 `stuff` 和 `foo` 的绑定。
     use crate::stuff::{self, foo};
     pub fn baz() {
         foo();
@@ -201,45 +201,45 @@ mod example {
 ```
 
 > [!NOTE]
-> `self` may also be used as the first segment of a path. The use of `self` as the first segment and inside a `use` brace is logically the same; it means the current module of the parent segment, or the current module if there is no parent segment. See [`self`] in the paths chapter for more information on the meaning of a leading `self`.
+> `self` 也可以用作路径的第一段。将 `self` 用作第一段和在 `use` 花括号中使用 `self` 在逻辑上是相同的；它表示父段的当前模块，或者如果没有父段，则表示当前模块。有关前导 `self` 含义的更多信息，请参见路径章节中的 [`self`]。
 
 r[items.use.self.trailing]
-`self` may appear as the last segment of a `use` path, preceded by `::`. A path of the form `P::self` is equivalent to `P::{self}`, and `P::self as name` is equivalent to `P::{self as name}`.
+`self` 可以作为 `use` 路径的最后一段出现，前面加上 `::`。`P::self` 形式的路径等价于 `P::{self}`，`P::self as name` 等价于 `P::{self as name}`。
 
 ```rust
 mod m {
     pub enum E { V1, V2 }
 }
-use m::self as _; // Equivalent to `use m::{self as _};`.
-use m::E::self; // Equivalent to `use m::E::{self};`.
+use m::self as _; // 等价于 `use m::{self as _};`。
+use m::E::self; // 等价于 `use m::E::{self};`。
 # fn main() {}
 ```
 
 > [!NOTE]
-> See [paths.qualifiers.mod-self.trailing] for restrictions on the preceding path.
+> 有关前导路径的限制，请参见 [paths.qualifiers.mod-self.trailing]。
 
 r[items.use.self.module]
-When `self` is used within [brace syntax], the path preceding the brace group must resolve to a [module], [enumeration], or [trait].
+当 `self` 在[花括号语法][brace syntax]中使用时，花括号组前面的路径必须解析为[模块][module]、[枚举][enumeration]或 [trait]。
 
 ```rust
 mod m {
     pub enum E { V1, V2 }
     pub trait Tr { fn f(&self); }
 }
-use m::{self as _}; // OK: Modules can be parents of `self`.
-use m::E::{self, V1}; // OK: Enums can be parents of `self`.
-use m::Tr::{self}; // OK: Traits can be parents of `self`.
+use m::{self as _}; // OK：模块可以是 `self` 的父级。
+use m::E::{self, V1}; // OK：枚举可以是 `self` 的父级。
+use m::Tr::{self}; // OK：trait 可以是 `self` 的父级。
 # fn main() {}
 ```
 
 ```rust,compile_fail,E0432
 struct S {}
-use S::{self as _}; // ERROR: Structs cannot be parents of `self`.
+use S::{self as _}; // 错误：结构体不能是 `self` 的父级。
 # fn main() {}
 ```
 
 r[items.use.self.namespace]
-`self` only creates a binding from the [type namespace] of the parent entity. For example, in the following, only the `foo` mod is imported:
+`self` 仅从父实体的[类型命名空间][type namespace]创建绑定。例如，在以下代码中，仅导入了 `foo` 模块：
 
 ```rust,compile_fail
 mod bar {
@@ -247,23 +247,23 @@ mod bar {
     pub fn foo() {}
 }
 
-// This only imports the module `foo`. The function `foo` lives in
-// the value namespace and is not imported.
+// 这仅导入模块 `foo`。函数 `foo` 位于
+// 值命名空间中，没有被导入。
 use bar::foo::{self};
 
 fn main() {
-    foo(); //~ ERROR `foo` is a module
+    foo(); //~ 错误：`foo` 是一个模块
 }
 ```
 
 r[items.use.glob]
-## Glob imports
+## 通配符导入 {#glob-imports}
 
 r[items.use.glob.intro]
-The `*` character may be used as the last segment of a `use` path to import all importable entities from the entity of the preceding segment. For example:
+`*` 字符可以作为 `use` 路径的最后一段，以从前一段的实体中导入所有可导入的实体。例如：
 
 ```rust
-// Creates a non-public alias to `bar`.
+// 为 `bar` 创建非公开别名。
 use foo::*;
 
 mod foo {
@@ -273,8 +273,8 @@ mod foo {
         V2,
     }
     pub fn bar() {
-        // Creates local aliases to `V1` and `V2`
-        // of the `Example` enum.
+        // 创建 `Example` 枚举的 `V1` 和 `V2`
+        // 的本地别名。
         use Example::*;
         let x = V1;
     }
@@ -282,26 +282,26 @@ mod foo {
 ```
 
 r[items.use.glob.shadowing]
-Items and named imports are allowed to shadow names from glob imports in the same [namespace]. That is, if there is a name already defined by another item in the same namespace, the glob import will be shadowed. For example:
+程序项和命名导入允许遮蔽来自同一[命名空间][namespace]中通配符导入的名称。也就是说，如果同一命名空间中已存在由另一个程序项定义的名称，则通配符导入将被遮蔽。例如：
 
 ```rust
-// This creates a binding to the `clashing::Foo` tuple struct
-// constructor, but does not import its type because that would
-// conflict with the `Foo` struct defined here.
+// 这创建了对 `clashing::Foo` 元组结构体
+// 构造器的绑定，但不会导入其类型，因为
+// 这与此处定义的 `Foo` 结构体冲突。
 //
-// Note that the order of definition here is unimportant.
+// 请注意，此处的定义顺序并不重要。
 use clashing::*;
 struct Foo {
     field: f32,
 }
 
 fn do_stuff() {
-    // Uses the constructor from `clashing::Foo`.
+    // 使用 `clashing::Foo` 的构造器。
     let f1 = Foo(123);
-    // The struct expression uses the type from
-    // the `Foo` struct defined above.
+    // 结构体表达式使用上面定义的
+    // `Foo` 结构体的类型。
     let f2 = Foo { field: 1.0 };
-    // `Bar` is also in scope due to the glob import.
+    // `Bar` 也因通配符导入而在作用域中。
     let z = Bar {};
 }
 
@@ -312,26 +312,26 @@ mod clashing {
 ```
 
 > [!NOTE]
-> For areas where shadowing is not allowed, see [name resolution ambiguities].
+> 对于不允许遮蔽的区域，请参见[名称解析歧义][name resolution ambiguities]。
 
 r[items.use.glob.last-segment-only]
-`*` cannot be used as the first or intermediate segments.
+`*` 不能用作第一段或中间段。
 
 r[items.use.glob.self-import]
-`*` cannot be used to import a module's contents into itself (such as `use self::*;`).
+`*` 不能用于将模块的内容导入自身（如 `use self::*;`）。
 
 r[items.use.glob.edition2018]
 > [!EDITION-2018]
-> In the 2015 edition, paths are relative to the crate root, so an import such as `use *;` is valid, and it means to import everything from the crate root. This cannot be used in the crate root itself.
+> 在 2015 版本中，路径相对于 crate 根，因此 `use *;` 这样的导入是有效的，它表示从 crate 根导入所有内容。这不能在 crate 根本身中使用。
 
 r[items.use.as-underscore]
-## Underscore imports
+## 下划线导入 {#underscore-imports}
 
 r[items.use.as-underscore.intro]
-Items can be imported without binding to a name by using an underscore with the form `use path as _`. This is particularly useful to import a trait so that its methods may be used without importing the trait's symbol, for example if the trait's symbol may conflict with another symbol. Another example is to link an external crate without importing its name.
+可以使用下划线形式 `use path as _` 导入程序项而不绑定到名称。这对于导入 trait 以便使用其方法而不导入 trait 的符号特别有用，例如如果 trait 的符号可能与另一个符号冲突。另一个例子是链接外部 crate 而不导入其名称。
 
 r[items.use.as-underscore.glob]
-Asterisk glob imports will import items imported with `_` in their unnameable form.
+星号通配符导入将以其不可命名形式导入以 `_` 导入的程序项。
 
 ```rust
 mod foo {
@@ -343,7 +343,7 @@ mod foo {
 }
 
 use self::foo::Zoo as _;
-struct Zoo;  // Underscore import avoids name conflict with this item.
+struct Zoo;  // 下划线导入避免了与此程序项的名称冲突。
 
 fn main() {
     let z = Zoo;
@@ -352,7 +352,7 @@ fn main() {
 ```
 
 r[items.use.as-underscore.macro]
-The unique, unnameable symbols are created after macro expansion so that macros may safely emit multiple references to `_` imports. For example, the following should not produce an error:
+唯一的、不可命名的符号在宏展开之后创建，因此宏可以安全地多次发出对 `_` 导入的引用。例如，以下不应产生错误：
 
 ```rust
 macro_rules! m {
@@ -360,31 +360,31 @@ macro_rules! m {
 }
 
 m!(use std as _;);
-// This expands to:
+// 这会展开为：
 // use std as _;
 // use std as _;
 ```
 
 r[items.use.restrictions]
-## Restrictions
+## 限制 {#restrictions}
 
-The following rules are restrictions for valid `use` declarations.
+以下规则是有效 `use` 声明的限制。
 
 r[items.use.restrictions.crate-alias]
-When using `crate` to import the current crate, you must use `as` to define the binding name.
+当使用 `crate` 导入当前 crate 时，必须使用 `as` 来定义绑定名称。
 
 > [!EXAMPLE]
 > ```rust
 > use crate as root;
 > use crate::{self as root2};
 >
-> // Not allowed:
+> // 不允许：
 > // use crate;
 > // use crate::{self};
 > ```
 
 r[items.use.restrictions.macro-crate-alias]
-When using [`$crate`] in a macro transcriber to import the current crate, you must use `as` to define the binding name.
+当在宏转录器中使用 [`$crate`] 导入当前 crate 时，必须使用 `as` 来定义绑定名称。
 
 > [!EXAMPLE]
 > ```rust
@@ -397,7 +397,7 @@ When using [`$crate`] in a macro transcriber to import the current crate, you mu
 > ```
 
 r[items.use.restrictions.self-alias]
-When using `self` to import the current module, you must use `as` to define the binding name.
+当使用 `self` 导入当前模块时，必须使用 `as` 来定义绑定名称。
 
 > [!EXAMPLE]
 > ```rust
@@ -405,14 +405,14 @@ When using `self` to import the current module, you must use `as` to define the 
 > use self as this_module2;
 > use self::{self as this_module3};
 >
-> // Not allowed:
+> // 不允许：
 > // use {self};
 > // use self;
 > // use self::{self};
 > ```
 
 r[items.use.restrictions.super-alias]
-When using `super` to import a parent module, you must use `as` to define the binding name.
+当使用 `super` 导入父模块时，必须使用 `as` 来定义绑定名称。
 
 > [!EXAMPLE]
 > ```rust
@@ -424,7 +424,7 @@ When using `super` to import a parent module, you must use `as` to define the bi
 >         use super::super as grandparent;
 >         use super::super::{self as grandparent2};
 >
->         // Not allowed:
+>         // 不允许：
 >         // use super;
 >         // use super::{self};
 >         // use self::super;
@@ -435,25 +435,25 @@ When using `super` to import a parent module, you must use `as` to define the bi
 > ```
 
 r[items.use.restrictions.extern-prelude]
-`::` as the [extern prelude] cannot be imported.
+`::` 作为[外部预导入][extern prelude]不能被导入。
 
 > [!EXAMPLE]
 > ```rust,edition2018,compile_fail
-> use ::{self as root}; //~ Error
+> use ::{self as root}; //~ 错误
 > ```
 
 > [!EDITION-2018]
-> In the 2015 edition, the prefix `::` refers to the crate root, so `use ::{self as root};` is allowed because it is same as `use crate::{self as root};`. Starting with the 2018 edition the `::` prefix refers to the extern prelude, which cannot be directly imported.
+> 在 2015 版本中，前缀 `::` 指向 crate 根，因此 `use ::{self as root};` 是允许的，因为它与 `use crate::{self as root};` 相同。从 2018 版本开始，`::` 前缀指向外部预导入，不能直接导入。
 >
 > ```rust,edition2015
-> use ::{self as root}; //~ Ok
+> use ::{self as root}; //~ OK
 > ```
 
 r[items.use.restrictions.duplicate-name]
-As with any item definition, `use` imports cannot create duplicate bindings of the same name in the same namespace in a module or block.
+与任何程序项定义一样，`use` 导入不能在模块或块的同一命名空间中创建同名的重复绑定。
 
 r[items.use.restrictions.variant]
-`use` paths cannot refer to enum variants through a [type alias].
+`use` 路径不能通过[类型别名][type alias]引用枚举变体。
 
 > [!EXAMPLE]
 > ```rust,compile_fail
@@ -463,7 +463,7 @@ r[items.use.restrictions.variant]
 > type TypeAlias = MyEnum;
 >
 > use MyEnum::MyVariant; //~ OK
-> use TypeAlias::MyVariant; //~ ERROR
+> use TypeAlias::MyVariant; //~ 错误
 > ```
 
 [`$crate`]: paths.qualifiers.macro-crate

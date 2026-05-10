@@ -1,5 +1,5 @@
 r[items.mod]
-# Modules
+# 模块
 
 r[items.mod.syntax]
 ```grammar,items
@@ -12,15 +12,15 @@ Module ->
 ```
 
 r[items.mod.intro]
-A module is a container for zero or more [items].
+模块是零个或多个[程序项][items]的容器。
 
 r[items.mod.def]
-A _module item_ is a module, surrounded in braces, named, and prefixed with the keyword `mod`. A module item introduces a new, named module into the tree of modules making up a crate.
+*模块项*是一个用花括号括起来、命名并以关键字 `mod` 为前缀的模块。模块项在构成 crate 的模块树中引入一个新的命名模块。
 
 r[items.mod.nesting]
-Modules can nest arbitrarily.
+模块可以任意嵌套。
 
-An example of a module:
+模块示例：
 
 ```rust
 mod math {
@@ -41,43 +41,43 @@ mod math {
 ```
 
 r[items.mod.namespace]
-Modules are defined in the [type namespace] of the module or block where they are located.
+模块定义在其所在模块或块的[类型命名空间][type namespace]中。
 
 r[items.mod.multiple-items]
-It is an error to define multiple items with the same name in the same namespace within a module. See the [scopes chapter] for more details on restrictions and shadowing behavior.
+在模块的同一命名空间中定义多个同名程序项是错误的。有关限制和遮蔽行为的更多详细信息，请参见[作用域章节][scopes chapter]。
 
 r[items.mod.unsafe]
-The `unsafe` keyword is syntactically allowed to appear before the `mod` keyword, but it is rejected at a semantic level. This allows macros to consume the syntax and make use of the `unsafe` keyword, before removing it from the token stream.
+语法上允许 `unsafe` 关键字出现在 `mod` 关键字之前，但在语义层面会被拒绝。这允许宏消费该语法并利用 `unsafe` 关键字，然后将其从 token 流中移除。
 
 r[items.mod.outlined]
-## Module source filenames
+## 模块源文件名 {#module-source-filenames}
 
 r[items.mod.outlined.intro]
-A module without a body is loaded from an external file. When the module does not have a `path` attribute, the path to the file mirrors the logical [module path].
+没有主体的模块从外部文件加载。当模块没有 `path` 属性时，该文件的路径与逻辑[模块路径][module path]相对应。
 
 r[items.mod.outlined.search]
-Ancestor module path components are directories, and the module's contents are in a file with the name of the module plus the `.rs` extension. For example, the following module structure can have this corresponding filesystem structure:
+祖先模块路径的各级组件是目录，模块的内容以模块名加上 `.rs` 扩展名命名的文件形式存在。例如，以下模块结构可以有以下对应的文件系统结构：
 
-Module Path               | Filesystem Path  | File Contents
+模块路径               | 文件系统路径  | 文件内容
 ------------------------- | ---------------  | -------------
 `crate`                   | `lib.rs`         | `mod util;`
 `crate::util`             | `util.rs`        | `mod config;`
 `crate::util::config`     | `util/config.rs` |
 
 r[items.mod.outlined.search-mod]
-Module filenames may also be the name of the module as a directory with the contents in a file named `mod.rs` within that directory. The above example can alternately be expressed with `crate::util`'s contents in a file named `util/mod.rs`. It is not allowed to have both `util.rs` and `util/mod.rs`.
+模块文件名也可以是模块名作为目录，其内容放在该目录下一个名为 `mod.rs` 的文件中。上面的示例也可以将 `crate::util` 的内容放在文件 `util/mod.rs` 中。不允许同时存在 `util.rs` 和 `util/mod.rs`。
 
 > [!NOTE]
-> Prior to `rustc` 1.30, using `mod.rs` files was the way to load a module with nested children. It is encouraged to use the new naming convention as it is more consistent, and avoids having many files named `mod.rs` within a project.
+> 在 `rustc` 1.30 之前，使用 `mod.rs` 文件是加载带有嵌套子模块的模块的方式。鼓励使用新的命名约定，因为它更一致，并且可以避免项目中存在许多名为 `mod.rs` 的文件。
 
 r[items.mod.outlined.path]
-### The `path` attribute
+### `path` 属性 {#the-path-attribute}
 
 r[items.mod.outlined.path.intro]
-The directories and files used for loading external file modules can be influenced with the `path` attribute.
+用于加载外部文件模块的目录和文件可以通过 `path` 属性来影响。
 
 r[items.mod.outlined.path.search]
-For `path` attributes on modules not inside inline module blocks, the file path is relative to the directory the source file is located. For example, the following code snippet would use the paths shown based on where it is located:
+对于不在内联模块块中的模块上的 `path` 属性，文件路径相对于源文件所在的目录。例如，以下代码片段将根据其位置使用如下所示的路径：
 
 <!-- ignore: requires external files -->
 ```rust,ignore
@@ -85,13 +85,13 @@ For `path` attributes on modules not inside inline module blocks, the file path 
 mod c;
 ```
 
-Source File    | `c`'s File Location | `c`'s Module Path
+源文件    | `c` 的文件位置 | `c` 的模块路径
 -------------- | ------------------- | ----------------------
 `src/a/b.rs`   | `src/a/foo.rs`      | `crate::a::b::c`
 `src/a/mod.rs` | `src/a/foo.rs`      | `crate::a::c`
 
 r[items.mod.outlined.path.search-nested]
-For `path` attributes inside inline module blocks, the relative location of the file path depends on the kind of source file the `path` attribute is located in. "mod-rs" source files are root modules (such as `lib.rs` or `main.rs`) and modules with files named `mod.rs`. "non-mod-rs" source files are all other module files. Paths for `path` attributes inside inline module blocks in a mod-rs file are relative to the directory of the mod-rs file including the inline module components as directories. For non-mod-rs files, it is the same except the path starts with a directory with the name of the non-mod-rs module. For example, the following code snippet would use the paths shown based on where it is located:
+对于内联模块块中的 `path` 属性，文件路径的相对位置取决于 `path` 属性所在的源文件类型。"mod-rs" 源文件是根模块（如 `lib.rs` 或 `main.rs`）和文件名为 `mod.rs` 的模块。"non-mod-rs" 源文件是所有其他模块文件。在 mod-rs 文件中的内联模块块中，`path` 属性的路径相对于 mod-rs 文件的目录，包括作为目录的内联模块组件。对于 non-mod-rs 文件，情况相同，只是路径以 non-mod-rs 模块名称的目录开头。例如，以下代码片段将根据其位置使用如下所示的路径：
 
 <!-- ignore: requires external files -->
 ```rust,ignore
@@ -101,32 +101,32 @@ mod inline {
 }
 ```
 
-Source File    | `inner`'s File Location   | `inner`'s Module Path
+源文件    | `inner` 的文件位置   | `inner` 的模块路径
 -------------- | --------------------------| ----------------------------
 `src/a/b.rs`   | `src/a/b/inline/other.rs` | `crate::a::b::inline::inner`
 `src/a/mod.rs` | `src/a/inline/other.rs`   | `crate::a::inline::inner`
 
-An example of combining the above rules of `path` attributes on inline modules and nested modules within (applies to both mod-rs and non-mod-rs files):
+一个结合了上述 `path` 属性在内联模块和嵌套模块上规则的示例（适用于 mod-rs 和 non-mod-rs 文件）：
 
 <!-- ignore: requires external files -->
 ```rust,ignore
 #[path = "thread_files"]
 mod thread {
-    // Load the `local_data` module from `thread_files/tls.rs` relative to
-    // this source file's directory.
+    // 从 thread_files/tls.rs 加载 `local_data` 模块，相对于
+    // 此源文件所在的目录。
     #[path = "tls.rs"]
     mod local_data;
 }
 ```
 
 r[items.mod.attributes]
-## Attributes on modules
+## 模块上的属性 {#attributes-on-modules}
 
 r[items.mod.attributes.intro]
-Modules, like all items, accept outer attributes. They also accept inner attributes: either after `{` for a module with a body, or at the beginning of the source file, after the optional BOM and shebang.
+模块和所有程序项一样，接受外部属性。它们也接受内部属性：对于有主体的模块，在 `{` 之后；或者对于源文件，在可选的 BOM 和 shebang 之后的文件开头。
 
 r[items.mod.attributes.supported]
-The built-in attributes that have meaning on a module are [`cfg`], [`deprecated`], [`doc`], [the lint check attributes], [`path`], and [`no_implicit_prelude`]. Modules also accept macro attributes.
+对模块有意义的内置属性有 [`cfg`]、[`deprecated`]、[`doc`]、[lint 检查属性][the lint check attributes]、[`path`] 和 [`no_implicit_prelude`]。模块也接受宏属性。
 
 [`cfg`]: ../conditional-compilation.md
 [`deprecated`]: ../attributes/diagnostics.md#the-deprecated-attribute

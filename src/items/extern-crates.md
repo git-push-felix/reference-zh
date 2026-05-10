@@ -1,5 +1,5 @@
 r[items.extern-crate]
-# Extern crate declarations
+# extern crate 声明
 
 r[items.extern-crate.syntax]
 ```grammar,items
@@ -11,63 +11,63 @@ AsClause -> `as` ( IDENTIFIER | `_` )
 ```
 
 r[items.extern-crate.intro]
-An _`extern crate` declaration_ specifies a dependency on an external crate.
+*`extern crate` 声明*指定对某个外部 crate 的依赖。
 
 r[items.extern-crate.namespace]
-The external crate is then bound into the declaring scope as the given [identifier] in the [type namespace].
+外部 crate 然后以给定的[标识符][identifier]绑定到声明所在的作用域的[类型命名空间][type namespace]中。
 
 r[items.extern-crate.extern-prelude]
-Additionally, if the `extern crate` appears in the crate root, then the crate name is also added to the [extern prelude], making it automatically in scope in all modules.
+此外，如果 `extern crate` 出现在 crate 根中，则该 crate 名称也会被添加到[外部预导入][extern prelude]中，使其自动在任何模块中可见。
 
 r[items.extern-crate.as]
-The `as` clause can be used to bind the imported crate to a different name.
+`as` 子句可用于将导入的 crate 绑定到不同的名称。
 
 r[items.extern-crate.lookup]
-The external crate is resolved to a specific `soname` at compile time, and a runtime linkage requirement to that `soname` is passed to the linker for loading at runtime. The `soname` is resolved at compile time by scanning the compiler's library path and matching the optional `crate_name` provided against the [`crate_name` attributes] that were declared on the external crate when it was compiled. If no `crate_name` is provided, a default `name` attribute is assumed, equal to the [identifier] given in the `extern crate` declaration.
+外部 crate 在编译时解析为特定的 `soname`，并将对该 `soname` 的运行时链接要求传递给链接器，以便在运行时加载。`soname` 在编译时通过扫描编译器的库路径并匹配提供的可选 `crate_name` 与外部 crate 编译时声明的 [`crate_name` 属性][`crate_name` attributes] 来解析。如果没有提供 `crate_name`，则假定使用默认的 `name` 属性，该属性等于 `extern crate` 声明中给出的[标识符][identifier]。
 
 r[items.extern-crate.self]
-The `self` crate may be imported which creates a binding to the current crate. In this case the `as` clause must be used to specify the name to bind it to.
+可以导入 `self` crate，这会创建对当前 crate 的绑定。在这种情况下必须使用 `as` 子句来指定绑定名称。
 
-Three examples of `extern crate` declarations:
+三个 `extern crate` 声明的示例：
 
 <!-- ignore: requires external crates -->
 ```rust,ignore
 extern crate pcre;
 
-extern crate std; // equivalent to: extern crate std as std;
+extern crate std; // 等价于: extern crate std as std;
 
-extern crate std as ruststd; // linking to 'std' under another name
+extern crate std as ruststd; // 以其他名称链接到 'std'
 ```
 
 r[items.extern-crate.name-restrictions]
-When naming Rust crates, hyphens are disallowed. However, Cargo packages may make use of them. In such case, when `Cargo.toml` doesn't specify a crate name, Cargo will transparently replace `-` with `_` (Refer to [RFC 940] for more details).
+在命名 Rust crate 时，不允许使用连字符。然而，Cargo 包可能会使用它们。在这种情况下，当 `Cargo.toml` 没有指定 crate 名称时，Cargo 会透明地将 `-` 替换为 `_`（详见 [RFC 940]）。
 
-Here is an example:
+示例如下：
 
 <!-- ignore: requires external crates -->
 ```rust,ignore
-// Importing the Cargo package hello-world
-extern crate hello_world; // hyphen replaced with an underscore
+// 导入 Cargo 包 hello-world
+extern crate hello_world; // 连字符被替换为下划线
 ```
 
 r[items.extern-crate.underscore]
-## Underscore imports
+## 下划线导入 {#underscore-imports}
 
 r[items.extern-crate.underscore.intro]
-An external crate dependency can be declared without binding its name in scope by using an underscore with the form `extern crate foo as _`. This may be useful for crates that only need to be linked, but are never referenced, and will avoid being reported as unused.
+可以使用下划线形式 `extern crate foo as _` 声明外部 crate 依赖而不将其名称绑定到作用域中。这对于只需要链接但从不会被引用的 crate 很有用，并且可以避免被报告为未使用。
 
 r[items.extern-crate.underscore.macro_use]
-The [`macro_use` attribute] works as usual and imports the macro names into the [`macro_use` prelude].
+[`macro_use` 属性][`macro_use` attribute]照常工作，并将宏名称导入 [`macro_use` 预导入][`macro_use` prelude]中。
 
 <!-- template:attributes -->
 r[items.extern-crate.no_link]
-## The `no_link` attribute
+## `no_link` 属性 {#the-no_link-attribute}
 
 r[items.extern-crate.no_link.intro]
-The *`no_link` [attribute][attributes]* may be applied to an `extern crate` item to prevent linking the crate.
+*`no_link` [属性][attributes]* 可以应用于 `extern crate` 程序项，以阻止链接该 crate。
 
 > [!NOTE]
-> This is helpful, e.g., when only the macros of a crate are needed.
+> 例如，当只需要 crate 的宏时，这很有用。
 
 > [!EXAMPLE]
 > <!-- ignore: requires external crates -->
@@ -79,19 +79,19 @@ The *`no_link` [attribute][attributes]* may be applied to an `extern crate` item
 > ```
 
 r[items.extern-crate.no_link.syntax]
-The `no_link` attribute uses the [MetaWord] syntax.
+`no_link` 属性使用 [MetaWord] 语法。
 
 r[items.extern-crate.no_link.allowed-positions]
-The `no_link` attribute may only be applied to an `extern crate` declaration.
+`no_link` 属性只能应用于 `extern crate` 声明。
 
 > [!NOTE]
-> `rustc` ignores use in other positions but lints against it. This may become an error in the future.
+> `rustc` 会忽略在其他位置的使用但会给出 lint 警告。这将来可能变成错误。
 
 r[items.extern-crate.no_link.duplicates]
-Only the first use of `no_link` on an `extern crate` declaration has effect.
+只有在 `extern crate` 声明上首次使用 `no_link` 才会生效。
 
 > [!NOTE]
-> `rustc` lints against any use following the first. This may become an error in the future.
+> `rustc` 会对首次之后的任何使用给出 lint 警告。这将来可能变成错误。
 
 [identifier]: ../identifiers.md
 [RFC 940]: https://github.com/rust-lang/rfcs/blob/master/text/0940-hyphens-considered-harmful.md

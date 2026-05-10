@@ -16,8 +16,8 @@ mdbook build
 - **[docs/authoring.md](docs/authoring.md)** — 中文翻译编写规范也是给DeepSeek的提示词
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** — 如何参与贡献本项目
 
-> 如果你希望向英文原文贡献内容，请查阅[上游项目的 CONTRIBUTING 文档](https://github.com/rust-lang/reference/blob/master/CONTRIBUTING.md)。上游项目在仓库里包含了一个文件夹`dev-guide`项目，是《The Rust Reference Developer Guide》的源代码, 用来指导《Rust Reference》开发，本仓库尝试翻译了一个中文版本，方便读者熟悉大概内容，具体请以英文内容作准。
+> 如果你希望向英文原文贡献内容，请查阅[上游项目的 CONTRIBUTING 文档](https://github.com/rust-lang/reference/blob/master/CONTRIBUTING.md)。上游项目在仓库里包含了一个文件夹`dev-guide`项目，是《The Rust Reference Developer Guide》的源代码, 用来指导《The Rust Reference》开发，本仓库也同步了该文件夹并尝试翻译了一个中文版本，方便读者熟悉其大概内容，具体实践还请以英文内容作准。
 
 ## 术语参考
 
-[《The Rust Programming Language》](https://doc.rust-lang.org/book/)，亦称《The Book》，早些年网络上戏称其为 “Rust语言圣经”，是学习Rust的重要入门参考书之一，[《Rust 程序设计语言 简体中文版》](https://github.com/KaiserY/trpl-zh-cn) 是社区里对《The Book》高质量的中文翻译，本项目积极参考其翻译内容用以完善《The Rust Reference》的翻译。
+[《The Rust Programming Language》](https://doc.rust-lang.org/book/)，亦称《The Book》，早些年网络上戏称其为 “Rust语言圣经”，是学习Rust的重要入门参考书之一，[《Rust 程序设计语言 简体中文版》](https://github.com/KaiserY/trpl-zh-cn) 是社区里对《The Book》高质量的中文翻译，本项目积极参考其翻译内容，以期不使大家在读到两本书的时候对某些概念或专有名词的翻译产生困惑。

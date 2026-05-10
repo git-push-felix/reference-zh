@@ -1,5 +1,5 @@
 r[items.static]
-# Static items
+# 静态项
 
 r[items.static.syntax]
 ```grammar,items
@@ -7,44 +7,44 @@ StaticItem ->
     ItemSafety?[^extern-safety] `static` `mut`? IDENTIFIER `:` Type ( `=` Expression )? `;`
 ```
 
-[^extern-safety]: The `safe` and `unsafe` function qualifiers are only allowed semantically within `extern` blocks.
+[^extern-safety]: `safe` 和 `unsafe` 函数限定符仅在 `extern` 块中语义上允许使用。
 
 r[items.static.intro]
-A *static item* is similar to a [constant], except that it represents an allocation in the program that is initialized with the initializer expression. All references and raw pointers to the static refer to the same allocation.
+*静态项*类似于[常量][constant]，不同之处在于它表示程序中的一个分配，该分配由初始化器表达式初始化。对静态项的所有引用和原始指针指向同一个分配。
 
 r[items.static.lifetime]
-Static items have the `static` lifetime, which outlives all other lifetimes in a Rust program. Static items do not call [`drop`] at the end of the program.
+静态项具有 `static` 生命周期，它比 Rust 程序中的所有其他生命周期都长。静态项在程序结束时不会调用 [`drop`]。
 
 r[items.static.storage-disjointness]
-If the `static` has a size of at least 1 byte, this allocation is disjoint from all other such `static` allocations as well as heap allocations and stack-allocated variables. However, the storage of immutable `static` items can overlap with allocations that do not themselves have a unique address, such as [promoteds] and [`const` items][constant].
+如果 `static` 的大小至少为 1 字节，则此分配与所有其他此类 `static` 分配以及堆分配和栈分配变量不相交。但是，不可变 `static` 项的存储可以与本身没有唯一地址的分配（例如[提升项][promoteds]和 [`const` 项][constant]）重叠。
 
 r[items.static.namespace]
-The static declaration defines a static value in the [value namespace] of the module or block where it is located.
+静态声明在其所在模块或块的[值命名空间][value namespace]中定义静态值。
 
 r[items.static.init]
-The static initializer is a [constant expression] evaluated at compile time. Static initializers may refer to and read from other statics. When reading from mutable statics, they read the initial value of that static.
+静态初始化器是在编译时求值的[常量表达式][constant expression]。静态初始化器可以引用和读取其他静态项。当读取可变静态项时，它们读取该静态项的初始值。
 
 r[items.static.read-only]
-Non-`mut` static items that contain a type that is not [interior mutable] may be placed in read-only memory.
+不包含[内部可变][interior mutable]类型的非 `mut` 静态项可以被放置在只读内存中。
 
 r[items.static.safety]
-All access to a static is safe, but there are a number of restrictions on statics:
+对静态项的所有访问都是安全的，但对静态项有一些限制：
 
 r[items.static.sync]
-* The type must have the [`Sync`](std::marker::Sync) trait bound to allow thread-safe access.
+* 类型必须具有 [`Sync`](std::marker::Sync) trait 约束以允许线程安全访问。
 
 r[items.static.init.omission]
-The initializer expression must be omitted in an [external block], and must be provided for free static items.
+初始化器表达式在[外部块][external block]中必须省略，而对于自由静态项则必须提供。
 
 r[items.static.safety-qualifiers]
-The `safe` and `unsafe` qualifiers are semantically only allowed when used in an [external block].
+`safe` 和 `unsafe` 限定符在语义上仅允许在[外部块][external block]中使用。
 
 r[items.static.generics]
-## Statics & generics
+## 静态项与泛型 {#statics--generics}
 
-A static item defined in a generic scope (for example in a blanket or default implementation) will result in exactly one static item being defined, as if the static definition was pulled out of the current scope into the module. There will *not* be one item per monomorphization.
+在泛型作用域（例如在 blanket 实现或默认实现中）中定义的静态项将导致恰好定义一个静态项，就像静态定义被从当前作用域提取到模块中一样。*不会*对每个单态化产生一个程序项。
 
-This code:
+以下代码：
 
 ```rust
 use std::sync::atomic::{AtomicUsize, Ordering};
@@ -76,7 +76,7 @@ fn main() {
 }
 ```
 
-prints
+打印
 
 ```text
 default_impl: counter was 0
@@ -86,24 +86,24 @@ blanket_impl: counter was 1
 ```
 
 r[items.static.mut]
-## Mutable statics
+## 可变静态项 {#mutable-statics}
 
 r[items.static.mut.intro]
-If a static item is declared with the `mut` keyword, then it is allowed to be modified by the program. One of Rust's goals is to make concurrency bugs hard to run into, and this is obviously a very large source of race conditions or other bugs.
+如果静态项使用 `mut` 关键字声明，则程序可以修改它。Rust 的目标之一是使并发 bug 难以出现，而这显然是一个非常大的竞态条件或其他 bug 的来源。
 
 r[items.static.mut.safety]
-For this reason, an `unsafe` block is required when either reading or writing a mutable static variable. Care should be taken to ensure that modifications to a mutable static are safe with respect to other threads running in the same process.
+因此，读取或写入可变静态变量时需要 `unsafe` 块。应注意确保对可变静态项的修改对在同一进程中运行的其他线程是安全的。
 
 r[items.static.mut.extern]
-Mutable statics are still very useful, however. They can be used with C libraries and can also be bound from C libraries in an `extern` block.
+然而，可变静态项仍然非常有用。它们可以与 C 库一起使用，也可以在 `extern` 块中从 C 库绑定。
 
 ```rust
 # fn atomic_add(_: *mut u32, _: u32) -> u32 { 2 }
 
 static mut LEVELS: u32 = 0;
 
-// This violates the idea of no shared state, and this doesn't internally
-// protect against races, so this function is `unsafe`
+// 这违反了无共享状态的理念，并且内部没有
+// 针对竞态的保护，所以此函数是 `unsafe` 的
 unsafe fn bump_levels_unsafe() -> u32 {
     unsafe {
         let ret = LEVELS;
@@ -112,12 +112,12 @@ unsafe fn bump_levels_unsafe() -> u32 {
     }
 }
 
-// As an alternative to `bump_levels_unsafe`, this function is safe, assuming
-// that we have an atomic_add function which returns the old value. This
-// function is safe only if no other code accesses the static in a non-atomic
-// fashion. If such accesses are possible (such as in `bump_levels_unsafe`),
-// then this would need to be `unsafe` to indicate to the caller that they
-// must still guard against concurrent access.
+// 作为 `bump_levels_unsafe` 的替代方案，此函数是安全的，
+// 假设我们有一个返回旧值的 atomic_add 函数。此
+// 函数只有在没有其他代码以非原子方式访问该静态项时才是安全的。
+// 如果此类访问是可能的（例如 `bump_levels_unsafe` 中），
+// 那么这需要是 `unsafe` 的，以向调用者表明他们
+// 仍然必须防范并发访问。
 fn bump_levels_safe() -> u32 {
     unsafe {
         return atomic_add(&raw mut LEVELS, 1);
@@ -126,16 +126,16 @@ fn bump_levels_safe() -> u32 {
 ```
 
 r[items.static.mut.sync]
-Mutable statics have the same restrictions as normal statics, except that the type does not have to implement the `Sync` trait.
+可变静态项具有与普通静态项相同的限制，只是类型不必实现 `Sync` trait。
 
 r[items.static.alternate]
-## Using statics or consts
+## 使用静态项还是常量 {#using-statics-or-consts}
 
-It can be confusing whether or not you should use a constant item or a static item. Constants should, in general, be preferred over statics unless one of the following are true:
+是否应该使用常量项还是静态项可能会令人困惑。通常应该优先使用常量而不是静态项，除非以下情况之一为真：
 
-* Large amounts of data are being stored.
-* The single-address property of statics is required.
-* Interior mutability is required.
+* 存储大量数据。
+* 需要静态项的单地址属性。
+* 需要内部可变性。
 
 [constant]: constant-items.md
 [`drop`]: ../destructors.md

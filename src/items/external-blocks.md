@@ -1,5 +1,5 @@
 r[items.extern]
-# External blocks
+# 外部块
 
 r[items.extern.syntax]
 ```grammar,items
@@ -17,189 +17,189 @@ ExternalItem ->
     )
 ```
 
-[^unsafe-2024]: Starting with the 2024 Edition, the `unsafe` keyword is required semantically.
+[^unsafe-2024]: 从 2024 版本开始，`unsafe` 关键字在语义上是必需的。
 
 r[items.extern.intro]
-External blocks provide _declarations_ of items that are not _defined_ in the current crate and are the basis of Rust's foreign function interface. These are akin to unchecked imports.
+外部块提供不在当前 crate 中*定义*的程序项的*声明*，是 Rust 外部函数接口的基础。这类似于未检查的导入。
 
 r[items.extern.allowed-kinds]
-Two kinds of item _declarations_ are allowed in external blocks: [functions] and [statics].
+外部块中允许两种程序项*声明*：[函数][functions]和[静态项][statics]。
 
 r[items.extern.safety]
-Calling unsafe functions or accessing unsafe statics that are declared in external blocks is only allowed in an [`unsafe` context].
+调用在外部块中声明的 unsafe 函数或访问 unsafe 静态项只允许在 [`unsafe` 上下文][`unsafe` context]中进行。
 
 r[items.extern.namespace]
-The external block defines its functions and statics in the [value namespace] of the module or block where it is located.
+外部块在其所在模块或块的[值命名空间][value namespace]中定义其函数和静态项。
 
 r[items.extern.unsafe-required]
-The `unsafe` keyword is semantically required to appear before the `extern` keyword on external blocks.
+在语义上，`unsafe` 关键字必须出现在外部块的 `extern` 关键字之前。
 
 r[items.extern.edition2024]
 > [!EDITION-2024]
-> Prior to the 2024 edition, the `unsafe` keyword is optional. The `safe` and `unsafe` item qualifiers are only allowed if the external block itself is marked as `unsafe`.
+> 在 2024 版本之前，`unsafe` 关键字是可选的。只有当外部块本身被标记为 `unsafe` 时，才允许使用 `safe` 和 `unsafe` 程序项限定符。
 
 r[items.extern.fn]
-## Functions
+## 函数 {#functions}
 
 r[items.extern.fn.body]
-Functions within external blocks are declared in the same way as other Rust functions, with the exception that they must not have a body and are instead terminated by a semicolon.
+外部块中的函数声明方式与其他 Rust 函数相同，不同之处在于它们不能有主体，而是以分号结束。
 
 r[items.extern.fn.param-patterns]
-Patterns are not allowed in parameters, only [IDENTIFIER] or `_` may be used.
+参数中不允许使用模式，只能使用 [IDENTIFIER] 或 `_`。
 
 r[items.extern.fn.qualifiers]
-The `safe` and `unsafe` function qualifiers are allowed, but other function qualifiers (e.g. `const`, `async`, `extern`) are not.
+允许使用 `safe` 和 `unsafe` 函数限定符，但不允许使用其他函数限定符（例如 `const`、`async`、`extern`）。
 
 r[items.extern.fn.foreign-abi]
-Functions within external blocks may be called by Rust code, just like functions defined in Rust. The Rust compiler automatically translates between the Rust ABI and the foreign ABI.
+外部块中的函数可以被 Rust 代码调用，就像在 Rust 中定义的函数一样。Rust 编译器会自动在 Rust ABI 和外部 ABI 之间进行翻译。
 
 r[items.extern.fn.safety]
-A function declared in an extern block is implicitly `unsafe` unless the `safe` function qualifier is present.
+在 extern 块中声明的函数隐式是 `unsafe` 的，除非存在 `safe` 函数限定符。
 
 r[items.extern.fn.fn-ptr]
-When coerced to a function pointer, a function declared in an extern block has type `for<'l1, ..., 'lm> extern "abi" fn(A1, ..., An) -> R`, where `'l1`, ... `'lm` are its lifetime parameters, `A1`, ..., `An` are the declared types of its parameters, and `R` is the declared return type.
+当强制转换为函数指针时，extern 块中声明的函数具有类型 `for<'l1, ..., 'lm> extern "abi" fn(A1, ..., An) -> R`，其中 `'l1`、...`'lm` 是其生命周期参数，`A1`、...、`An` 是其参数的声明类型，`R` 是声明的返回类型。
 
 r[items.extern.static]
-## Statics
+## 静态项 {#statics}
 
 r[items.extern.static.intro]
-Statics within external blocks are declared in the same way as [statics] outside of external blocks, except that they do not have an expression initializing their value.
+外部块中的静态项声明方式与外部块外的[静态项][statics]相同，不同之处在于没有初始化其值的表达式。
 
 r[items.extern.static.safety]
-Unless a static item declared in an extern block is qualified as `safe`, it is `unsafe` to access that item, whether or not it's mutable, because there is nothing guaranteeing that the bit pattern at the static's memory is valid for the type it is declared with, since some arbitrary (e.g. C) code is in charge of initializing the static.
+除非在 extern 块中声明的静态项被限定为 `safe`，否则访问该程序项是 `unsafe` 的，无论其是否可变，因为无法保证该静态项内存中的位模式对于其声明的类型是有效的，因为某个任意的（例如 C）代码负责初始化该静态项。
 
 r[items.extern.static.mut]
-Extern statics can be either immutable or mutable just like [statics] outside of external blocks.
+extern 静态项可以像外部块外的[静态项][statics]一样是不可变的或可变的。
 
 r[items.extern.static.read-only]
-An immutable static *must* be initialized before any Rust code is executed. It is not enough for the static to be initialized before Rust code reads from it. Once Rust code runs, mutating an immutable static (from inside or outside Rust) is UB, except if the mutation happens to bytes inside of an `UnsafeCell`.
+不可变静态项*必须*在任何 Rust 代码执行之前被初始化。仅在该静态项在 Rust 代码读取它之前被初始化是不够的。一旦 Rust 代码运行，修改不可变静态项（从 Rust 内部或外部）是 UB，除非修改发生在 `UnsafeCell` 内部的字节上。
 
 r[items.extern.abi]
-## ABI
+## ABI {#abi}
 
 r[items.extern.abi.intro]
-The `extern` keyword can be followed by an optional [ABI] string. The ABI specifies the calling convention of the functions in the block. The calling convention defines a low-level interface for functions, such as how arguments are placed in registers or on the stack, how return values are passed, and who is responsible for cleaning up the stack.
+`extern` 关键字后可以跟一个可选的 [ABI] 字符串。ABI 指定块中函数的调用约定。调用约定定义了函数的低级接口，例如参数如何放置在寄存器或栈上、返回值如何传递以及谁负责清理栈。
 
 > [!EXAMPLE]
 > ```rust
-> // Interface to the Windows API.
+> // Windows API 的接口。
 > unsafe extern "system" { /* ... */ }
 > ```
 
 r[items.extern.abi.default]
-If the ABI string is not specified, it defaults to `"C"`.
+如果未指定 ABI 字符串，则默认为 `"C"`。
 
 > [!NOTE]
-> The `extern` syntax without an explicit ABI is being phased out, so it's better to always write the ABI explicitly.
+> 不带显式 ABI 的 `extern` 语法正被逐步淘汰，因此最好始终显式地写出 ABI。
 >
-> For more details, see [Rust issue #134986](https://github.com/rust-lang/rust/issues/134986).
+> 详情请参见 [Rust issue #134986](https://github.com/rust-lang/rust/issues/134986)。
 
 r[items.extern.abi.standard]
-The following ABI strings are supported on all platforms:
+以下 ABI 字符串在所有平台上都受支持：
 
 r[items.extern.abi.rust]
-* `unsafe extern "Rust"` --- The native calling convention for Rust functions and closures. This is the default when a function is declared without using [`extern fn`]. The Rust ABI offers no stability guarantees.
+* `unsafe extern "Rust"` --- Rust 函数和闭包的本机调用约定。这是声明函数而不使用 [`extern fn`] 时的默认值。Rust ABI 不提供稳定性保证。
 
 r[items.extern.abi.c]
-* `unsafe extern "C"` --- The "C" ABI matches the default ABI chosen by the dominant C compiler for the target.
+* `unsafe extern "C"` --- "C" ABI 与目标平台的占主导地位的 C 编译器选择的默认 ABI 相匹配。
 
 r[items.extern.abi.system]
-* `unsafe extern "system"` --- This is equivalent to `extern "C"` except on Windows x86_32 where it is equivalent to `"stdcall"` for non-variadic functions, and equivalent to `"C"` for variadic functions.
+* `unsafe extern "system"` --- 这等价于 `extern "C"`，但在 Windows x86_32 上等价于非可变参数函数的 `"stdcall"`，对于可变参数函数等价于 `"C"`。
 
   > [!NOTE]
-  > As the correct underlying ABI on Windows is target-specific, it's best to use `extern "system"` when attempting to link Windows API functions that don't use an explicitly defined ABI.
+  > 由于 Windows 上正确的底层 ABI 是目标平台特定的，因此在尝试链接不使用显式定义 ABI 的 Windows API 函数时，最好使用 `extern "system"`。
 
 r[items.extern.abi.unwind]
-* `extern "C-unwind"` and `extern "system-unwind"` --- Identical to `"C"` and `"system"`, respectively, but with [different behavior][unwind-behavior] when the callee unwinds (by panicking or throwing a C++ style exception).
+* `extern "C-unwind"` 和 `extern "system-unwind"` --- 分别与 `"C"` 和 `"system"` 相同，但在被调用方展开（通过 panic 或抛出 C++ 风格的异常）时具有[不同的行为][unwind-behavior]。
 
 r[items.extern.abi.platform]
-There are also some platform-specific ABI strings:
+还有一些特定于平台的 ABI 字符串：
 
 r[items.extern.abi.cdecl]
-* `unsafe extern "cdecl"` --- The calling convention typically used with x86_32 C code.
-  * Only available on x86_32 targets.
-  * Corresponds to MSVC's `__cdecl` and GCC and clang's `__attribute__((cdecl))`.
+* `unsafe extern "cdecl"` --- 通常与 x86_32 C 代码一起使用的调用约定。
+  * 仅在 x86_32 目标上可用。
+  * 对应于 MSVC 的 `__cdecl` 以及 GCC 和 clang 的 `__attribute__((cdecl))`。
 
   > [!NOTE]
-  > For details, see:
+  > 详情请参见：
   >
   > - <https://learn.microsoft.com/en-us/cpp/cpp/cdecl>
   > - <https://en.wikipedia.org/wiki/X86_calling_conventions#cdecl>
 
 r[items.extern.abi.stdcall]
-* `unsafe extern "stdcall"` --- The calling convention typically used by the [Win32 API] on x86_32.
-  * Only available on x86_32 targets.
-  * Corresponds to MSVC's `__stdcall` and GCC and clang's `__attribute__((stdcall))`.
+* `unsafe extern "stdcall"` --- x86_32 上的 [Win32 API] 通常使用的调用约定。
+  * 仅在 x86_32 目标上可用。
+  * 对应于 MSVC 的 `__stdcall` 以及 GCC 和 clang 的 `__attribute__((stdcall))`。
 
   > [!NOTE]
-  > For details, see:
+  > 详情请参见：
   >
   > - <https://learn.microsoft.com/en-us/cpp/cpp/stdcall>
   > - <https://en.wikipedia.org/wiki/X86_calling_conventions#stdcall>
 
 r[items.extern.abi.win64]
-* `unsafe extern "win64"` --- The Windows x64 ABI.
-  * Only available on x86_64 targets.
-  * "win64" is the same as the "C" ABI on Windows x86_64 targets.
-  * Corresponds to GCC and clang's `__attribute__((ms_abi))`.
+* `unsafe extern "win64"` --- Windows x64 ABI。
+  * 仅在 x86_64 目标上可用。
+  * "win64" 与 Windows x86_64 目标上的 "C" ABI 相同。
+  * 对应于 GCC 和 clang 的 `__attribute__((ms_abi))`。
 
   > [!NOTE]
-  > For details, see:
+  > 详情请参见：
   >
   > - <https://learn.microsoft.com/en-us/cpp/build/x64-software-conventions>
   > - <https://en.wikipedia.org/wiki/X86_calling_conventions#Microsoft_x64_calling_convention>
 
 r[items.extern.abi.sysv64]
-* `unsafe extern "sysv64"` --- The System V ABI.
-  * Only available on x86_64 targets.
-  * "sysv64" is the same as the "C" ABI on non-Windows x86_64 targets.
-  * Corresponds to GCC and clang's `__attribute__((sysv_abi))`.
+* `unsafe extern "sysv64"` --- System V ABI。
+  * 仅在 x86_64 目标上可用。
+  * "sysv64" 与非 Windows x86_64 目标上的 "C" ABI 相同。
+  * 对应于 GCC 和 clang 的 `__attribute__((sysv_abi))`。
 
   > [!NOTE]
-  > For details, see:
+  > 详情请参见：
   >
   > - <https://wiki.osdev.org/System_V_ABI>
   > - <https://en.wikipedia.org/wiki/X86_calling_conventions#System_V_AMD64_ABI>
 
 r[items.extern.abi.aapcs]
-* `unsafe extern "aapcs"` --- The soft-float ABI for ARM.
-  * Only available on ARM32 targets.
-  * "aapcs" is the same as the "C" ABI on soft-float ARM32.
-  * Corresponds to clang's `__attribute__((pcs("aapcs")))`.
+* `unsafe extern "aapcs"` --- ARM 的 soft-float ABI。
+  * 仅在 ARM32 目标上可用。
+  * "aapcs" 与 soft-float ARM32 上的 "C" ABI 相同。
+  * 对应于 clang 的 `__attribute__((pcs("aapcs")))`。
 
   > [!NOTE]
-  > For details, see:
+  > 详情请参见：
   >
   > - [Arm Procedure Call Standard](https://developer.arm.com/documentation/107656/0101/Getting-started-with-Armv8-M-based-systems/Procedure-Call-Standard-for-Arm-Architecture--AAPCS-)
 
 r[items.extern.abi.fastcall]
-* `unsafe extern "fastcall"` --- A "fast" variant of stdcall that passes some arguments in registers.
-  * Only available on x86_32 targets.
-  * Corresponds to MSVC's `__fastcall` and GCC and clang's `__attribute__((fastcall))`.
+* `unsafe extern "fastcall"` --- stdcall 的一种"快速"变体，通过寄存器传递某些参数。
+  * 仅在 x86_32 目标上可用。
+  * 对应于 MSVC 的 `__fastcall` 以及 GCC 和 clang 的 `__attribute__((fastcall))`。
 
   > [!NOTE]
-  > For details, see:
+  > 详情请参见：
   >
   > - <https://learn.microsoft.com/en-us/cpp/cpp/fastcall>
   > - <https://en.wikipedia.org/wiki/X86_calling_conventions#Microsoft_fastcall>
 
 r[items.extern.abi.thiscall]
-* `unsafe extern "thiscall"` --- The calling convention typically used on C++ class member functions on x86_32 MSVC.
-  * Only available on x86_32 targets.
-  * Corresponds to MSVC's `__thiscall` and GCC and clang's `__attribute__((thiscall))`.
+* `unsafe extern "thiscall"` --- x86_32 MSVC 上 C++ 类成员函数通常使用的调用约定。
+  * 仅在 x86_32 目标上可用。
+  * 对应于 MSVC 的 `__thiscall` 以及 GCC 和 clang 的 `__attribute__((thiscall))`。
 
   > [!NOTE]
-  > For details, see:
+  > 详情请参见：
   >
   > - <https://en.wikipedia.org/wiki/X86_calling_conventions#thiscall>
   > - <https://learn.microsoft.com/en-us/cpp/cpp/thiscall>
 
 r[items.extern.abi.efiapi]
-* `unsafe extern "efiapi"` --- The ABI used for [UEFI] functions.
-  * Only available on x86 and ARM targets (32bit and 64bit).
+* `unsafe extern "efiapi"` --- 用于 [UEFI] 函数的 ABI。
+  * 仅在 x86 和 ARM 目标（32 位和 64 位）上可用。
 
 r[items.extern.abi.platform-unwind-variants]
-Like `"C"` and `"system"`, most platform-specific ABI strings also have a [corresponding `-unwind` variant][unwind-behavior]; specifically, these are:
+与 `"C"` 和 `"system"` 一样，大多数特定于平台的 ABI 字符串也有[相应的 `-unwind` 变体][unwind-behavior]；具体来说，这些是：
 
 * `"aapcs-unwind"`
 * `"cdecl-unwind"`
@@ -210,26 +210,26 @@ Like `"C"` and `"system"`, most platform-specific ABI strings also have a [corre
 * `"win64-unwind"`
 
 r[items.extern.variadic]
-## Variadic functions
+## 可变参数函数 {#variadic-functions}
 
-Functions within external blocks may be variadic by specifying `...` as the last argument. The variadic parameter may optionally be specified with an identifier.
+外部块中的函数可以通过将 `...` 指定为最后一个参数来成为可变参数函数。可变参数可以有选择地指定一个标识符。
 
 ```rust
 unsafe extern "C" {
     unsafe fn foo(...);
     unsafe fn bar(x: i32, ...);
     unsafe fn with_name(format: *const u8, args: ...);
-    // SAFETY: This function guarantees it will not access
-    // variadic arguments.
+    // 安全性：此函数保证不会访问
+    // 可变参数。
     safe fn ignores_variadic_arguments(x: i32, ...);
 }
 ```
 
 > [!WARNING]
-> The `safe` qualifier should not be used on a function in an `extern` block unless that function guarantees that it will not access the variadic arguments at all. Passing an unexpected number of arguments or arguments of unexpected type to a variadic function may lead to [undefined behavior][undefined].
+> 不应在 `extern` 块中的函数上使用 `safe` 限定符，除非该函数保证完全不会访问可变参数。向可变参数函数传递意外数量的参数或意外类型的参数可能导致[未定义行为][undefined]。
 
 r[items.extern.variadic.conventions]
-Variadic parameters can only be specified within `extern` blocks with the following ABI strings or their corresponding [`-unwind` variants][items.fn.extern.unwind]:
+可变参数只能在具有以下 ABI 字符串或其相应 [`-unwind` 变体][items.fn.extern.unwind]的 `extern` 块中指定：
 
 - `"aapcs"`
 - `"C"`
@@ -240,46 +240,46 @@ Variadic parameters can only be specified within `extern` blocks with the follow
 - `"win64"`
 
 r[items.extern.attributes]
-## Attributes on extern blocks
+## 外部块上的属性 {#attributes-on-extern-blocks}
 
 r[items.extern.attributes.intro]
-The following [attributes] control the behavior of external blocks.
+以下[属性][attributes]控制外部块的行为。
 
 r[items.extern.attributes.link]
-### The `link` attribute
+### `link` 属性 {#the-link-attribute}
 
 r[items.extern.attributes.link.intro]
-The *`link` attribute* specifies the name of a native library that the compiler should link with for the items within an `extern` block.
+*`link` 属性*指定编译器应为 `extern` 块中的程序项与之链接的本地库的名称。
 
 r[items.extern.attributes.link.syntax]
-It uses the [MetaListNameValueStr] syntax to specify its inputs. The `name` key is the name of the native library to link. The `kind` key is an optional value which specifies the kind of library with the following possible values:
+它使用 [MetaListNameValueStr] 语法来指定其输入。`name` 键是要链接的本地库的名称。`kind` 键是一个可选值，用于指定库的种类，可能的值如下：
 
 r[items.extern.attributes.link.dylib]
-- `dylib` --- Indicates a dynamic library. This is the default if `kind` is not specified.
+- `dylib` --- 表示动态库。如果未指定 `kind`，这是默认值。
 
 r[items.extern.attributes.link.static]
-- `static` --- Indicates a static library.
+- `static` --- 表示静态库。
 
 r[items.extern.attributes.link.framework]
-- `framework` --- Indicates a macOS framework. This is only valid for macOS targets.
+- `framework` --- 表示 macOS 框架。仅对 macOS 目标有效。
 
 r[items.extern.attributes.link.raw-dylib]
-- `raw-dylib` --- Indicates a dynamic library where the compiler will generate an import library to link against (see [`dylib` versus `raw-dylib`] below for details). This is only valid for Windows targets.
+- `raw-dylib` --- 表示动态库，编译器将生成导入库进行链接（详见下文的 [`dylib` 与 `raw-dylib`][`dylib` versus `raw-dylib`]）。仅对 Windows 目标有效。
 
 r[items.extern.attributes.link.name-requirement]
-The `name` key must be included if `kind` is specified.
+如果指定了 `kind`，则必须包含 `name` 键。
 
 r[items.extern.attributes.link.modifiers]
-The optional `modifiers` argument is a way to specify linking modifiers for the library to link.
+可选的 `modifiers` 参数提供了一种为要链接的库指定链接修饰符的方式。
 
 r[items.extern.attributes.link.modifiers.syntax]
-Modifiers are specified as a comma-delimited string with each modifier prefixed with either a `+` or `-` to indicate that the modifier is enabled or disabled, respectively.
+修饰符以逗号分隔的字符串形式指定，每个修饰符以 `+` 或 `-` 为前缀，分别表示该修饰符是启用还是禁用。
 
 r[items.extern.attributes.link.modifiers.multiple]
-Specifying multiple `modifiers` arguments in a single `link` attribute, or multiple identical modifiers in the same `modifiers` argument is not currently supported. Example: `#[link(name = "mylib", kind = "static", modifiers = "+whole-archive")]`.
+目前不支持在单个 `link` 属性中指定多个 `modifiers` 参数，或在同一个 `modifiers` 参数中指定多个相同的修饰符。示例：`#[link(name = "mylib", kind = "static", modifiers = "+whole-archive")]`。
 
 r[items.extern.attributes.link.wasm_import_module]
-The `wasm_import_module` key may be used to specify the [WebAssembly module] name for the items within an `extern` block when importing symbols from the host environment. The default module name is `env` if `wasm_import_module` is not specified.
+`wasm_import_module` 键可用于在从宿主环境导入符号时指定 `extern` 块中程序项的 [WebAssembly 模块][WebAssembly module]名称。如果未指定 `wasm_import_module`，则默认模块名为 `env`。
 
 <!-- ignore: requires extern linking -->
 ```rust,ignore
@@ -300,99 +300,99 @@ unsafe extern {
 ```
 
 r[items.extern.attributes.link.empty-block]
-It is valid to add the `link` attribute on an empty extern block. You can use this to satisfy the linking requirements of extern blocks elsewhere in your code (including upstream crates) instead of adding the attribute to each extern block.
+在空外部块上添加 `link` 属性是有效的。你可以使用这种方式来满足代码中其他地方（包括上游 crate）的外部块的链接要求，而不是在每个外部块上都添加属性。
 
 r[items.extern.attributes.link.modifiers.bundle]
-#### Linking modifiers: `bundle`
+#### 链接修饰符：`bundle` {#linking-modifiers-bundle}
 
 r[items.extern.attributes.link.modifiers.bundle.allowed-kinds]
-This modifier is only compatible with the `static` linking kind. Using any other kind will result in a compiler error.
+此修饰符仅与 `static` 链接种类兼容。使用任何其他种类将导致编译器错误。
 
 r[items.extern.attributes.link.modifiers.bundle.behavior]
-When building a rlib or staticlib `+bundle` means that the native static library will be packed into the rlib or staticlib archive, and then retrieved from there during linking of the final binary.
+在构建 rlib 或 staticlib 时，`+bundle` 表示本地静态库将被打包到 rlib 或 staticlib 归档中，然后在最终二进制文件的链接过程中从那里取出。
 
 r[items.extern.attributes.link.modifiers.bundle.behavior-negative]
-When building a rlib `-bundle` means that the native static library is registered as a dependency of that rlib "by name", and object files from it are included only during linking of the final binary, the file search by that name is also performed during final linking. When building a staticlib `-bundle` means that the native static library is simply not included into the archive and some higher level build system will need to add it later during linking of the final binary.
+在构建 rlib 时，`-bundle` 表示本地静态库按名称注册为该 rlib 的依赖项，其中的目标文件仅在最终二进制文件的链接过程中被包含，按名称文件搜索也在最终链接时执行。在构建 staticlib 时，`-bundle` 表示本地静态库根本不包含在归档中，需要某个更高级的构建系统在最终二进制文件的链接过程中稍后添加它。
 
 r[items.extern.attributes.link.modifiers.bundle.no-effect]
-This modifier has no effect when building other targets like executables or dynamic libraries.
+此修饰符在构建其他目标（如可执行文件或动态库）时无效。
 
 r[items.extern.attributes.link.modifiers.bundle.default]
-The default for this modifier is `+bundle`.
+此修饰符的默认值为 `+bundle`。
 
-More implementation details about this modifier can be found in [`bundle` documentation for rustc].
+关于此修饰符的更多实现细节可以在 [`bundle` 的 rustc 文档][`bundle` documentation for rustc]中找到。
 
 r[items.extern.attributes.link.modifiers.whole-archive]
-#### Linking modifiers: `whole-archive`
+#### 链接修饰符：`whole-archive` {#linking-modifiers-whole-archive}
 
 r[items.extern.attributes.link.modifiers.whole-archive.allowed-kinds]
-This modifier is only compatible with the `static` linking kind. Using any other kind will result in a compiler error.
+此修饰符仅与 `static` 链接种类兼容。使用任何其他种类将导致编译器错误。
 
 r[items.extern.attributes.link.modifiers.whole-archive.behavior]
-`+whole-archive` means that the static library is linked as a whole archive without throwing any object files away.
+`+whole-archive` 表示将静态库作为完整归档链接，不丢弃任何目标文件。
 
 r[items.extern.attributes.link.modifiers.whole-archive.default]
-The default for this modifier is `-whole-archive`.
+此修饰符的默认值为 `-whole-archive`。
 
-More implementation details about this modifier can be found in [`whole-archive` documentation for rustc].
+关于此修饰符的更多实现细节可以在 [`whole-archive` 的 rustc 文档][`whole-archive` documentation for rustc]中找到。
 
 r[items.extern.attributes.link.modifiers.verbatim]
-### Linking modifiers: `verbatim`
+### 链接修饰符：`verbatim` {#linking-modifiers-verbatim}
 
 r[items.extern.attributes.link.modifiers.verbatim.allowed-kinds]
-This modifier is compatible with all linking kinds.
+此修饰符与所有链接种类兼容。
 
 r[items.extern.attributes.link.modifiers.verbatim.behavior]
-`+verbatim` means that rustc itself won't add any target-specified library prefixes or suffixes (like `lib` or `.a`) to the library name, and will try its best to ask for the same thing from the linker.
+`+verbatim` 表示 rustc 本身不会向库名称添加任何目标平台指定的库前缀或后缀（如 `lib` 或 `.a`），并会尽量要求链接器也这样做。
 
 r[items.extern.attributes.link.modifiers.verbatim.behavior-negative]
-`-verbatim` means that rustc will either add a target-specific prefix and suffix to the library name before passing it to linker, or won't prevent linker from implicitly adding it.
+`-verbatim` 表示 rustc 在将库名称传递给链接器之前会添加目标平台特定的前缀和后缀，或者不会阻止链接器隐式添加它们。
 
 r[items.extern.attributes.link.modifiers.verbatim.default]
-The default for this modifier is `-verbatim`.
+此修饰符的默认值为 `-verbatim`。
 
-More implementation details about this modifier can be found in [`verbatim` documentation for rustc].
+关于此修饰符的更多实现细节可以在 [`verbatim` 的 rustc 文档][`verbatim` documentation for rustc]中找到。
 
 r[items.extern.attributes.link.kind-raw-dylib]
-#### `dylib` versus `raw-dylib`
+#### `dylib` 与 `raw-dylib` {#dylib-versus-raw-dylib}
 
 r[items.extern.attributes.link.kind-raw-dylib.intro]
-On Windows, linking against a dynamic library requires that an import library is provided to the linker: this is a special static library that declares all of the symbols exported by the dynamic library in such a way that the linker knows that they have to be dynamically loaded at runtime.
+在 Windows 上，链接动态库需要向链接器提供一个导入库：这是一个特殊的静态库，它声明了动态库导出的所有符号，以使得链接器知道它们必须在运行时动态加载。
 
 r[items.extern.attributes.link.kind-raw-dylib.import]
-Specifying `kind = "dylib"` instructs the Rust compiler to link an import library based on the `name` key. The linker will then use its normal library resolution logic to find that import library. Alternatively, specifying `kind = "raw-dylib"` instructs the compiler to generate an import library during compilation and provide that to the linker instead.
+指定 `kind = "dylib"` 指示 Rust 编译器根据 `name` 键链接一个导入库。然后链接器将使用其正常的库解析逻辑来查找该导入库。或者，指定 `kind = "raw-dylib"` 指示编译器在编译期间生成一个导入库并将其提供给链接器。
 
 r[items.extern.attributes.link.kind-raw-dylib.platform-specific]
-`raw-dylib` is only supported on Windows. Using it when targeting other platforms will result in a compiler error.
+`raw-dylib` 仅在 Windows 上受支持。在面向其他平台时使用它将导致编译器错误。
 
 r[items.extern.attributes.link.import_name_type]
-#### The `import_name_type` key
+#### `import_name_type` 键 {#the-import_name_type-key}
 
 r[items.extern.attributes.link.import_name_type.intro]
-On x86 Windows, names of functions are "decorated" (i.e., have a specific prefix and/or suffix added) to indicate their calling convention. For example, a `stdcall` calling convention function with the name `fn1` that has no arguments would be decorated as `_fn1@0`. However, the [PE Format] does also permit names to have no prefix or be undecorated. Additionally, the MSVC and GNU toolchains use different decorations for the same calling conventions which means, by default, some Win32 functions cannot be called using the `raw-dylib` link kind via the GNU toolchain.
+在 x86 Windows 上，函数名称会被"修饰"（即添加特定的前缀和/或后缀）以指示其调用约定。例如，一个名为 `fn1` 的 `stdcall` 调用约定函数（没有参数）会被修饰为 `_fn1@0`。然而，[PE 格式][PE Format]也允许名称不带前缀或不被修饰。此外，MSVC 和 GNU 工具链对相同的调用约定使用不同的修饰，这意味着默认情况下，某些 Win32 函数无法通过 GNU 工具链使用 `raw-dylib` 链接种类进行调用。
 
 r[items.extern.attributes.link.import_name_type.values]
-To allow for these differences, when using the `raw-dylib` link kind you may also specify the `import_name_type` key with one of the following values to change how functions are named in the generated import library:
+为了应对这些差异，在使用 `raw-dylib` 链接种类时，你还可以指定 `import_name_type` 键，其值可以是以下之一，用于更改生成的导入库中函数的命名方式：
 
-* `decorated`: The function name will be fully-decorated using the MSVC toolchain format.
-* `noprefix`: The function name will be decorated using the MSVC toolchain format, but skipping the leading `?`, `@`, or optionally `_`.
-* `undecorated`: The function name will not be decorated.
+* `decorated`：函数名将使用 MSVC 工具链格式进行完全修饰。
+* `noprefix`：函数名将使用 MSVC 工具链格式进行修饰，但跳过前导的 `?`、`@` 或可选的 `_`。
+* `undecorated`：函数名将不被修饰。
 
 r[items.extern.attributes.link.import_name_type.default]
-If the `import_name_type` key is not specified, then the function name will be fully-decorated using the target toolchain's format.
+如果未指定 `import_name_type` 键，则函数名将使用目标工具链的格式进行完全修饰。
 
 r[items.extern.attributes.link.import_name_type.variables]
-Variables are never decorated and so the `import_name_type` key has no effect on how they are named in the generated import library.
+变量永远不会被修饰，因此 `import_name_type` 键对它们在生成的导入库中的命名方式没有影响。
 
 r[items.extern.attributes.link.import_name_type.platform-specific]
-The `import_name_type` key is only supported on x86 Windows. Using it when targeting other platforms will result in a compiler error.
+`import_name_type` 键仅在 x86 Windows 上受支持。在面向其他平台时使用它将导致编译器错误。
 
 <!-- template:attributes -->
 r[items.extern.attributes.link_name]
-### The `link_name` attribute
+### `link_name` 属性 {#the-link_name-attribute}
 
 r[items.extern.attributes.link_name.intro]
-The *`link_name` [attribute][attributes]* may be applied to declarations inside an `extern` block to specify the symbol to import for the given function or static.
+*`link_name` [属性][attributes]* 可以应用于 `extern` 块中的声明，以指定为给定函数或静态项导入的符号。
 
 > [!EXAMPLE]
 > ```rust
@@ -403,31 +403,31 @@ The *`link_name` [attribute][attributes]* may be applied to declarations inside 
 > ```
 
 r[items.extern.attributes.link_name.syntax]
-The `link_name` attribute uses the [MetaNameValueStr] syntax.
+`link_name` 属性使用 [MetaNameValueStr] 语法。
 
 r[items.extern.attributes.link_name.allowed-positions]
-The `link_name` attribute may only be applied to a function or static item in an `extern` block.
+`link_name` 属性只能应用于 `extern` 块中的函数或静态项。
 
 > [!NOTE]
-> `rustc` ignores use in other positions but lints against it. This may become an error in the future.
+> `rustc` 会忽略在其他位置的使用但会给出 lint 警告。这将来可能变成错误。
 
 r[items.extern.attributes.link_name.duplicates]
-Only the first use of `link_name` on an item has effect.
+只有程序项上首次使用的 `link_name` 才会生效。
 
 > [!NOTE]
-> `rustc` lints against any use following the first with a future-compatibility warning. This may become an error in the future.
+> `rustc` 会对首次之后的任何使用以未来兼容性警告的形式给出 lint 警告。这将来可能变成错误。
 
 r[items.extern.attributes.link_name.link_ordinal]
-The `link_name` attribute may not be used with the [`link_ordinal`] attribute.
+`link_name` 属性不能与 [`link_ordinal`] 属性一起使用。
 
 r[items.extern.attributes.link_ordinal]
-### The `link_ordinal` attribute
+### `link_ordinal` 属性 {#the-link_ordinal-attribute}
 
 r[items.extern.attributes.link_ordinal.intro]
-The *`link_ordinal` attribute* can be applied on declarations inside an `extern` block to indicate the numeric ordinal to use when generating the import library to link against. An ordinal is a unique number per symbol exported by a dynamic library on Windows and can be used when the library is being loaded to find that symbol rather than having to look it up by name.
+*`link_ordinal` 属性*可以应用于 `extern` 块中的声明，以指示在生成导入库进行链接时要使用的数字序号。序号是 Windows 上动态库中每个导出符号的唯一编号，可以在加载库时使用，以查找该符号，而不必按名称查找。
 
 > [!WARNING]
-> `link_ordinal` should only be used in cases where the ordinal of the symbol is known to be stable: if the ordinal of a symbol is not explicitly set when its containing binary is built then one will be automatically assigned to it, and that assigned ordinal may change between builds of the binary.
+> `link_ordinal` 应仅在已知符号的序号是稳定的情况下使用：如果符号的序号在构建其所在的二进制文件时未显式设置，则会自动分配一个序号，并且该分配的序号可能在二进制文件的构建之间发生变化。
 
 ```rust
 # #[cfg(all(windows, target_arch = "x86"))]
@@ -439,15 +439,15 @@ unsafe extern "stdcall" {
 ```
 
 r[items.extern.attributes.link_ordinal.allowed-kinds]
-This attribute is only used with the `raw-dylib` linking kind. Using any other kind will result in a compiler error.
+此属性仅与 `raw-dylib` 链接种类一起使用。使用任何其他种类将导致编译器错误。
 
 r[items.extern.attributes.link_ordinal.exclusive]
-Using this attribute with the `link_name` attribute will result in a compiler error.
+将此属性与 `link_name` 属性一起使用将导致编译器错误。
 
 r[items.extern.attributes.fn-parameters]
-### Attributes on function parameters
+### 函数参数上的属性 {#attributes-on-function-parameters}
 
-Attributes on extern function parameters follow the same rules and restrictions as [regular function parameters].
+extern 函数参数上的属性遵循与[常规函数参数][regular function parameters]相同的规则和限制。
 
 [ABI]: glossary.abi
 [PE Format]: https://learn.microsoft.com/windows/win32/debug/pe-format#import-name-type

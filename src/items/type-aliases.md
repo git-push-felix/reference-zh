@@ -1,5 +1,5 @@
 r[items.type]
-# Type aliases
+# 类型别名
 
 r[items.type.syntax]
 ```grammar,items
@@ -10,9 +10,9 @@ TypeAlias ->
 ```
 
 r[items.type.intro]
-A _type alias_ defines a new name for an existing [type] in the [type namespace] of the module or block where it is located. Type aliases are declared with the keyword `type`. Every value has a single, specific type, but may implement several different traits, and may be compatible with several different type constraints.
+*类型别名*在其所在模块或块的[类型命名空间][type namespace]中为现有[类型][type]定义一个新名称。类型别名用关键字 `type` 声明。每个值都有单一、特定的类型，但可以实现多个不同的 trait，并且可以与多个不同的类型约束兼容。
 
-For example, the following defines the type `Point` as a synonym for the type `(u8, u8)`, the type of pairs of unsigned 8 bit integers:
+例如，以下将类型 `Point` 定义为类型 `(u8, u8)` 的同义词，即无符号 8 位整数对的类型：
 
 ```rust
 type Point = (u8, u8);
@@ -20,7 +20,7 @@ let p: Point = (41, 68);
 ```
 
 r[items.type.constructor-alias]
-A type alias to a tuple-struct or unit-struct cannot be used to qualify that type's constructor:
+元组结构体或单元结构体的类型别名不能用于限定该类型的构造器：
 
 ```rust,compile_fail
 struct MyStruct(u32);
@@ -29,20 +29,20 @@ use MyStruct as UseAlias;
 type TypeAlias = MyStruct;
 
 let _ = UseAlias(5); // OK
-let _ = TypeAlias(5); // Doesn't work
+let _ = TypeAlias(5); // 无效
 ```
 
 r[items.type.associated-type]
-A type alias, when not used as an [associated type], must include a [Type][grammar-Type] and may not include [Bounds].
+类型别名在不用作[关联类型][associated type]时，必须包含一个[Type][grammar-Type]且不能包含 [Bounds]。
 
 r[items.type.associated-trait]
-A type alias, when used as an [associated type] in a [trait], must not include a [Type][grammar-Type] specification but may include [Bounds].
+类型别名在用作 [trait] 中的[关联类型][associated type]时，不能包含 [Type][grammar-Type] 的规格说明，但可以包含 [Bounds]。
 
 r[items.type.associated-impl]
-A type alias, when used as an [associated type] in a [trait impl], must include a [Type][grammar-Type] specification and may not include [Bounds].
+类型别名在用作 [trait impl][trait impl] 中的[关联类型][associated type]时，必须包含 [Type][grammar-Type] 的规格说明，且不能包含 [Bounds]。
 
 r[items.type.deprecated]
-Where clauses before the equals sign on a type alias in a [trait impl] (like `type TypeAlias<T> where T: Foo = Bar<T>`) are deprecated. Where clauses after the equals sign (like `type TypeAlias<T> = Bar<T> where T: Foo`) are preferred.
+在 [trait impl][trait impl] 中，类型别名的等号前的 where 子句（如 `type TypeAlias<T> where T: Foo = Bar<T>`）已被弃用。建议使用等号后的 where 子句（如 `type TypeAlias<T> = Bar<T> where T: Foo`）。
 
 [associated type]: associated-items.md#associated-types
 [trait impl]: implementations.md#trait-implementations
