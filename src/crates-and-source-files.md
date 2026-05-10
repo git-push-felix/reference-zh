@@ -1,5 +1,5 @@
 r[crate]
-# Crates and source files
+# crate 与源文件
 
 r[crate.syntax]
 ```grammar,items
@@ -9,55 +9,55 @@ r[crate.syntax]
 ```
 
 > [!NOTE]
-> Although Rust, like any other language, can be implemented by an interpreter as well as a compiler, the only existing implementation is a compiler, and the language has always been designed to be compiled. For these reasons, this section assumes a compiler.
+> 尽管 Rust 像其他任何语言一样可以由解释器和编译器实现，但唯一的现有实现是编译器，并且该语言始终被设计为可编译的。因此，本节假设使用编译器。
 
 r[crate.compile-time]
-Rust's semantics obey a *phase distinction* between compile-time and run-time.[^phase-distinction] Semantic rules that have a *static interpretation* govern the success or failure of compilation, while semantic rules that have a *dynamic interpretation* govern the behavior of the program at run-time.
+Rust 的语义遵循编译期和运行时之间的*阶段区分*。[^phase-distinction]具有*静态解释*的语义规则决定编译的成功或失败，而具有*动态解释*的语义规则决定程序在运行时的行为。
 
 r[crate.unit]
-The compilation model centers on artifacts called _crates_. Each compilation processes a single crate in source form, and if successful, produces a single crate in binary form: either an executable or some sort of library.[^cratesourcefile]
+编译模型以称为 _crate_ 的工件为中心。每次编译处理一个源形式的 crate，如果成功，则生成一个二进制形式的 crate：可以是可执行文件或某种库。[^cratesourcefile]
 
 r[crate.module]
-A _crate_ is a unit of compilation and linking, as well as versioning, distribution, and runtime loading. A crate contains a _tree_ of nested [module] scopes. The top level of this tree is a module that is anonymous (from the point of view of paths within the module) and any item within a crate has a canonical [module path] denoting its location within the crate's module tree.
+_crate_ 是编译和链接的单位，也是版本控制、分发和运行时加载的单位。一个 crate 包含一个嵌套[模块][module]作用域的*树*。这棵树的顶层是一个匿名模块（从模块内路径的角度来看），crate 中的任何项都有一个规范的[模块路径][module path]，表示其在 crate 模块树中的位置。
 
 r[crate.input-source]
-The Rust compiler is always invoked with a single source file as input, and always produces a single output crate. The processing of that source file may result in other source files being loaded as modules. Source files have the extension `.rs`.
+Rust 编译器总是以单个源文件作为输入被调用，并且总是生成单个输出 crate。对该源文件的处理可能导致其他源文件作为模块被加载。源文件具有 `.rs` 扩展名。
 
 r[crate.module-def]
-A Rust source file describes a module, the name and location of which &mdash; in the module tree of the current crate &mdash; are defined from outside the source file: either by an explicit [Module][grammar-Module] item in a referencing source file, or by the name of the crate itself.
+一个 Rust 源文件描述了一个模块，其名称和位置——在当前 crate 的模块树中——是从源文件外部定义的：要么通过引用源文件中的显式 [Module][grammar-Module] 项，要么通过 crate 本身的名称。
 
 r[crate.inline-module]
-Every source file is a module, but not every module needs its own source file: [module definitions][module] can be nested within one file.
+每个源文件都是一个模块，但并非每个模块都需要自己的源文件：[模块定义][module]可以嵌套在一个文件内。
 
 r[crate.items]
-Each source file contains a sequence of zero or more [Item] definitions, and may optionally begin with any number of [attributes] that apply to the containing module, most of which influence the behavior of the compiler.
+每个源文件包含零个或多个[项][Item]定义的序列，并且可以选择性地以任意数量的[属性][attributes]开头，这些属性适用于包含它的模块，其中大多数会影响编译器的行为。
 
 r[crate.attributes]
-The anonymous crate module can have additional attributes that apply to the crate as a whole.
+匿名 crate 模块可以具有适用于整个 crate 的附加属性。
 
 > [!NOTE]
-> The file's contents may be preceded by a [shebang].
+> 文件的内容前面可以有一个 [shebang]。
 
 ```rust
-// Specify the crate name.
+// 指定 crate 名称。
 #![crate_name = "projx"]
 
-// Specify the type of output artifact.
+// 指定输出工件的类型。
 #![crate_type = "lib"]
 
-// Turn on a warning.
-// This can be done in any module, not just the anonymous crate module.
+// 开启一个警告。
+// 这可以在任何模块中完成，不仅仅是匿名 crate 模块。
 #![warn(non_camel_case_types)]
 ```
 
 r[crate.main]
-## Main functions
+## main 函数
 
 r[crate.main.executable]
-A crate that contains a `main` [function] can be compiled to an executable.
+包含 `main` [函数][function]的 crate 可以编译为可执行文件。
 
 r[crate.main.restriction]
-If a `main` function is present, it must take no arguments, must not declare any [trait or lifetime bounds], must not have any [where clauses], and its return type must implement the [`Termination`] trait.
+如果存在 `main` 函数，它必须不接受任何参数，不能声明任何 [trait 约束或生命周期约束][trait or lifetime bounds]，不能有任何 [where 子句][where clauses]，并且其返回类型必须实现 [`Termination`] trait。
 
 ```rust
 fn main() {}
@@ -74,7 +74,7 @@ fn main() -> impl std::process::Termination {
 ```
 
 r[crate.main.import]
-The `main` function may be an import, e.g. from an external crate or from the current one.
+`main` 函数可以是一个导入，例如来自外部 crate 或当前 crate。
 
 ```rust
 mod foo {
@@ -86,7 +86,7 @@ use foo::bar as main;
 ```
 
 > [!NOTE]
-> Types with implementations of [`Termination`] in the standard library include:
+> 标准库中实现了 [`Termination`] 的类型包括：
 >
 > * `()`
 > * [`!`]
@@ -98,33 +98,33 @@ use foo::bar as main;
   onwards, also update it in the testing.md file -->
 
 r[crate.uncaught-foreign-unwinding]
-### Uncaught foreign unwinding
+### 未捕获的外部展开
 
-When a "foreign" unwind (e.g. an exception thrown from C++ code, or a `panic!` in Rust code using a different panic handler) propagates beyond the `main` function, the process will be safely terminated. This may take the form of an abort, in which case it is not guaranteed that any `Drop` calls will be executed, and the error output may be less informative than if the runtime had been terminated by a "native" Rust `panic`.
+当"外部"展开（例如，C++ 代码抛出的异常，或使用不同 panic 处理器的 Rust 代码中的 `panic!`）传播到 `main` 函数之外时，进程将被安全终止。这可能采取中止的形式，在这种情况下不能保证任何 `Drop` 调用会被执行，并且错误输出可能比由"原生" Rust `panic` 终止运行时提供的信息更少。
 
-For more information, see the [panic documentation][panic-docs].
+更多信息，请参见 [panic 文档][panic-docs]。
 
 r[crate.no_main]
-### The `no_main` attribute
+### `no_main` 属性
 
-The *`no_main` [attribute]* may be applied at the crate level to disable emitting the `main` symbol for an executable binary. This is useful when some other object being linked to defines `main`.
+*`no_main` [属性][attribute]* 可以应用于 crate 级别，以禁用为可执行二进制文件发出 `main` 符号。当某个其他被链接的对象定义了 `main` 时，这很有用。
 
 r[crate.crate_name]
-## The `crate_name` attribute
+## `crate_name` 属性 {#the-crate_name-attribute}
 
 r[crate.crate_name.general]
-The *`crate_name` [attribute]* may be applied at the crate level to specify the name of the crate with the [MetaNameValueStr] syntax.
+*`crate_name` [属性][attribute]* 可以应用于 crate 级别，以使用 [MetaNameValueStr] 语法指定 crate 的名称。
 
 ```rust
 #![crate_name = "mycrate"]
 ```
 
 r[crate.crate_name.restriction]
-The crate name must not be empty, and must only contain [Unicode alphanumeric] or `_` (U+005F) characters.
+crate 名称不能为空，且只能包含 [Unicode 字母数字][Unicode alphanumeric]或 `_`（U+005F）字符。
 
-[^phase-distinction]: This distinction would also exist in an interpreter. Static checks like syntactic analysis, type checking, and lints should happen before the program is executed regardless of when it is executed.
+[^phase-distinction]: 这种区分在解释器中也会存在。像语法分析、类型检查和 lint 这样的静态检查应该在程序执行之前发生，无论何时执行。
 
-[^cratesourcefile]: A crate is somewhat analogous to an *assembly* in the ECMA-335 CLI model, a *library* in the SML/NJ Compilation Manager, a *unit* in the Owens and Flatt module system, or a *configuration* in Mesa.
+[^cratesourcefile]: 一个 crate 在某种程度上类似于 ECMA-335 CLI 模型中的*程序集*，SML/NJ 编译管理器中的*库*，Owens 和 Flatt 模块系统中的*单元*，或者 Mesa 中的*配置*。
 
 [Unicode alphanumeric]: char::is_alphanumeric
 [`!`]: types/never.md

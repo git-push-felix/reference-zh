@@ -1,3 +1,3 @@
-# Lexical structure
+# 词法结构
 
-<!-- Editor Note: Oh, there's nothing here -->
+<!-- 编者注：嗯，这里啥也没有 -->

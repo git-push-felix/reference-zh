@@ -1,5 +1,5 @@
 r[lex.token]
-# Tokens
+# Token
 
 r[lex.token.syntax]
 ```grammar,lexer
@@ -22,94 +22,94 @@ Token ->
 ```
 
 r[lex.token.intro]
-Tokens are primitive productions in the grammar defined by regular (non-recursive) languages.  Rust source input can be broken down into the following kinds of tokens:
+Token 是语法中由正则（非递归）语言定义的基本产生式。Rust 源代码可以分解为以下几种 token：
 
-* [Keywords]
-* [Identifiers][identifier]
-* [Literals](#literals)
-* [Lifetimes](#lifetimes-and-loop-labels)
-* [Punctuation](#punctuation)
-* [Delimiters](#delimiters)
+* [关键字][Keywords]
+* [标识符][identifier]
+* [字面量](#literals)
+* [生命周期](#lifetimes-and-loop-labels)
+* [标点符号](#punctuation)
+* [定界符](#delimiters)
 
-Within this documentation's grammar, "simple" tokens are given in [string table production] form, and appear in `monospace` font.
+在本文档的语法中，"简单"token 以[字符串表产生式][string table production]的形式给出，并以 `monospace` 字体出现。
 
 [string table production]: notation.md#string-table-productions
 
 r[lex.token.literal]
-## Literals
+## 字面量
 
-Literals are tokens used in [literal expressions].
+字面量是用于[字面量表达式][literal expressions]的 token。
 
-### Examples
+### 示例
 
-#### Characters and strings
+#### 字符与字符串
 
-|                                              | Example         | `#`&nbsp;sets[^nsets] | Characters  | Escapes             |
+|                                              | 示例         | `#`&nbsp;组数[^nsets] | 字符  | 转义             |
 |----------------------------------------------|-----------------|------------|-------------|---------------------|
-| [Character](#character-literals)             | `'H'`           | 0          | All Unicode | [Quote](#quote-escapes) & [ASCII](#ascii-escapes) & [Unicode](#unicode-escapes) |
-| [String](#string-literals)                   | `"hello"`       | 0          | All Unicode | [Quote](#quote-escapes) & [ASCII](#ascii-escapes) & [Unicode](#unicode-escapes) |
-| [Raw string](#raw-string-literals)           | `r#"hello"#`    | <256       | All Unicode | `N/A`                                                      |
-| [Byte](#byte-literals)                       | `b'H'`          | 0          | All ASCII   | [Quote](#quote-escapes) & [Byte](#byte-escapes)                               |
-| [Byte string](#byte-string-literals)         | `b"hello"`      | 0          | All ASCII   | [Quote](#quote-escapes) & [Byte](#byte-escapes)                               |
-| [Raw byte string](#raw-byte-string-literals) | `br#"hello"#`   | <256       | All ASCII   | `N/A`                                                      |
-| [C string](#c-string-literals)               | `c"hello"`      | 0          | All Unicode | [Quote](#quote-escapes) & [Byte](#byte-escapes) & [Unicode](#unicode-escapes)   |
-| [Raw C string](#raw-c-string-literals)       | `cr#"hello"#`   | <256       | All Unicode | `N/A`                                                                           |
+| [字符](#character-literals)             | `'H'`           | 0          | 所有 Unicode | [引号](#quote-escapes) 与 [ASCII](#ascii-escapes) 与 [Unicode](#unicode-escapes) |
+| [字符串](#string-literals)                   | `"hello"`       | 0          | 所有 Unicode | [引号](#quote-escapes) 与 [ASCII](#ascii-escapes) 与 [Unicode](#unicode-escapes) |
+| [原始字符串](#raw-string-literals)           | `r#"hello"#`    | <256       | 所有 Unicode | `N/A`                                                      |
+| [字节](#byte-literals)                       | `b'H'`          | 0          | 所有 ASCII   | [引号](#quote-escapes) 与 [字节](#byte-escapes)                               |
+| [字节字符串](#byte-string-literals)         | `b"hello"`      | 0          | 所有 ASCII   | [引号](#quote-escapes) 与 [字节](#byte-escapes)                               |
+| [原始字节字符串](#raw-byte-string-literals) | `br#"hello"#`   | <256       | 所有 ASCII   | `N/A`                                                      |
+| [C 字符串](#c-string-literals)               | `c"hello"`      | 0          | 所有 Unicode | [引号](#quote-escapes) 与 [字节](#byte-escapes) 与 [Unicode](#unicode-escapes)   |
+| [原始 C 字符串](#raw-c-string-literals)       | `cr#"hello"#`   | <256       | 所有 Unicode | `N/A`                                                                           |
 
-[^nsets]: The number of `#`s on each side of the same literal must be equivalent.
+[^nsets]: 同一个字面量两侧的 `#` 数量必须相同。
 
 
-#### ASCII escapes
+#### ASCII 转义
 
-|   | Name |
+|   | 名称 |
 |---|------|
-| `\x41` | 7-bit character code (exactly 2 hex digits, up to 0x7F) |
-| `\n` | Newline |
-| `\r` | Carriage return |
-| `\t` | Tab |
-| `\\` | Backslash |
-| `\0` | Null |
+| `\x41` | 7 位字符码（恰好 2 位十六进制数字，最大 0x7F） |
+| `\n` | 换行 |
+| `\r` | 回车 |
+| `\t` | 制表符 |
+| `\\` | 反斜杠 |
+| `\0` | 空 |
 
-#### Byte escapes
+#### 字节转义
 
-|   | Name |
+|   | 名称 |
 |---|------|
-| `\x7F` | 8-bit character code (exactly 2 hex digits) |
-| `\n` | Newline |
-| `\r` | Carriage return |
-| `\t` | Tab |
-| `\\` | Backslash |
-| `\0` | Null |
+| `\x7F` | 8 位字符码（恰好 2 位十六进制数字） |
+| `\n` | 换行 |
+| `\r` | 回车 |
+| `\t` | 制表符 |
+| `\\` | 反斜杠 |
+| `\0` | 空 |
 
-#### Unicode escapes
+#### Unicode 转义
 
-|   | Name |
+|   | 名称 |
 |---|------|
-| `\u{7FFF}` | 24-bit Unicode character code (up to 6 hex digits) |
+| `\u{7FFF}` | 24 位 Unicode 字符码（最多 6 位十六进制数字） |
 
-#### Quote escapes
+#### 引号转义
 
-|   | Name |
+|   | 名称 |
 |---|------|
-| `\'` | Single quote |
-| `\"` | Double quote |
+| `\'` | 单引号 |
+| `\"` | 双引号 |
 
-#### Numbers
+#### 数字
 
-| [Number literals](#number-literals)[^nl] | Example | Exponentiation |
+| [数字字面量](#number-literals)[^nl] | 示例 | 指数 |
 |----------------------------------------|---------|----------------|
-| Decimal integer | `98_222` | `N/A` |
-| Hex integer | `0xff` | `N/A` |
-| Octal integer | `0o77` | `N/A` |
-| Binary integer | `0b1111_0000` | `N/A` |
-| Floating-point | `123.0E+77` | `Optional` |
+| 十进制整数 | `98_222` | `N/A` |
+| 十六进制整数 | `0xff` | `N/A` |
+| 八进制整数 | `0o77` | `N/A` |
+| 二进制整数 | `0b1111_0000` | `N/A` |
+| 浮点数 | `123.0E+77` | `可选` |
 
-[^nl]: All number literals allow `_` as a visual separator: `1_234.0E+18f64`
+[^nl]: 所有数字字面量都允许 `_` 作为视觉分隔符：`1_234.0E+18f64`
 
 r[lex.token.literal.suffix]
-#### Suffixes
+#### 后缀
 
 r[lex.token.literal.literal.suffix.intro]
-A suffix is a sequence of characters following (without intervening whitespace) the primary part of a literal of the same form as a non-raw identifier or keyword.
+后缀是一串紧跟在字面量主体部分之后（没有间隔空白）的字符，其形式与非原始标识符或关键字相同。
 
 r[lex.token.literal.suffix.syntax]
 ```grammar,lexer
@@ -119,9 +119,9 @@ SUFFIX ->
 ```
 
 r[lex.token.literal.suffix.validity]
-Any kind of literal (string, integer, etc.) with any suffix is valid as a token.
+任何类型的字面量（字符串、整数等）带有任意后缀作为 token 都是合法的。
 
-A literal token with any suffix can be passed to a macro without producing an error. The macro itself will decide how to interpret such a token and whether to produce an error or not. In particular, the `literal` fragment specifier for by-example macros matches literal tokens with arbitrary suffixes.
+带任意后缀的字面量 token 可以传递给宏而不会产生错误。宏本身将决定如何解释这样的 token 以及是否产生错误。特别是，按示例宏的 `literal` 片段限定符可以匹配带任意后缀的字面量 token。
 
 ```rust
 macro_rules! blackhole { ($tt:tt) => () }
@@ -132,16 +132,16 @@ blackhole_lit!(1suffix); // OK
 ```
 
 r[lex.token.literal.suffix.parse]
-However, suffixes on literal tokens which are interpreted as literal expressions or patterns are restricted. Any suffixes are rejected on non-numeric literal tokens, and numeric literal tokens are accepted only with suffixes from the list below.
+然而，在作为字面量表达式或模式解释时，字面量 token 的后缀是受限的。非数字字面量 token 上的任何后缀都会被拒绝，而数字字面量 token 仅接受下表中的后缀。
 
-| Integer | Floating-point |
+| 整数 | 浮点数 |
 |---------|----------------|
 | `u8`, `i8`, `u16`, `i16`, `u32`, `i32`, `u64`, `i64`, `u128`, `i128`, `usize`, `isize` | `f32`, `f64` |
 
-### Character and string literals
+### 字符与字符串字面量
 
 r[lex.token.literal.char]
-#### Character literals
+#### 字符字面量 {#character-literals}
 
 r[lex.token.literal.char.syntax]
 ```grammar,lexer
@@ -160,13 +160,13 @@ UNICODE_ESCAPE ->
     `\u{` ( HEX_DIGIT `_`* ){1..=6} _valid hex char value_ `}`[^valid-hex-char]
 ```
 
-[^valid-hex-char]: See [lex.token.literal.char-escape.unicode].
+[^valid-hex-char]: 参见 [lex.token.literal.char-escape.unicode]。
 
 r[lex.token.literal.char.intro]
-A _character literal_ is a single Unicode character enclosed within two `U+0027` (single-quote) characters, with the exception of `U+0027` itself, which must be _escaped_ by a preceding `U+005C` character (`\`).
+*字符字面量*是包含在两个 `U+0027`（单引号）字符之间的单个 Unicode 字符，但 `U+0027` 本身除外，它必须由前置的 `U+005C` 字符（`\`）进行*转义*。
 
 r[lex.token.literal.str]
-#### String literals
+#### 字符串字面量 {#string-literals}
 
 r[lex.token.literal.str.syntax]
 ```grammar,lexer
@@ -183,34 +183,34 @@ STRING_CONTINUE -> `\` LF
 ```
 
 r[lex.token.literal.str.intro]
-A _string literal_ is a sequence of any Unicode characters enclosed within two `U+0022` (double-quote) characters, with the exception of `U+0022` itself, which must be _escaped_ by a preceding `U+005C` character (`\`).
+*字符串字面量*是包含在两个 `U+0022`（双引号）字符之间的任意 Unicode 字符序列，但 `U+0022` 本身除外，它必须由前置的 `U+005C` 字符（`\`）进行*转义*。
 
 r[lex.token.literal.str.linefeed]
-Line-breaks, represented by the  character `U+000A` (LF), are allowed in string literals. The character `U+000D` (CR) may not appear in a string literal. When an unescaped `U+005C` character (`\`) occurs immediately before a line break, the line break does not appear in the string represented by the token. See [String continuation escapes] for details.
+字符串字面量中允许换行，由字符 `U+000A`（LF）表示。字符 `U+000D`（CR）不能出现在字符串字面量中。当未转义的 `U+005C` 字符（`\`）紧接在换行之前出现时，该换行不会出现在 token 所表示的字符串中。详见[字符串续行转义][String continuation escapes]。
 
 r[lex.token.literal.char-escape]
-#### Character escapes
+#### 字符转义
 
 r[lex.token.literal.char-escape.intro]
-Some additional _escapes_ are available in either character or non-raw string literals. An escape starts with a `U+005C` (`\`) and continues with one of the following forms:
+在字符字面量或非原始字符串字面量中，还可以使用一些额外的*转义*。转义以 `U+005C`（`\`）开头，并以下列形式之一继续：
 
 r[lex.token.literal.char-escape.ascii]
-* A _7-bit code point escape_ starts with `U+0078` (`x`) and is followed by exactly two _hex digits_ with value up to `0x7F`. It denotes the ASCII character with value equal to the provided hex value. Higher values are not permitted because it is ambiguous whether they mean Unicode code points or byte values.
+* *7 位码点转义*以 `U+0078`（`x`）开头，后跟恰好两位*十六进制数字*，值最大为 `0x7F`。它表示与提供的十六进制值相等的 ASCII 字符。不允许更高的值，因为它是表示 Unicode 码点还是字节值存在歧义。
 
 r[lex.token.literal.char-escape.unicode]
-* A _24-bit code point escape_ starts with `U+0075` (`u`) and is followed by up to six _hex digits_ surrounded by braces `U+007B` (`{`) and `U+007D` (`}`). It denotes the Unicode code point equal to the provided hex value. The value must be a valid Unicode scalar value.
+* *24 位码点转义*以 `U+0075`（`u`）开头，后跟最多六位*十六进制数字*，并用花括号 `U+007B`（`{`）和 `U+007D`（`}`）包围。它表示与提供的十六进制值相等的 Unicode 码点。该值必须是合法的 Unicode 标量值。
 
 r[lex.token.literal.char-escape.whitespace]
-* A _whitespace escape_ is one of the characters `U+006E` (`n`), `U+0072` (`r`), or `U+0074` (`t`), denoting the Unicode values `U+000A` (LF), `U+000D` (CR) or `U+0009` (HT) respectively.
+* *空白转义*是字符 `U+006E`（`n`）、`U+0072`（`r`）或 `U+0074`（`t`）之一，分别表示 Unicode 值 `U+000A`（LF）、`U+000D`（CR）或 `U+0009`（HT）。
 
 r[lex.token.literal.char-escape.null]
-* The _null escape_ is the character `U+0030` (`0`) and denotes the Unicode value `U+0000` (NUL).
+* *空转义*是字符 `U+0030`（`0`），表示 Unicode 值 `U+0000`（NUL）。
 
 r[lex.token.literal.char-escape.slash]
-* The _backslash escape_ is the character `U+005C` (`\`) which must be escaped in order to denote itself.
+* *反斜杠转义*是字符 `U+005C`（`\`），必须进行转义才能表示其自身。
 
 r[lex.token.literal.str-raw]
-#### Raw string literals
+#### 原始字符串字面量 {#raw-string-literals}
 
 r[lex.token.literal.str-raw.syntax]
 ```grammar,lexer
@@ -224,19 +224,19 @@ RAW_STRING_CONTENT_HASHED -> (!(`"` `#`{n}) ~CR )*
 ```
 
 r[lex.token.literal.str-raw.intro]
-Raw string literals do not process any escapes. They start with the character `U+0072` (`r`), followed by fewer than 256 of the character `U+0023` (`#`) and a `U+0022` (double-quote) character.
+原始字符串字面量不处理任何转义。它们以字符 `U+0072`（`r`）开头，后跟少于 256 个的字符 `U+0023`（`#`）和一个 `U+0022`（双引号）字符。
 
 r[lex.token.literal.str-raw.body]
-The _raw string body_ can contain any sequence of Unicode characters other than `U+000D` (CR). It is terminated only by another `U+0022` (double-quote) character, followed by the same number of `U+0023` (`#`) characters that preceded the opening `U+0022` (double-quote) character.
+*原始字符串主体*可以包含除 `U+000D`（CR）外的任意 Unicode 字符序列。它仅由另一个 `U+0022`（双引号）字符后跟与起始 `U+0022`（双引号）字符之前相同数量的 `U+0023`（`#`）字符来终止。
 
 r[lex.token.literal.str-raw.content]
-All Unicode characters contained in the raw string body represent themselves, the characters `U+0022` (double-quote) (except when followed by at least as many `U+0023` (`#`) characters as were used to start the raw string literal) or `U+005C` (`\`) do not have any special meaning.
+原始字符串主体中包含的所有 Unicode 字符都表示其自身，字符 `U+0022`（双引号）（后跟至少与用于开始原始字符串字面量的 `U+0023`（`#`）字符数量相同时除外）或 `U+005C`（`\`）不具有任何特殊含义。
 
-Examples for string literals:
+字符串字面量示例：
 
 ```rust
 "foo"; r"foo";                     // foo
-"\"foo\""; r#""foo""#;             // "foo"
+"\""foo\""; r#""foo""#;             // "foo"
 
 "foo #\"# bar";
 r##"foo #"# bar"##;                // foo #"# bar
@@ -245,10 +245,10 @@ r##"foo #"# bar"##;                // foo #"# bar
 "\\x52"; r"\x52";                  // \x52
 ```
 
-### Byte and byte string literals
+### 字节与字节字符串字面量
 
 r[lex.token.byte]
-#### Byte literals
+#### 字节字面量 {#byte-literals}
 
 r[lex.token.byte.syntax]
 ```grammar,lexer
@@ -263,10 +263,10 @@ BYTE_ESCAPE ->
 ```
 
 r[lex.token.byte.intro]
-A _byte literal_ is a single ASCII character (in the `U+0000` to `U+007F` range) or a single _escape_ preceded by the characters `U+0062` (`b`) and `U+0027` (single-quote), and followed by the character `U+0027`. If the character `U+0027` is present within the literal, it must be _escaped_ by a preceding `U+005C` (`\`) character. It is equivalent to a `u8` unsigned 8-bit integer _number literal_.
+*字节字面量*是一个单独的 ASCII 字符（在 `U+0000` 到 `U+007F` 范围内）或一个单独的*转义*，前置字符 `U+0062`（`b`）和 `U+0027`（单引号），后跟字符 `U+0027`。如果字面量中出现字符 `U+0027`，必须由前置的 `U+005C`（`\`）字符进行*转义*。它等价于一个 `u8` 无符号 8 位整数*数字字面量*。
 
 r[lex.token.str-byte]
-#### Byte string literals
+#### 字节字符串字面量 {#byte-string-literals}
 
 r[lex.token.str-byte.syntax]
 ```grammar,lexer
@@ -277,28 +277,28 @@ ASCII_FOR_STRING -> ![`"` `\` CR] ASCII
 ```
 
 r[lex.token.str-byte.intro]
-A non-raw _byte string literal_ is a sequence of ASCII characters and _escapes_, preceded by the characters `U+0062` (`b`) and `U+0022` (double-quote), and followed by the character `U+0022`. If the character `U+0022` is present within the literal, it must be _escaped_ by a preceding `U+005C` (`\`) character. Alternatively, a byte string literal can be a _raw byte string literal_, defined below.
+非原始*字节字符串字面量*是 ASCII 字符和*转义*的序列，前置字符 `U+0062`（`b`）和 `U+0022`（双引号），后跟字符 `U+0022`。如果字面量中出现字符 `U+0022`，必须由前置的 `U+005C`（`\`）字符进行*转义*。或者，字节字符串字面量也可以是*原始字节字符串字面量*，定义如下。
 
 r[lex.token.str-byte.linefeed]
-Line-breaks, represented by the  character `U+000A` (LF), are allowed in byte string literals. The character `U+000D` (CR) may not appear in a byte string literal. When an unescaped `U+005C` character (`\`) occurs immediately before a line break, the line break does not appear in the string represented by the token. See [String continuation escapes] for details.
+字节字符串字面量中允许换行，由字符 `U+000A`（LF）表示。字符 `U+000D`（CR）不能出现在字节字符串字面量中。当未转义的 `U+005C` 字符（`\`）紧接在换行之前出现时，该换行不会出现在 token 所表示的字符串中。详见[字符串续行转义][String continuation escapes]。
 
 r[lex.token.str-byte.escape]
-Some additional _escapes_ are available in either byte or non-raw byte string literals. An escape starts with a `U+005C` (`\`) and continues with one of the following forms:
+在字节字面量或非原始字节字符串字面量中，还可以使用一些额外的*转义*。转义以 `U+005C`（`\`）开头，并以下列形式之一继续：
 
 r[lex.token.str-byte.escape-byte]
-* A _byte escape_ escape starts with `U+0078` (`x`) and is followed by exactly two _hex digits_. It denotes the byte equal to the provided hex value.
+* *字节转义*以 `U+0078`（`x`）开头，后跟恰好两位*十六进制数字*。它表示与提供的十六进制值相等的字节。
 
 r[lex.token.str-byte.escape-whitespace]
-* A _whitespace escape_ is one of the characters `U+006E` (`n`), `U+0072` (`r`), or `U+0074` (`t`), denoting the bytes values `0x0A` (ASCII LF), `0x0D` (ASCII CR) or `0x09` (ASCII HT) respectively.
+* *空白转义*是字符 `U+006E`（`n`）、`U+0072`（`r`）或 `U+0074`（`t`）之一，分别表示字节值 `0x0A`（ASCII LF）、`0x0D`（ASCII CR）或 `0x09`（ASCII HT）。
 
 r[lex.token.str-byte.escape-null]
-* The _null escape_ is the character `U+0030` (`0`) and denotes the byte value `0x00` (ASCII NUL).
+* *空转义*是字符 `U+0030`（`0`），表示字节值 `0x00`（ASCII NUL）。
 
 r[lex.token.str-byte.escape-slash]
-* The _backslash escape_ is the character `U+005C` (`\`) which must be escaped in order to denote its ASCII encoding `0x5C`.
+* *反斜杠转义*是字符 `U+005C`（`\`），必须进行转义才能表示其 ASCII 编码 `0x5C`。
 
 r[lex.token.str-byte-raw]
-#### Raw byte string literals
+#### 原始字节字符串字面量 {#raw-byte-string-literals}
 
 r[lex.token.str-byte-raw.syntax]
 ```grammar,lexer
@@ -314,15 +314,15 @@ ASCII_FOR_RAW -> !CR ASCII
 ```
 
 r[lex.token.str-byte-raw.intro]
-Raw byte string literals do not process any escapes. They start with the character `U+0062` (`b`), followed by `U+0072` (`r`), followed by fewer than 256 of the character `U+0023` (`#`), and a `U+0022` (double-quote) character.
+原始字节字符串字面量不处理任何转义。它们以字符 `U+0062`（`b`）开头，后跟 `U+0072`（`r`），再后跟少于 256 个的字符 `U+0023`（`#`）和一个 `U+0022`（双引号）字符。
 
 r[lex.token.str-byte-raw.body]
-The _raw string body_ can contain any sequence of ASCII characters other than `U+000D` (CR). It is terminated only by another `U+0022` (double-quote) character, followed by the same number of `U+0023` (`#`) characters that preceded the opening `U+0022` (double-quote) character. A raw byte string literal can not contain any non-ASCII byte.
+*原始字符串主体*可以包含除 `U+000D`（CR）外的任意 ASCII 字符序列。它仅由另一个 `U+0022`（双引号）字符后跟与起始 `U+0022`（双引号）字符之前相同数量的 `U+0023`（`#`）字符来终止。原始字节字符串字面量不能包含任何非 ASCII 字节。
 
 r[lex.token.literal.str-byte-raw.content]
-All characters contained in the raw string body represent their ASCII encoding, the characters `U+0022` (double-quote) (except when followed by at least as many `U+0023` (`#`) characters as were used to start the raw string literal) or `U+005C` (`\`) do not have any special meaning.
+原始字符串主体中包含的所有字符都表示其 ASCII 编码，字符 `U+0022`（双引号）（后跟至少与用于开始原始字符串字面量的 `U+0023`（`#`）字符数量相同时除外）或 `U+005C`（`\`）不具有任何特殊含义。
 
-Examples for byte string literals:
+字节字符串字面量示例：
 
 ```rust
 b"foo"; br"foo";                     // foo
@@ -335,10 +335,10 @@ b"\x52"; b"R"; br"R";                // R
 b"\\x52"; br"\x52";                  // \x52
 ```
 
-### C string and raw C string literals
+### C 字符串与原始 C 字符串字面量
 
 r[lex.token.str-c]
-#### C string literals
+#### C 字符串字面量 {#c-string-literals}
 
 r[lex.token.str-c.syntax]
 ```grammar,lexer
@@ -352,48 +352,48 @@ C_STRING_LITERAL ->
 ```
 
 r[lex.token.str-c.intro]
-A _C string literal_ is a sequence of Unicode characters and _escapes_, preceded by the characters `U+0063` (`c`) and `U+0022` (double-quote), and followed by the character `U+0022`. If the character `U+0022` is present within the literal, it must be _escaped_ by a preceding `U+005C` (`\`) character. Alternatively, a C string literal can be a _raw C string literal_, defined below.
+*C 字符串字面量*是 Unicode 字符和*转义*的序列，前置字符 `U+0063`（`c`）和 `U+0022`（双引号），后跟字符 `U+0022`。如果字面量中出现字符 `U+0022`，必须由前置的 `U+005C`（`\`）字符进行*转义*。或者，C 字符串字面量也可以是*原始 C 字符串字面量*，定义如下。
 
 [CStr]: core::ffi::CStr
 
 r[lex.token.str-c.null]
-C strings are implicitly terminated by byte `0x00`, so the C string literal `c""` is equivalent to manually constructing a `&CStr` from the byte string literal `b"\x00"`. Other than the implicit terminator, byte `0x00` is not permitted within a C string.
+C 字符串隐式地以字节 `0x00` 终止，因此 C 字符串字面量 `c""` 等价于从字节字符串字面量 `b"\x00"` 手动构造一个 `&CStr`。除了隐式终止符外，C 字符串内不允许出现字节 `0x00`。
 
 r[lex.token.str-c.linefeed]
-Line-breaks, represented by the  character `U+000A` (LF), are allowed in C string literals. The character `U+000D` (CR) may not appear in a C string literal. When an unescaped `U+005C` character (`\`) occurs immediately before a line break, the line break does not appear in the string represented by the token. See [String continuation escapes] for details.
+C 字符串字面量中允许换行，由字符 `U+000A`（LF）表示。字符 `U+000D`（CR）不能出现在 C 字符串字面量中。当未转义的 `U+005C` 字符（`\`）紧接在换行之前出现时，该换行不会出现在 token 所表示的字符串中。详见[字符串续行转义][String continuation escapes]。
 
 r[lex.token.str-c.escape]
-Some additional _escapes_ are available in non-raw C string literals. An escape starts with a `U+005C` (`\`) and continues with one of the following forms:
+在非原始 C 字符串字面量中，还可以使用一些额外的*转义*。转义以 `U+005C`（`\`）开头，并以下列形式之一继续：
 
 r[lex.token.str-c.escape-byte]
-* A _byte escape_ escape starts with `U+0078` (`x`) and is followed by exactly two _hex digits_. It denotes the byte equal to the provided hex value.
+* *字节转义*以 `U+0078`（`x`）开头，后跟恰好两位*十六进制数字*。它表示与提供的十六进制值相等的字节。
 
 r[lex.token.str-c.escape-unicode]
-* A _24-bit code point escape_ starts with `U+0075` (`u`) and is followed by up to six _hex digits_ surrounded by braces `U+007B` (`{`) and `U+007D` (`}`). It denotes the Unicode code point equal to the provided hex value, encoded as UTF-8.
+* *24 位码点转义*以 `U+0075`（`u`）开头，后跟最多六位*十六进制数字*，并用花括号 `U+007B`（`{`）和 `U+007D`（`}`）包围。它表示与提供的十六进制值相等的 Unicode 码点，并以 UTF-8 编码。
 
 r[lex.token.str-c.escape-whitespace]
-* A _whitespace escape_ is one of the characters `U+006E` (`n`), `U+0072` (`r`), or `U+0074` (`t`), denoting the bytes values `0x0A` (ASCII LF), `0x0D` (ASCII CR) or `0x09` (ASCII HT) respectively.
+* *空白转义*是字符 `U+006E`（`n`）、`U+0072`（`r`）或 `U+0074`（`t`）之一，分别表示字节值 `0x0A`（ASCII LF）、`0x0D`（ASCII CR）或 `0x09`（ASCII HT）。
 
 r[lex.token.str-c.escape-slash]
-* The _backslash escape_ is the character `U+005C` (`\`) which must be escaped in order to denote its ASCII encoding `0x5C`.
+* *反斜杠转义*是字符 `U+005C`（`\`），必须进行转义才能表示其 ASCII 编码 `0x5C`。
 
 r[lex.token.str-c.char-unicode]
-A C string represents bytes with no defined encoding, but a C string literal may contain Unicode characters above `U+007F`. Such characters will be replaced with the bytes of that character's UTF-8 representation.
+C 字符串表示没有定义编码的字节，但 C 字符串字面量可以包含 `U+007F` 以上的 Unicode 字符。这些字符将被替换为该字符 UTF-8 表示的字节。
 
-The following C string literals are equivalent:
+以下 C 字符串字面量是等价的：
 
 ```rust
-c"æ";        // LATIN SMALL LETTER AE (U+00E6)
+c"æ";        // 拉丁文小写字母 AE (U+00E6)
 c"\u{00E6}";
 c"\xC3\xA6";
 ```
 
 r[lex.token.str-c.edition2021]
 > [!EDITION-2021]
-> C string literals are accepted in the 2021 edition or later. In earlier editions the token `c""` is lexed as `c ""`.
+> C 字符串字面量在 2021 版本或更高版本中接受。在更早的版本中，token `c""` 被词法分析为 `c ""`。
 
 r[lex.token.str-c-raw]
-#### Raw C string literals
+#### 原始 C 字符串字面量 {#raw-c-string-literals}
 
 r[lex.token.str-c-raw.syntax]
 ```grammar,lexer
@@ -407,19 +407,19 @@ RAW_C_STRING_CONTENT_HASHED -> (!(`"` `#`{n}) ~[CR NUL] )*
 ```
 
 r[lex.token.str-c-raw.intro]
-Raw C string literals do not process any escapes. They start with the character `U+0063` (`c`), followed by `U+0072` (`r`), followed by fewer than 256 of the character `U+0023` (`#`), and a `U+0022` (double-quote) character.
+原始 C 字符串字面量不处理任何转义。它们以字符 `U+0063`（`c`）开头，后跟 `U+0072`（`r`），再后跟少于 256 个的字符 `U+0023`（`#`）和一个 `U+0022`（双引号）字符。
 
 r[lex.token.str-c-raw.body]
-The _raw C string body_ can contain any sequence of Unicode characters other than `U+0000` (NUL) and `U+000D` (CR). It is terminated only by another `U+0022` (double-quote) character, followed by the same number of `U+0023` (`#`) characters that preceded the opening `U+0022` (double-quote) character.
+*原始 C 字符串主体*可以包含除 `U+0000`（NUL）和 `U+000D`（CR）外的任意 Unicode 字符序列。它仅由另一个 `U+0022`（双引号）字符后跟与起始 `U+0022`（双引号）字符之前相同数量的 `U+0023`（`#`）字符来终止。
 
 r[lex.token.str-c-raw.content]
-All characters contained in the raw C string body represent themselves in UTF-8 encoding. The characters `U+0022` (double-quote) (except when followed by at least as many `U+0023` (`#`) characters as were used to start the raw C string literal) or `U+005C` (`\`) do not have any special meaning.
+原始 C 字符串主体中包含的所有字符都以 UTF-8 编码表示其自身。字符 `U+0022`（双引号）（后跟至少与用于开始原始 C 字符串字面量的 `U+0023`（`#`）字符数量相同时除外）或 `U+005C`（`\`）不具有任何特殊含义。
 
 r[lex.token.str-c-raw.edition2021]
 > [!EDITION-2021]
-> Raw C string literals are accepted in the 2021 edition or later. In earlier editions the token `cr""` is lexed as `cr ""`, and `cr#""#` is lexed as `cr #""#` (which is non-grammatical).
+> 原始 C 字符串字面量在 2021 版本或更高版本中接受。在更早的版本中，token `cr""` 被词法分析为 `cr ""`，`cr#""#` 被词法分析为 `cr #""#`（不合语法）。
 
-#### Examples for C string and raw C string literals
+#### C 字符串与原始 C 字符串字面量示例
 
 ```rust
 c"foo"; cr"foo";                     // foo
@@ -433,12 +433,12 @@ c"\\x52"; cr"\x52";                  // \x52
 ```
 
 r[lex.token.literal.num]
-### Number literals
+### 数字字面量 {#number-literals}
 
-A _number literal_ is either an _integer literal_ or a _floating-point literal_. The grammar for recognizing the two kinds of literals is mixed.
+*数字字面量*可以是*整数字面量*或*浮点数字面量*。识别这两种字面量的语法是混合的。
 
 r[lex.token.literal.int]
-#### Integer literals
+#### 整数字面量
 
 r[lex.token.literal.int.syntax]
 ```grammar,lexer
@@ -466,24 +466,24 @@ RESERVED_FLOAT -> `.` !(`.` | `_` | XID_Start)
 ```
 
 r[lex.token.literal.int.kind]
-An _integer literal_ has one of four forms:
+*整数字面量*有以下四种形式：
 
 r[lex.token.literal.int.kind-dec]
-* A _decimal literal_ starts with a *decimal digit* and continues with any mixture of *decimal digits* and _underscores_.
+* *十进制字面量*以*十进制数字*开头，后续可以是*十进制数字*和下划线的任意混合。
 
 r[lex.token.literal.int.kind-hex]
-* A _hex literal_ starts with the character sequence `U+0030` `U+0078` (`0x`) and continues as any mixture (with at least one digit) of hex digits and underscores.
+* *十六进制字面量*以字符序列 `U+0030` `U+0078`（`0x`）开头，后续是十六进制数字和下划线的任意混合（至少一位数字）。
 
 r[lex.token.literal.int.kind-oct]
-* An _octal literal_ starts with the character sequence `U+0030` `U+006F` (`0o`) and continues as any mixture (with at least one digit) of octal digits and underscores.
+* *八进制字面量*以字符序列 `U+0030` `U+006F`（`0o`）开头，后续是八进制数字和下划线的任意混合（至少一位数字）。
 
 r[lex.token.literal.int.kind-bin]
-* A _binary literal_ starts with the character sequence `U+0030` `U+0062` (`0b`) and continues as any mixture (with at least one digit) of binary digits and underscores.
+* *二进制字面量*以字符序列 `U+0030` `U+0062`（`0b`）开头，后续是二进制数字和下划线的任意混合（至少一位数字）。
 
 r[lex.token.literal.int.suffix]
-Like any literal, an integer literal may be followed (immediately, without any spaces) by a suffix as described above. The suffix may not begin with `e` or `E`, as that would be interpreted as the exponent of a floating-point literal. See [Integer literal expressions] for the effect of these suffixes.
+与所有字面量一样，整数字面量可以（紧接地，没有任何空格）后跟如上所述的后缀。后缀不能以 `e` 或 `E` 开头，因为这会被解释为浮点数字面量的指数。这些后缀的作用参见[整数字面量表达式][Integer literal expressions]。
 
-Examples of integer literals which are accepted as literal expressions:
+作为字面量表达式被接受的整数字面量示例：
 
 ```rust
 # #![allow(overflowing_literals)]
@@ -494,8 +494,8 @@ Examples of integer literals which are accepted as literal expressions:
 
 0xff;
 0xff_u8;
-0x01_f32; // integer 7986, not floating-point 1.0
-0x01_e3;  // integer 483, not floating-point 1000.0
+0x01_f32; // 整数 7986，而非浮点数 1.0
+0x01_e3;  // 整数 483，而非浮点数 1000.0
 
 0o70;
 0o70_i16;
@@ -506,17 +506,17 @@ Examples of integer literals which are accepted as literal expressions:
 
 0usize;
 
-// These are too big for their type, but are accepted as literal expressions.
+// 这些超出了其类型范围，但作为字面量表达式仍被接受。
 128_i8;
 256_u8;
 
-// This is an integer literal, accepted as a floating-point literal expression.
+// 这是一个整数字面量，作为浮点数字面量表达式被接受。
 5f32;
 ```
 
-Note that `-1i8`, for example, is analyzed as two tokens: `-` followed by `1i8`.
+注意，例如 `-1i8` 会被分析为两个 token：`-` 后跟 `1i8`。
 
-Examples of integer literals which are not accepted as literal expressions:
+不被作为字面量表达式接受的整数字面量示例：
 
 ```rust
 # #[cfg(false)] {
@@ -529,36 +529,36 @@ Examples of integer literals which are not accepted as literal expressions:
 ```
 
 r[lex.token.literal.int.invalid]
-##### Invalid integer literals
+##### 无效的整数字面量
 
 r[lex.token.literal.int.invalid.intro]
-Certain integer literal forms are invalid. To avoid ambiguity, the tokenizer rejects them rather than splitting them into separate tokens.
+某些整数字面量形式是无效的。为避免歧义，token 化器会拒绝它们，而不是将其拆分为多个 token。
 
 ```rust,compile_fail
-0b0102;  // This is not `0b010` followed by `2`.
-0o1279;  // This is not `0o127` followed by `9`.
-0x80.0;  // This is not `0x80` followed by `.` and `0`.
-0b101e;  // This is not a suffixed literal or `0b101` followed by `e`.
-0b;      // This is not an integer literal or `0` followed by `b`.
-0b_;     // This is not an integer literal or `0` followed by `b_`.
-2em;     // This is not a suffixed literal or `2` followed by `em`.
-2.0em;   // This is not a suffixed literal or `2.0` followed by `em`.
+0b0102;  // 这不是 `0b010` 后跟 `2`。
+0o1279;  // 这不是 `0o127` 后跟 `9`。
+0x80.0;  // 这不是 `0x80` 后跟 `.` 和 `0`。
+0b101e;  // 这不是带后缀的字面量或 `0b101` 后跟 `e`。
+0b;      // 这不是整数字面量或 `0` 后跟 `b`。
+0b_;     // 这不是整数字面量或 `0` 后跟 `b_`。
+2em;     // 这不是带后缀的字面量或 `2` 后跟 `em`。
+2.0em;   // 这不是带后缀的字面量或 `2.0` 后跟 `em`。
 ```
 
 r[lex.token.literal.int.out-of-range]
-It is an error to have an unsuffixed binary or octal literal followed without intervening whitespace by a decimal digit outside the range for its radix.
+不带后缀的二进制或八进制字面量后紧跟其基数范围之外的十进制数字（中间没有空白字符）是错误的。
 
 r[lex.token.literal.int.period]
-It is an error to have an unsuffixed binary, octal, or hexadecimal literal followed without intervening whitespace by a period character (subject to the same restrictions on what may follow the period as in floating-point literals).
+不带后缀的二进制、八进制或十六进制字面量后紧跟一个句点字符（中间没有空白字符）是错误的（受限于与浮点数字面量中关于句点后允许内容的相同限制）。
 
 r[lex.token.literal.int.exp]
-It is an error to have an unsuffixed binary or octal literal followed without intervening whitespace by the character `e` or `E`.
+不带后缀的二进制或八进制字面量后紧跟字符 `e` 或 `E`（中间没有空白字符）是错误的。
 
 r[lex.token.literal.int.empty-with-radix]
-It is an error for a radix prefix to not be followed, after any optional leading underscores, by at least one valid digit for its radix.
+基数前缀之后（在任何可选的前导下划线之后）没有至少一个有效基数数字是错误的。
 
 r[lex.token.literal.int.tuple-field]
-#### Tuple index
+#### 元组索引
 
 r[lex.token.literal.int.tuple-field.syntax]
 ```grammar,lexer
@@ -566,26 +566,26 @@ TUPLE_INDEX -> DEC_LITERAL | BIN_LITERAL | OCT_LITERAL | HEX_LITERAL
 ```
 
 r[lex.token.literal.int.tuple-field.intro]
-A tuple index is used to refer to the fields of [tuples], [tuple structs], and [tuple enum variants].
+元组索引用于引用[元组][tuples]、[元组结构体][tuple structs]和[元组枚举变体][tuple enum variants]的字段。
 
 r[lex.token.literal.int.tuple-field.eq]
-Tuple indices are compared with the literal token directly. Tuple indices start with `0` and each successive index increments the value by `1` as a decimal value. Thus, only decimal values will match, and the value must not have any extra `0` prefix characters.
+元组索引直接与字面量 token 进行比较。元组索引以 `0` 开始，每个连续的索引以十进制值递增 `1`。因此，只有十进制值会匹配，且值不能有任何额外的前缀 `0` 字符。
 
-Tuple indices may not include any suffixes (such as `usize`).
+元组索引不能包含任何后缀（如 `usize`）。
 
 ```rust,compile_fail
 let example = ("dog", "cat", "horse");
 let dog = example.0;
 let cat = example.1;
-// The following examples are invalid.
-let cat = example.01;  // ERROR no field named `01`
-let horse = example.0b10;  // ERROR no field named `0b10`
-let unicorn = example.0usize; // ERROR suffixes on a tuple index are invalid
-let underscore = example.0_0; // ERROR no field `0_0` on type `(&str, &str, &str)`
+// 以下示例是无效的。
+let cat = example.01;  // 错误 没有名为 `01` 的字段
+let horse = example.0b10;  // 错误 没有名为 `0b10` 的字段
+let unicorn = example.0usize; // 错误 元组索引上的后缀是无效的
+let underscore = example.0_0; // 错误 类型 `(&str, &str, &str)` 上没有字段 `0_0`
 ```
 
 r[lex.token.literal.float]
-#### Floating-point literals
+#### 浮点数字面量
 
 r[lex.token.literal.float.syntax]
 ```grammar,lexer
@@ -599,15 +599,15 @@ FLOAT_EXPONENT ->
 ```
 
 r[lex.token.literal.float.form]
-A _floating-point literal_ has one of two forms:
+*浮点数字面量*有以下两种形式之一：
 
-* A _decimal literal_ followed by a period character `U+002E` (`.`). This is optionally followed by another decimal literal, with an optional _exponent_.
-* A single _decimal literal_ followed by an _exponent_.
+* *十进制字面量*后跟句点字符 `U+002E`（`.`）。后可再跟另一个十进制字面量，以及可选的*指数*。
+* 单个*十进制字面量*后跟*指数*。
 
 r[lex.token.literal.float.suffix]
-Like integer literals, a floating-point literal may be followed by a suffix, so long as the pre-suffix part does not end with `U+002E` (`.`). The suffix may not begin with `e` or `E` if the literal does not include an exponent. See [Floating-point literal expressions] for the effect of these suffixes.
+与整数字面量类似，浮点数字面量可以后跟一个后缀，只要后缀之前的部分不以 `U+002E`（`.`）结尾。如果字面量不包含指数，后缀不能以 `e` 或 `E` 开头。这些后缀的作用参见[浮点数字面量表达式][Floating-point literal expressions]。
 
-Examples of floating-point literals which are accepted as literal expressions:
+作为字面量表达式被接受的浮点数字面量示例：
 
 ```rust
 123.0f64;
@@ -617,11 +617,11 @@ Examples of floating-point literals which are accepted as literal expressions:
 let x: f64 = 2.;
 ```
 
-This last example is different because it is not possible to use the suffix syntax with a floating point literal ending in a period. `2.f64` would attempt to call a method named `f64` on `2`.
+最后一个示例有所不同，因为不能在以句点结尾的浮点数字面量上使用后缀语法。`2.f64` 会尝试对 `2` 调用名为 `f64` 的方法。
 
-Note that `-1.0`, for example, is analyzed as two tokens: `-` followed by `1.0`.
+注意，例如 `-1.0` 会被分析为两个 token：`-` 后跟 `1.0`。
 
-Examples of floating-point literals which are not accepted as literal expressions:
+不被作为字面量表达式接受的浮点数字面量示例：
 
 ```rust
 # #[cfg(false)] {
@@ -634,15 +634,15 @@ Examples of floating-point literals which are not accepted as literal expression
 ```
 
 r[lex.token.literal.float.invalid-exponent]
-It is an error for a floating-point literal to have an exponent with no digits.
+浮点数字面量的指数没有数字是错误的。
 
 ```rust,compile_fail
-2e;   // This is not a floating-point literal or `2` followed by `e`.
-2.0e; // This is not a floating-point literal or `2.0` followed by `e`.
+2e;   // 这不是浮点数字面量或 `2` 后跟 `e`。
+2.0e; // 这不是浮点数字面量或 `2.0` 后跟 `e`。
 ```
 
 r[lex.token.life]
-## Lifetimes and loop labels
+## 生命周期与循环标签 {#lifetimes-and-loop-labels}
 
 r[lex.token.life.syntax]
 ```grammar,lexer
@@ -661,26 +661,26 @@ RESERVED_RAW_LIFETIME -> `'r#` (`_` | `crate` | `self` | `Self` | `super`) !(`'`
 ```
 
 r[lex.token.life.intro]
-Lifetime parameters and [loop labels] use LIFETIME_OR_LABEL tokens. Any LIFETIME_TOKEN will be accepted by the lexer, and for example, can be used in macros.
+生命周期参数和[循环标签][loop labels]使用 LIFETIME_OR_LABEL token。任何 LIFETIME_TOKEN 都会被词法分析器接受，例如可以用于宏中。
 
 r[lex.token.life.raw.intro]
-A raw lifetime is like a normal lifetime, but its identifier is prefixed by `r#`. (Note that the `r#` prefix is not included as part of the actual lifetime.)
+原始生命周期类似于普通生命周期，但其标识符带有 `r#` 前缀。（注意，`r#` 前缀不算作实际生命周期的一部分。）
 
 r[lex.token.life.raw.allowed]
-Unlike a normal lifetime, a raw lifetime may be any strict or reserved keyword except the ones listed above for `RAW_LIFETIME`.
+与普通生命周期不同，原始生命周期可以使用任何严格或保留关键字，但 `RAW_LIFETIME` 中以上列出的除外。
 
 r[lex.token.life.raw.reserved]
-It is an error to use the [RESERVED_RAW_LIFETIME] token.
+使用 [RESERVED_RAW_LIFETIME] token 是错误的。
 
 r[lex.token.life.raw.edition2021]
 > [!EDITION-2021]
-> Raw lifetimes are accepted in the 2021 edition or later. In earlier editions the token `'r#lt` is lexed as `'r # lt`.
+> 原始生命周期在 2021 版本或更高版本中接受。在更早的版本中，token `'r#lt` 被词法分析为 `'r # lt`。
 
 r[lex.token.punct]
-## Punctuation
+## 标点符号 {#punctuation}
 
 r[lex.token.punct.intro]
-Punctuation tokens are used as operators, separators, and other parts of the grammar.
+标点符号 token 用作运算符、分隔符以及语法的其他组成部分。
 
 r[lex.token.punct.syntax]
 ```grammar,lexer
@@ -740,24 +740,24 @@ PUNCTUATION ->
 ```
 
 > [!NOTE]
-> See the [syntax index] for links to how punctuation characters are used.
+> 关于各标点符号的用法，请参阅[语法索引][syntax index]。
 
 r[lex.token.delim]
-## Delimiters
+## 定界符 {#delimiters}
 
-Bracket punctuation is used in various parts of the grammar. An open bracket must always be paired with a close bracket. Brackets and the tokens within them are referred to as "token trees" in [macros].  The three types of brackets are:
+括号标点用于语法的各个部分。开放括号必须始终与闭合括号配对。括号及其内部的 token 在[宏][macros]中被称为"token 树"。三种括号类型如下：
 
-| Bracket | Type            |
+| 括号 | 类型            |
 |---------|-----------------|
-| `{` `}` | Curly braces    |
-| `[` `]` | Square brackets |
-| `(` `)` | Parentheses     |
+| `{` `}` | 花括号    |
+| `[` `]` | 方括号 |
+| `(` `)` | 圆括号     |
 
 r[lex.token.reserved]
-## Reserved tokens
+## 保留 token
 
 r[lex.token.reserved.intro]
-Several token forms are reserved for future use or to avoid confusion. It is an error for the source input to match one of these forms.
+几种 token 形式保留供将来使用或为避免混淆。源代码输入匹配这些形式之一是错误的。
 
 r[lex.token.reserved.syntax]
 ```grammar,lexer
@@ -773,7 +773,7 @@ RESERVED_TOKEN ->
 ```
 
 r[lex.token.reserved-prefix]
-## Reserved prefixes
+## 保留前缀
 
 r[lex.token.reserved-prefix.syntax]
 ```grammar,lexer
@@ -791,37 +791,37 @@ RESERVED_TOKEN_LIFETIME ->
 ```
 
 r[lex.token.reserved-prefix.intro]
-Some lexical forms known as _reserved prefixes_ are reserved for future use.
+某些词法形式（称为*保留前缀*）保留供将来使用。
 
 r[lex.token.reserved-prefix.id]
-Source input which would otherwise be lexically interpreted as a non-raw identifier (or a keyword) which is immediately followed by a `#`, `'`, or `"` character (without intervening whitespace) is identified as a reserved prefix.
+原本会被词法解释为非原始标识符（或关键字）且紧接后跟 `#`、`'` 或 `"` 字符（中间没有空白字符）的源代码输入将被识别为保留前缀。
 
 r[lex.token.reserved-prefix.raw-token]
-Note that raw identifiers, raw string literals, and raw byte string literals may contain a `#` character but are not interpreted as containing a reserved prefix.
+注意，原始标识符、原始字符串字面量和原始字节字符串字面量可以包含 `#` 字符，但不会被解释为包含保留前缀。
 
 r[lex.token.reserved-prefix.strings]
-Similarly the `r`, `b`, `br`, `c`, and `cr` prefixes used in raw string literals, byte literals, byte string literals, raw byte string literals, C string literals, and raw C string literals are not interpreted as reserved prefixes.
+类似地，用于原始字符串字面量、字节字面量、字节字符串字面量、原始字节字符串字面量、C 字符串字面量和原始 C 字符串字面量的 `r`、`b`、`br`、`c` 和 `cr` 前缀不会被解释为保留前缀。
 
 r[lex.token.reserved-prefix.life]
-Source input which would otherwise be lexically interpreted as a non-raw lifetime (or a keyword) which is immediately followed by a `#` character (without intervening whitespace) is identified as a reserved lifetime prefix.
+原本会被词法解释为非原始生命周期（或关键字）且紧接后跟 `#` 字符（中间没有空白字符）的源代码输入将被识别为保留生命周期前缀。
 
 r[lex.token.reserved-prefix.edition2021]
 > [!EDITION-2021]
-> Starting with the 2021 edition, reserved prefixes are reported as an error by the lexer (in particular, they cannot be passed to macros).
+> 从 2021 版本开始，保留前缀会被词法分析器报告为错误（特别是，它们不能传递给宏）。
 >
-> Before the 2021 edition, reserved prefixes are accepted by the lexer and interpreted as multiple tokens (for example, one token for the identifier or keyword, followed by a `#` token).
+> 在 2021 版本之前，保留前缀会被词法分析器接受并解释为多个 token（例如，一个标识符或关键字 token 后跟一个 `#` token）。
 >
-> Examples accepted in all editions:
+> 所有版本中接受的示例：
 > ```rust
 > macro_rules! lexes {($($_:tt)*) => {}}
 > lexes!{a #foo}
 > lexes!{continue 'foo}
 > lexes!{match "..." {}}
-> lexes!{r#let#foo}         // three tokens: r#let # foo
+> lexes!{r#let#foo}         // 三个 token: r#let # foo
 > lexes!{'prefix #lt}
 > ```
 >
-> Examples accepted before the 2021 edition but rejected later:
+> 在 2021 版本之前接受但在此后被拒绝的示例：
 > ```rust,edition2018
 > macro_rules! lexes {($($_:tt)*) => {}}
 > lexes!{a#foo}
@@ -831,7 +831,7 @@ r[lex.token.reserved-prefix.edition2021]
 > ```
 
 r[lex.token.reserved-guards]
-## Reserved guards
+## 保留守卫
 
 r[lex.token.reserved-guards.syntax]
 ```grammar,lexer
@@ -841,17 +841,17 @@ RESERVED_POUNDS -> `#`{2..}
 ```
 
 r[lex.token.reserved-guards.intro]
-The reserved guards are syntax reserved for future use, and will generate a compile error if used.
+保留守卫是为将来使用而保留的语法，使用时会产生编译错误。
 
 r[lex.token.reserved-guards.string-literal]
-The *reserved guarded string literal* is a token of one or more `U+0023` (`#`) immediately followed by a [STRING_LITERAL].
+*保留守卫字符串字面量*是一个由一个或多个 `U+0023`（`#`）后紧跟 [STRING_LITERAL] 组成的 token。
 
 r[lex.token.reserved-guards.pounds]
-The *reserved pounds* is a token of two or more `U+0023` (`#`).
+*保留井号*是一个由两个或多个 `U+0023`（`#`）组成的 token。
 
 r[lex.token.reserved-guards.edition2024]
 > [!EDITION-2024]
-> Before the 2024 edition, reserved guards are accepted by the lexer and interpreted as multiple tokens. For example, the `#"foo"#` form is interpreted as three tokens. `##` is interpreted as two tokens.
+> 在 2024 版本之前，保留守卫会被词法分析器接受并解释为多个 token。例如，`#"foo"#` 形式被解释为三个 token。`##` 被解释为两个 token。
 
 [Floating-point literal expressions]: expressions/literal-expr.md#floating-point-literal-expressions
 [identifier]: identifiers.md

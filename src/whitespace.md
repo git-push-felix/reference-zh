@@ -1,5 +1,5 @@
 r[lex.whitespace]
-# Whitespace
+# 空白字符
 
 r[whitespace.syntax]
 ```grammar,lexer
@@ -24,12 +24,12 @@ CR -> U+000D  // Carriage return, `'\r'`
 ```
 
 r[lex.whitespace.intro]
-Whitespace is any non-empty string containing only characters that have the [`Pattern_White_Space`] Unicode property.
+空白字符是指任何非空字符串，其中仅包含具有 [`Pattern_White_Space`] Unicode 属性的字符。
 
 r[lex.whitespace.token-sep]
-Rust is a "free-form" language, meaning that all forms of whitespace serve only to separate _tokens_ in the grammar, and have no semantic significance.
+Rust 是一种"自由格式"语言，这意味着所有形式的空白字符仅用于分隔语法中的 *token*，没有语义意义。
 
 r[lex.whitespace.replacement]
-A Rust program has identical meaning if each whitespace element is replaced with any other legal whitespace element, such as a single space character.
+如果将一个 Rust 程序中的每个空白字符元素替换为任意其他合法的空白字符元素（如单个空格字符），程序将具有相同的含义。
 
 [`Pattern_White_Space`]: https://www.unicode.org/reports/tr31/

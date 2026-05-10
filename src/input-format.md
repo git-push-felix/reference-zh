@@ -1,5 +1,5 @@
 r[input]
-# Input format
+# 输入格式
 
 r[input.syntax]
 ```grammar,lexer
@@ -13,50 +13,50 @@ EOF -> !CHAR  // End of file or input
 ```
 
 r[input.intro]
-This chapter describes how a source file is interpreted as a sequence of tokens.
+本章描述源文件如何被解释为 token 序列。
 
-See [Crates and source files] for a description of how programs are organised into files.
+关于程序如何组织为文件的描述，请参阅 [crate 和源文件][Crates and source files]。
 
 r[input.encoding]
-## Source encoding
+## 源文件编码
 
 r[input.encoding.utf8]
-Each source file is interpreted as a sequence of Unicode characters encoded in UTF-8.
+每个源文件被解释为以 UTF-8 编码的 Unicode 字符序列。
 
 r[input.encoding.invalid]
-It is an error if the file is not valid UTF-8.
+如果文件不是有效的 UTF-8，则视为错误。
 
 r[input.byte-order-mark]
-## Byte order mark removal
+## 字节顺序标记移除
 
-If the first character in the sequence is `U+FEFF` ([BYTE ORDER MARK]), it is removed.
+如果序列中的第一个字符是 `U+FEFF`（[BYTE ORDER MARK]），则将其移除。
 
 r[input.crlf]
-## CRLF normalization
+## CRLF 规范化
 
-Each pair of characters `U+000D` (CR) immediately followed by `U+000A` (LF) is replaced by a single `U+000A` (LF). This happens once, not repeatedly, so after the normalization, there can still exist `U+000D` (CR) immediately followed by `U+000A` (LF) in the input (e.g. if the raw input contained "CR CR LF LF").
+每对字符 `U+000D`（CR）后紧跟 `U+000A`（LF）将被替换为单个 `U+000A`（LF）。此过程仅执行一次，而非重复执行，因此规范化之后，输入中仍可能存在紧跟 `U+000A`（LF）的 `U+000D`（CR）（例如，原始输入包含 "CR CR LF LF"）。
 
-Other occurrences of the character `U+000D` (CR) are left in place (they are treated as [whitespace]).
+其他位置的字符 `U+000D`（CR）将保留（它们被视为[空白字符][whitespace]）。
 
 r[input.shebang]
-## Shebang removal
+## Shebang 移除
 
 r[input.shebang.removal]
-If a [shebang] is present, it is removed from the input sequence (and is therefore ignored).
+如果存在 [shebang]，则将其从输入序列中移除（因此被忽略）。
 
 r[input.tokenization]
-## Tokenization
+## Token 化
 
-The resulting sequence of characters is then converted into tokens as described in the remainder of this chapter.
+然后将生成的字符序列转换为 token，具体描述见本章其余部分。
 
 > [!NOTE]
-> The standard library [`include!`] macro applies the following transformations to the file it reads:
+> 标准库的 [`include!`] 宏会对其读取的文件应用以下转换：
 >
-> - Byte order mark removal.
-> - CRLF normalization.
-> - Shebang removal when invoked in an item context (as opposed to expression or statement contexts).
+> - 字节顺序标记移除。
+> - CRLF 规范化。
+> - 在程序项上下文中（而非表达式或语句上下文）调用时的 shebang 移除。
 >
-> The [`include_str!`] and [`include_bytes!`] macros do not apply these transformations.
+> [`include_str!`] 和 [`include_bytes!`] 宏不应用这些转换。
 
 [BYTE ORDER MARK]: https://en.wikipedia.org/wiki/Byte_order_mark#UTF-8
 [Crates and source files]: crates-and-source-files.md

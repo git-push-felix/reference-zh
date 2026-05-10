@@ -1,20 +1,20 @@
 r[macro.proc]
-# Procedural macros
+# 过程宏
 
 r[macro.proc.intro]
-*Procedural macros* allow creating syntax extensions as execution of a function. Procedural macros come in one of three flavors:
+*过程宏*允许通过执行函数来创建语法扩展。过程宏有三种形式：
 
-* [Function-like macros] - `custom!(...)`
-* [Derive macros] - `#[derive(CustomDerive)]`
-* [Attribute macros] - `#[CustomAttribute]`
+* [类函数宏][Function-like macros] - `custom!(...)`
+* [派生宏][Derive macros] - `#[derive(CustomDerive)]`
+* [属性宏][Attribute macros] - `#[CustomAttribute]`
 
-Procedural macros allow you to run code at compile time that operates over Rust syntax, both consuming and producing Rust syntax. You can sort of think of procedural macros as functions from an AST to another AST.
+过程宏允许你在编译期运行代码来操作 Rust 语法，既消费也产生 Rust 语法。你可以将过程宏视为从一个 AST 到另一个 AST 的函数。
 
 r[macro.proc.def]
-Procedural macros must be defined in the root of a crate with the [crate type] of `proc-macro`. The macros may not be used from the crate where they are defined, and can only be used when imported in another crate.
+过程宏必须定义在具有 `proc-macro` [crate 类型][crate type]的 crate 的根中。这些宏不能在定义它们的 crate 中使用，只能在被导入到其他 crate 时使用。
 
 > [!NOTE]
-> When using Cargo, Procedural macro crates are defined with the `proc-macro` key in your manifest:
+> 使用 Cargo 时，过程宏 crate 通过在清单中设置 `proc-macro` 键来定义：
 >
 > ```toml
 > [lib]
@@ -22,42 +22,42 @@ Procedural macros must be defined in the root of a crate with the [crate type] o
 > ```
 
 r[macro.proc.result]
-As functions, they must either return syntax, panic, or loop endlessly. Returned syntax either replaces or adds the syntax depending on the kind of procedural macro. Panics are caught by the compiler and are turned into a compiler error. Endless loops are not caught by the compiler which hangs the compiler.
+作为函数，它们必须返回语法、panic 或无限循环。返回的语法根据过程宏的类型替换或添加语法。Panic 会被编译器捕获并转换为编译器错误。无限循环不会被编译器捕获，会导致编译器挂起。
 
-Procedural macros run during compilation, and thus have the same resources that the compiler has. For example, standard input, error, and output are the same that the compiler has access to. Similarly, file access is the same. Because of this, procedural macros have the same security concerns that [Cargo's build scripts] have.
+过程宏在编译期间运行，因此拥有与编译器相同的资源。例如，标准输入、错误和输出与编译器可以访问的相同。同样，文件访问也相同。因此，过程宏具有与 [Cargo 构建脚本][Cargo's build scripts]相同的安全考量。
 
 r[macro.proc.error]
-Procedural macros have two ways of reporting errors. The first is to panic. The second is to emit a [`compile_error`] macro invocation.
+过程宏有两种报告错误的方式。第一种是 panic。第二种是发出 [`compile_error`] 宏调用。
 
 r[macro.proc.proc_macro-crate]
-## The `proc_macro` crate
+## `proc_macro` crate
 
 r[macro.proc.proc_macro-crate.intro]
-Procedural macro crates almost always will link to the compiler-provided [`proc_macro` crate]. The `proc_macro` crate provides types required for writing procedural macros and facilities to make it easier.
+过程宏 crate 几乎总是会链接到编译器提供的 [`proc_macro` crate]。`proc_macro` crate 提供了编写过程宏所需的类型以及使其更便捷的工具。
 
 r[macro.proc.proc_macro-crate.token-stream]
-This crate primarily contains a [`TokenStream`] type. Procedural macros operate over *token streams* instead of AST nodes, which is a far more stable interface over time for both the compiler and for procedural macros to target. A *token stream* is roughly equivalent to `Vec<TokenTree>` where a `TokenTree` can roughly be thought of as lexical token. For example `foo` is an `Ident` token, `.` is a `Punct` token, and `1.2` is a `Literal` token. The `TokenStream` type, unlike `Vec<TokenTree>`, is cheap to clone.
+此 crate 主要包含一个 [`TokenStream`] 类型。过程宏操作的是*词法单元流*而非 AST 节点，这对于编译器和过程宏来说都是更稳定的接口。*词法单元流*大致等价于 `Vec<TokenTree>`，其中 `TokenTree` 可以粗略地视为词法词法单元。例如，`foo` 是一个 `Ident` 词法单元，`.` 是一个 `Punct` 词法单元，而 `1.2` 是一个 `Literal` 词法单元。与 `Vec<TokenTree>` 不同，`TokenStream` 类型的克隆成本很低。
 
 r[macro.proc.proc_macro-crate.span]
-All tokens have an associated `Span`. A `Span` is an opaque value that cannot be modified but can be manufactured. `Span`s represent an extent of source code within a program and are primarily used for error reporting. While you cannot modify a `Span` itself, you can always change the `Span` *associated* with any token, such as through getting a `Span` from another token.
+所有词法单元都有一个关联的 `Span`。`Span` 是一个不透明的值，不能修改但可以创建。`Span` 表示程序中源代码的某个范围，主要用于错误报告。虽然你无法修改 `Span` 本身，但你始终可以更改与任何词法单元*关联*的 `Span`，例如通过从另一个词法单元获取 `Span`。
 
 r[macro.proc.hygiene]
-## Procedural macro hygiene
+## 过程宏的卫生性
 
-Procedural macros are *unhygienic*. This means they behave as if the output token stream was simply written inline to the code it's next to. This means that it's affected by external items and also affects external imports.
+过程宏是*非卫生性的*。这意味着它们的行为就像输出的词法单元流被简单地内联写入到其旁边的代码中一样。这意味着它会受到外部项的影响，也会影响外部导入。
 
-Macro authors need to be careful to ensure their macros work in as many contexts as possible given this limitation. This often includes using absolute paths to items in libraries (for example, `::std::option::Option` instead of `Option`) or by ensuring that generated functions have names that are unlikely to clash with other functions (like `__internal_foo` instead of `foo`).
+宏作者需要注意确保其宏在此限制下尽可能在多种上下文中工作。这通常包括对库中的项使用绝对路径（例如，`::std::option::Option` 而不是 `Option`），或确保生成的函数具有不太可能与其他函数冲突的名称（如 `__internal_foo` 而不是 `foo`）。
 
 <!-- TODO: rule name needs improvement -->
 <!-- template:attributes -->
 r[macro.proc.proc_macro]
-## The `proc_macro` attribute
+## `proc_macro` 属性
 
 r[macro.proc.proc_macro.intro]
-The *`proc_macro` [attribute][attributes]* defines a [function-like][macro.invocation] procedural macro.
+*`proc_macro` [属性][attributes]* 定义了一个[类函数][macro.invocation]过程宏。
 
 > [!EXAMPLE]
-> This macro definition ignores its input and emits a function `answer` into its scope.
+> 此宏定义忽略其输入并发出一个函数 `answer` 到其作用域中。
 >
 > <!-- ignore: test doesn't support proc-macro -->
 > ```rust,ignore
@@ -71,7 +71,7 @@ The *`proc_macro` [attribute][attributes]* defines a [function-like][macro.invoc
 > }
 > ```
 >
-> We can use it in a binary crate to print "42" to standard output.
+> 我们可以在二进制 crate 中使用它来向标准输出打印 "42"。
 >
 > <!-- ignore: requires external crates -->
 > ```rust,ignore
@@ -86,40 +86,40 @@ The *`proc_macro` [attribute][attributes]* defines a [function-like][macro.invoc
 > ```
 
 r[macro.proc.proc_macro.syntax]
-The `proc_macro` attribute uses the [MetaWord] syntax.
+`proc_macro` 属性使用 [MetaWord] 语法。
 
 r[macro.proc.proc_macro.allowed-positions]
-The `proc_macro` attribute may only be applied to a `pub` function of type `fn(TokenStream) -> TokenStream` where [`TokenStream`] comes from the [`proc_macro` crate]. It must have the ["Rust" ABI][items.fn.extern]. No other function qualifiers are allowed. It must be located in the root of the crate.
+`proc_macro` 属性只能应用于类型为 `fn(TokenStream) -> TokenStream` 的 `pub` 函数，其中 [`TokenStream`] 来自 [`proc_macro` crate]。它必须具有 ["Rust" ABI][items.fn.extern]。不允许使用其他函数限定符。它必须位于 crate 的根中。
 
 r[macro.proc.proc_macro.duplicates]
-The `proc_macro` attribute may only be specified once on a function.
+`proc_macro` 属性在函数上只能指定一次。
 
 r[macro.proc.proc_macro.namespace]
-The `proc_macro` attribute publicly defines the macro in the [macro namespace] in the root of the crate with the same name as the function.
+`proc_macro` 属性在 crate 根的[宏命名空间][macro namespace]中公开定义与函数同名的宏。
 
 r[macro.proc.proc_macro.behavior]
-A function-like macro invocation of a function-like procedural macro will pass what is inside the delimiters of the macro invocation as the input [`TokenStream`] argument and replace the entire macro invocation with the output [`TokenStream`] of the function.
+类函数过程宏的类函数宏调用会将宏调用定界符内的内容作为输入 [`TokenStream`] 参数传递，并用函数的输出 [`TokenStream`] 替换整个宏调用。
 
 r[macro.proc.proc_macro.invocation]
-Function-like procedural macros may be invoked in any macro invocation position, which includes:
+类函数过程宏可以在任何宏调用位置被调用，包括：
 
-- [Statements]
-- [Expressions]
-- [Patterns]
-- [Type expressions]
-- [Item] positions, including items in [`extern` blocks]
-- Inherent and trait [implementations]
-- [Trait definitions]
+- [语句][Statements]
+- [表达式][Expressions]
+- [模式][Patterns]
+- [类型表达式][Type expressions]
+- [项][Item]位置，包括 [`extern` 块][`extern` blocks]中的项
+- 固有和 trait [实现][implementations]
+- [Trait 定义][Trait definitions]
 
 <!-- template:attributes -->
 r[macro.proc.derive]
-## The `proc_macro_derive` attribute
+## `proc_macro_derive` 属性
 
 r[macro.proc.derive.intro]
-Applying the *`proc_macro_derive` [attribute]* to a function defines a *derive macro* that can be invoked by the [`derive` attribute]. These macros are given the token stream of a [struct], [enum], or [union] definition and can emit new [items] after it. They can also declare and use [derive macro helper attributes].
+将 *`proc_macro_derive` [属性][attribute]* 应用于函数定义了一个*派生宏*，可以通过 [`derive` 属性][`derive` attribute]调用。这些宏接收[结构体][struct]、[枚举][enum]或[联合体][union]定义的词法单元流，并可以在其后发出新的[项][items]。它们还可以声明和使用[派生宏辅助属性][derive macro helper attributes]。
 
 > [!EXAMPLE]
-> This derive macro ignores its input and appends tokens that define a function.
+> 此派生宏忽略其输入并追加定义函数的词法单元。
 >
 > <!-- ignore: test doesn't support proc-macro -->
 > ```rust,ignore
@@ -133,7 +133,7 @@ Applying the *`proc_macro_derive` [attribute]* to a function defines a *derive m
 > }
 > ```
 >
-> To use it, we might write:
+> 要使用它，我们可以这样写：
 >
 > <!-- ignore: requires external crates -->
 > ```rust,ignore
@@ -149,7 +149,7 @@ Applying the *`proc_macro_derive` [attribute]* to a function defines a *derive m
 > ```
 
 r[macro.proc.derive.syntax]
-The syntax for the `proc_macro_derive` attribute is:
+`proc_macro_derive` 属性的语法是：
 
 ```grammar,attributes
 @root ProcMacroDeriveAttribute ->
@@ -161,31 +161,31 @@ DeriveMacroAttributes ->
     `attributes` `(` ( IDENTIFIER (`,` IDENTIFIER)* `,`?)? `)`
 ```
 
-The name of the derive macro is given by [DeriveMacroName]. The optional `attributes` argument is described in [macro.proc.derive.attributes].
+派生宏的名称由 [DeriveMacroName] 给出。可选的 `attributes` 参数在 [macro.proc.derive.attributes] 中描述。
 
 r[macro.proc.derive.allowed-positions]
-The `proc_macro_derive` attribute may only be applied to a `pub` function with the [Rust ABI][items.fn.extern] defined in the root of the crate with a type of `fn(TokenStream) -> TokenStream`  where [`TokenStream`] comes from the [`proc_macro` crate]. The function may be `const` and may use `extern` to explicitly specify the Rust ABI, but it may not use any other [qualifiers][FunctionQualifiers] (e.g. it may not be `async` or `unsafe`).
+`proc_macro_derive` 属性只能应用于在 crate 根中定义的具有 [Rust ABI][items.fn.extern] 的类型为 `fn(TokenStream) -> TokenStream` 的 `pub` 函数，其中 [`TokenStream`] 来自 [`proc_macro` crate]。函数可以是 `const` 的，可以使用 `extern` 显式指定 Rust ABI，但不能使用任何其他[限定符][FunctionQualifiers]（例如，不能是 `async` 或 `unsafe`）。
 
 r[macro.proc.derive.duplicates]
-The `proc_macro_derive` attribute may be used only once on a function.
+`proc_macro_derive` 属性在函数上只能使用一次。
 
 r[macro.proc.derive.namespace]
-The `proc_macro_derive` attribute publicly defines the derive macro in the [macro namespace] in the root of the crate.
+`proc_macro_derive` 属性在 crate 根的[宏命名空间][macro namespace]中公开定义该派生宏。
 
 r[macro.proc.derive.output]
-The input [`TokenStream`] is the token stream of the item to which the `derive` attribute is applied. The output [`TokenStream`] must be a (possibly empty) set of items. These items are appended following the input item within the same [module] or [block].
+输入 [`TokenStream`] 是应用 `derive` 属性的项的 token 流。输出 [`TokenStream`] 必须是（可能为空的）一组项。这些项追加在输入项之后，位于同一[模块][module]或[块][block]中。
 
 r[macro.proc.derive.attributes]
-### Derive macro helper attributes
+### 派生宏辅助属性
 
 r[macro.proc.derive.attributes.intro]
-Derive macros can declare *derive macro helper attributes* to be used within the scope of the [item] to which the derive macro is applied. These [attributes] are [inert]. While their purpose is to be used by the macro that declared them, they can be seen by any macro.
+派生宏可以声明*派生宏辅助属性*，以便在应用该派生宏的[项][item]作用域中使用。这些[属性][attributes]是[惰性的][inert]。虽然它们的目的是供声明它们的宏使用，但它们可以被任何宏看到。
 
 r[macro.proc.derive.attributes.decl]
-A helper attribute for a derive macro is declared by adding its identifier to the `attributes` list in the `proc_macro_derive` attribute.
+派生宏的辅助属性通过在 `proc_macro_derive` 属性的 `attributes` 列表中添加其标识符来声明。
 
 > [!EXAMPLE]
-> This declares a helper attribute and then ignores it.
+> 这里声明了一个辅助属性，然后忽略它。
 >
 > <!-- ignore: test doesn't support proc-macro -->
 > ```rust,ignore
@@ -199,7 +199,7 @@ A helper attribute for a derive macro is declared by adding its identifier to th
 > }
 > ```
 >
-> To use it, we might write:
+> 要使用它，我们可以这样写：
 >
 > <!-- ignore: requires external crates -->
 > ```rust,ignore
@@ -210,32 +210,32 @@ A helper attribute for a derive macro is declared by adding its identifier to th
 > ```
 
 r[macro.proc.derive.attributes.scope]
-When a derive macro invocation is applied to an item, the helper attributes introduced by that derive macro become in scope 1) for attributes that are applied to that item and are applied lexically after the derive macro invocation and 2) for attributes that are applied to fields and variants inside of the item.
+当派生宏调用应用于一个项时，该派生宏引入的辅助属性进入作用域：1）适用于应用于该项的属性，且在派生宏调用之后按词法应用；2）适用于该项内部的字段和变体的属性。
 
 > [!NOTE]
-> rustc currently allows derive helpers to be used before the macro that introduces them. Such derive helpers used out of order may not shadow other attribute macros. This behavior is deprecated and slated for removal.
+> rustc 目前允许在引入它们的宏之前使用派生辅助属性。这些乱序使用的派生辅助属性不会遮蔽其他属性宏。此行为已弃用并计划移除。
 >
 > <!-- ignore: requires external crates -->
 > ```rust,ignore
-> #[helper] // Deprecated, hard error in the future.
+> #[helper] // 已弃用，将来将成为硬错误。
 > #[derive(WithHelperAttr)]
 > struct Struct {
 >     field: (),
 > }
 > ```
 >
-> For more details, see [Rust issue #79202](https://github.com/rust-lang/rust/issues/79202).
+> 更多细节请参见 [Rust 问题 #79202](https://github.com/rust-lang/rust/issues/79202)。
 
 
 <!-- template:attributes -->
 r[macro.proc.attribute]
-## The `proc_macro_attribute` attribute
+## `proc_macro_attribute` 属性
 
 r[macro.proc.attribute.intro]
-The *`proc_macro_attribute` [attribute][attributes]* defines an *attribute macro* which can be used as an [outer attribute][attributes].
+*`proc_macro_attribute` [属性][attributes]* 定义一个*属性宏*，它可以用作[外部属性][attributes]。
 
 > [!EXAMPLE]
-> This attribute macro takes the input stream and emits it as-is, effectively being a no-op attribute.
+> 此属性宏接收输入流并按原样发出，实际上是一个无操作属性。
 >
 > <!-- ignore: test doesn't support proc-macro -->
 > ```rust,ignore
@@ -250,7 +250,7 @@ The *`proc_macro_attribute` [attribute][attributes]* defines an *attribute macro
 > ```
 
 > [!EXAMPLE]
-> This shows, in the output of the compiler, the stringified [`TokenStream`s] that attribute macros see.
+> 这里展示了编译器输出中属性宏看到的字符串化 [`TokenStream`s]。
 >
 > <!-- ignore: test doesn't support proc-macro -->
 > ```rust,ignore
@@ -272,25 +272,25 @@ The *`proc_macro_attribute` [attribute][attributes]* defines an *attribute macro
 >
 > use my_macro::show_streams;
 >
-> // Example: Basic function.
+> // 示例：基本函数。
 > #[show_streams]
 > fn invoke1() {}
 > // out: attr: ""
 > // out: item: "fn invoke1() {}"
 >
-> // Example: Attribute with input.
+> // 示例：带输入的属性。
 > #[show_streams(bar)]
 > fn invoke2() {}
 > // out: attr: "bar"
 > // out: item: "fn invoke2() {}"
 >
-> // Example: Multiple tokens in the input.
+> // 示例：输入中的多个词法单元。
 > #[show_streams(multiple => tokens)]
 > fn invoke3() {}
 > // out: attr: "multiple => tokens"
 > // out: item: "fn invoke3() {}"
 >
-> // Example: Delimiters in the input.
+> // 示例：输入中的定界符。
 > #[show_streams { delimiters }]
 > fn invoke4() {}
 > // out: attr: "delimiters"
@@ -298,77 +298,77 @@ The *`proc_macro_attribute` [attribute][attributes]* defines an *attribute macro
 > ```
 
 r[macro.proc.attribute.syntax]
-The `proc_macro_attribute` attribute uses the [MetaWord] syntax.
+`proc_macro_attribute` 属性使用 [MetaWord] 语法。
 
 r[macro.proc.attribute.allowed-positions]
-The `proc_macro_attribute` attribute may only be applied to a `pub` function of type `fn(TokenStream, TokenStream) -> TokenStream` where [`TokenStream`] comes from the [`proc_macro` crate]. It must have the ["Rust" ABI][items.fn.extern]. No other function qualifiers are allowed. It must be located in the root of the crate.
+`proc_macro_attribute` 属性只能应用于类型为 `fn(TokenStream, TokenStream) -> TokenStream` 的 `pub` 函数，其中 [`TokenStream`] 来自 [`proc_macro` crate]。它必须具有 ["Rust" ABI][items.fn.extern]。不允许使用其他函数限定符。它必须位于 crate 的根中。
 
 r[macro.proc.attribute.duplicates]
-The `proc_macro_attribute` attribute may only be specified once on a function.
+`proc_macro_attribute` 属性在函数上只能指定一次。
 
 r[macro.proc.attribute.namespace]
-The `proc_macro_attribute` attribute defines the attribute in the [macro namespace] in the root of the crate with the same name as the function.
+`proc_macro_attribute` 属性在 crate 根的[宏命名空间][macro namespace]中定义与函数同名的属性。
 
 r[macro.proc.attribute.use-positions]
-Attribute macros can only be used on:
+属性宏只能用于：
 
-- [Items]
-- Items in [`extern` blocks]
-- Inherent and trait [implementations]
-- [Trait definitions]
+- [项][Items]
+- [`extern` 块][`extern` blocks]中的项
+- 固有和 trait [实现][implementations]
+- [Trait 定义][Trait definitions]
 
 r[macro.proc.attribute.behavior]
-The first [`TokenStream`] parameter is the delimited token tree following the attribute's name but not including the outer delimiters. If the applied attribute contains only the attribute name or the attribute name followed by empty delimiters, the [`TokenStream`] is empty.
+第一个 [`TokenStream`] 参数是属性名称后面但不包括外部定界符的定界词法单元树。如果应用的属性只包含属性名称，或属性名称后跟空的定界符，则 [`TokenStream`] 为空。
 
-The second [`TokenStream`] is the rest of the [item], including other [attributes] on the [item].
+第二个 [`TokenStream`] 是[项][item]的其余部分，包括[项][item]上的其他[属性][attributes]。
 
-The item to which the attribute is applied is replaced by the zero or more items in the returned [`TokenStream`].
+应用该属性的项被返回的 [`TokenStream`] 中的零个或多个项替换。
 
 r[macro.proc.token]
-## Declarative macro tokens and procedural macro tokens
+## 声明宏词法单元与过程宏词法单元
 
 r[macro.proc.token.intro]
-Declarative `macro_rules` macros and procedural macros use similar, but different definitions for tokens (or rather [`TokenTree`s].)
+声明式 `macro_rules` 宏和过程宏对词法单元（或者说 [`TokenTree`s]）使用相似但不同的定义。
 
 r[macro.proc.token.macro_rules]
-Token trees in `macro_rules` (corresponding to `tt` matchers) are defined as
-- Delimited groups (`(...)`, `{...}`, etc)
-- All operators supported by the language, both single-character and multi-character ones (`+`, `+=`).
-    - Note that this set doesn't include the single quote `'`.
-- Literals (`"string"`, `1`, etc)
-    - Note that negation (e.g. `-1`) is never a part of such literal tokens, but a separate operator token.
-- Identifiers, including keywords (`ident`, `r#ident`, `fn`)
-- Lifetimes (`'ident`)
-- Metavariable substitutions in `macro_rules` (e.g. `$my_expr` in `macro_rules! mac { ($my_expr: expr) => { $my_expr } }` after the `mac`'s expansion, which will be considered a single token tree regardless of the passed expression)
+`macro_rules` 中的词法单元树（对应 `tt` 匹配器）定义为：
+- 定界组（`(...)`、`{...}` 等）
+- 语言支持的所有运算符，包括单字符和多字符运算符（`+`、`+=`）。
+    - 注意此集合不包括单引号 `'`。
+- 字面量（`"string"`、`1` 等）
+    - 注意取反（如 `-1`）从来不是此类字面量词法单元的一部分，而是一个单独的运算符词法单元。
+- 标识符，包括关键字（`ident`、`r#ident`、`fn`）
+- 生命周期（`'ident`）
+- `macro_rules` 中的元变量替换（例如，`macro_rules! mac { ($my_expr: expr) => { $my_expr } }` 中 `mac` 展开后的 `$my_expr`，无论传递的表达式是什么，它都将被视为单个词法单元树）
 
 r[macro.proc.token.tree]
-Token trees in procedural macros are defined as
-- Delimited groups (`(...)`, `{...}`, etc)
-- All punctuation characters used in operators supported by the language (`+`, but not `+=`), and also the single quote `'` character (typically used in lifetimes, see below for lifetime splitting and joining behavior)
-- Literals (`"string"`, `1`, etc)
-    - Negation (e.g. `-1`) is supported as a part of integer and floating point literals.
-- Identifiers, including keywords (`ident`, `r#ident`, `fn`)
+过程宏中的词法单元树定义为：
+- 定界组（`(...)`、`{...}` 等）
+- 语言支持的运算符中使用的所有标点字符（`+`，但不包括 `+=`），以及单引号 `'` 字符（通常用于生命周期，参见下文关于生命周期拆分和合并行为的说明）
+- 字面量（`"string"`、`1` 等）
+    - 支持将取反（如 `-1`）作为整数和浮点数字面量的一部分。
+- 标识符，包括关键字（`ident`、`r#ident`、`fn`）
 
 r[macro.proc.token.conversion.intro]
-Mismatches between these two definitions are accounted for when token streams are passed to and from procedural macros. Note that the conversions below may happen lazily, so they might not happen if the tokens are not actually inspected.
+当词法单元流传入和传出过程宏时，这两种定义之间的不匹配会得到处理。注意，以下转换可能会延迟进行，因此如果词法单元实际上未被检查，它们可能不会发生。
 
 r[macro.proc.token.conversion.to-proc_macro]
-When passed to a proc-macro
-- All multi-character operators are broken into single characters.
-- Lifetimes are broken into a `'` character and an identifier.
-- The keyword metavariable [`$crate`] is passed as a single identifier.
-- All other metavariable substitutions are represented as their underlying token streams.
-    - Such token streams may be wrapped into delimited groups ([`Group`]) with implicit delimiters ([`Delimiter::None`]) when it's necessary for preserving parsing priorities.
-    - `tt` and `ident` substitutions are never wrapped into such groups and always represented as their underlying token trees.
+当传递给过程宏时：
+- 所有多字符运算符被拆分为单字符。
+- 生命周期被拆分为一个 `'` 字符和一个标识符。
+- 关键字元变量 [`$crate`] 作为单个标识符传递。
+- 所有其他元变量替换表示为其底层的词法单元流。
+    - 当为了保持解析优先级而有必要时，此类词法单元流可能会被包装到具有隐式定界符（[`Delimiter::None`]）的定界组（[`Group`]）中。
+    - `tt` 和 `ident` 替换永远不会被包装到这样的组中，始终表示为其底层的词法单元树。
 
 r[macro.proc.token.conversion.from-proc_macro]
-When emitted from a proc macro
-- Punctuation characters are glued into multi-character operators when applicable.
-- Single quotes `'` joined with identifiers are glued into lifetimes.
-- Negative literals are converted into two tokens (the `-` and the literal) possibly wrapped into a delimited group ([`Group`]) with implicit delimiters ([`Delimiter::None`]) when it's necessary for preserving parsing priorities.
+当从过程宏发出时：
+- 标点字符在适用时合并为多字符运算符。
+- 与标识符连接的单引号 `'` 合并为生命周期。
+- 负数字面量转换为两个词法单元（`-` 和字面量），可能在需要保持解析优先级时包装到具有隐式定界符（[`Delimiter::None`]）的定界组（[`Group`]）中。
 
 r[macro.proc.token.doc-comment]
-Note that neither declarative nor procedural macros support doc comment tokens (e.g. `/// Doc`), so they are always converted to token streams representing their equivalent `#[doc = r"str"]` attributes when passed to macros.
+注意，声明宏和过程宏都不支持文档注释词法单元（例如 `/// Doc`），因此它们在传递给宏时总是被转换为表示其等效的 `#[doc = r"str"]` 属性的词法单元流。
 
 [Attribute macros]: #the-proc_macro_attribute-attribute
 [Cargo's build scripts]: ../cargo/reference/build-scripts.html

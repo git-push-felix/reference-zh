@@ -1,5 +1,5 @@
 r[cfg]
-# Conditional compilation
+# 条件编译
 
 r[cfg.syntax]
 ```grammar,configuration
@@ -28,76 +28,76 @@ ConfigurationPredicateList ->
 ```
 
 r[cfg.intro]
-*Conditionally compiled source code* is source code that is compiled only under certain conditions.
+*条件编译的源代码*是仅在特定条件下才被编译的源代码。
 
 r[cfg.attributes-macro]
-Source code can be made conditionally compiled using the [`cfg`] and [`cfg_attr`] [attributes] and the built-in [`cfg!`] and [`cfg_select!`] [macros].
+源代码可以通过 [`cfg`] 和 [`cfg_attr`] [属性][attributes]以及内置的 [`cfg!`] 和 [`cfg_select!`] [宏][macros]来进行条件编译。
 
 r[cfg.conditional]
-Whether to compile can depend on the target architecture of the compiled crate, arbitrary values passed to the compiler, and other things further described below.
+是否编译可以取决于被编译 crate 的目标架构、传递给编译器的任意值，以及下文所述的其他因素。
 
 r[cfg.predicate]
-Each form of conditional compilation takes a _configuration predicate_ that evaluates to true or false. The predicate is one of the following:
+每种条件编译形式都接受一个求值为 true 或 false 的*配置谓词*。谓词可以是以下之一：
 
 r[cfg.predicate.option]
-* A configuration option. The predicate is true if the option is set, and false if it is unset.
+* 一个配置选项。如果该选项被设置，则谓词为 true；如果未设置，则为 false。
 
 r[cfg.predicate.all]
-* `all()` with a comma-separated list of configuration predicates. It is true if all of the given predicates are true, or if the list is empty.
+* `all()`，后跟逗号分隔的配置谓词列表。如果所有给定谓词都为 true，或列表为空，则结果为 true。
 
 r[cfg.predicate.any]
-* `any()` with a comma-separated list of configuration predicates. It is true if at least one of the given predicates is true. If there are no predicates, it is false.
+* `any()`，后跟逗号分隔的配置谓词列表。如果至少有一个给定谓词为 true，则结果为 true。如果没有谓词，则结果为 false。
 
 r[cfg.predicate.not]
-* `not()` with a configuration predicate. It is true if its predicate is false and false if its predicate is true.
+* `not()`，后跟一个配置谓词。如果其谓词为 false，则结果为 true；如果其谓词为 true，则结果为 false。
 
 r[cfg.predicate.literal]
-* `true` or `false` literals, which are always true or false respectively.
+* `true` 或 `false` 字面量，分别始终为 true 或始终为 false。
 
 r[cfg.option-spec]
-_Configuration options_ are either names or key-value pairs, and are either set or unset.
+*配置选项*可以是名称或键值对，它们要么被设置，要么未被设置。
 
 r[cfg.option-name]
-Names are written as a single identifier, such as `unix`.
+名称写作单个标识符，如 `unix`。
 
 r[cfg.option-key-value]
-Key-value pairs are written as an identifier, `=`, and then a string, such as `target_arch = "x86_64"`.
+键值对写作一个标识符、`=` 和一个字符串，如 `target_arch = "x86_64"`。
 
 > [!NOTE]
-> Whitespace around the `=` is ignored, so `foo="bar"` and `foo = "bar"` are equivalent.
+> `=` 周围的空白会被忽略，因此 `foo="bar"` 和 `foo = "bar"` 是等价的。
 
 r[cfg.option-key-uniqueness]
-Keys do not need to be unique. For example, both `feature = "std"` and `feature = "serde"` can be set at the same time.
+键不需要唯一。例如，`feature = "std"` 和 `feature = "serde"` 可以同时被设置。
 
 r[cfg.options.set]
-## Set configuration options
+## 已设置的配置选项
 
 r[cfg.options.intro]
-Which configuration options are set is determined statically during the compilation of the crate.
+哪些配置选项被设置在 crate 编译期间静态确定。
 
 r[cfg.options.target]
-Some options are _compiler-set_ based on data about the compilation.
+有些选项是*编译器设置的*，基于关于编译的数据。
 
 r[cfg.options.other]
-Other options are _arbitrarily-set_ based on input passed to the compiler outside of the code.
+其他选项是*任意设置的*，基于在代码之外传递给编译器的输入。
 
 r[cfg.options.crate]
-It is not possible to set a configuration option from within the source code of the crate being compiled.
+无法从正在编译的 crate 的源代码内部设置配置选项。
 
 > [!NOTE]
-> For `rustc`, arbitrary-set configuration options are set using the [`--cfg`] flag. Configuration values for a specified target can be displayed with `rustc --print cfg --target $TARGET`.
+> 对于 `rustc`，任意设置的配置选项使用 [`--cfg`] 标志来设置。可以通过 `rustc --print cfg --target $TARGET` 显示指定目标的配置值。
 
 > [!NOTE]
-> Configuration options with the key `feature` are a convention used by [Cargo][cargo-feature] for specifying compile-time options and optional dependencies.
+> 键为 `feature` 的配置选项是 [Cargo][cargo-feature] 用于指定编译时选项和可选依赖的一项约定。
 
 r[cfg.target_arch]
 ### `target_arch`
 
 r[cfg.target_arch.def]
-Key-value option set once with the target's CPU architecture. The value is similar to the first element of the platform's target triple, but not identical.
+键值选项，设置一次，值为目标的 CPU 架构。该值类似于平台目标三元组的第一个元素，但不完全相同。
 
 r[cfg.target_arch.values]
-Example values:
+示例值：
 
 * `"x86"`
 * `"x86_64"`
@@ -111,10 +111,10 @@ r[cfg.target_feature]
 ### `target_feature`
 
 r[cfg.target_feature.def]
-Key-value option set for each platform feature available for the current compilation target.
+键值选项，为当前编译目标可用的每个平台特性设置。
 
 r[cfg.target_feature.values]
-Example values:
+示例值：
 
 * `"avx"`
 * `"avx2"`
@@ -124,19 +124,19 @@ Example values:
 * `"sse2"`
 * `"sse4.1"`
 
-See the [`target_feature` attribute] for more details on the available features.
+参见 [`target_feature` 属性][`target_feature` attribute]了解更多关于可用特性的详细信息。
 
 r[cfg.target_feature.crt_static]
-An additional feature of `crt-static` is available to the `target_feature` option to indicate that a [static C runtime] is available.
+`target_feature` 选项还有一个额外特性 `crt-static`，表示可用的[静态 C 运行时][static C runtime]。
 
 r[cfg.target_os]
 ### `target_os`
 
 r[cfg.target_os.def]
-Key-value option set once with the target's operating system. This value is similar to the second and third element of the platform's target triple.
+键值选项，设置一次，值为目标的操作系统。该值类似于平台目标三元组的第二个和第三个元素。
 
 r[cfg.target_os.values]
-Example values:
+示例值：
 
 * `"windows"`
 * `"macos"`
@@ -147,38 +147,38 @@ Example values:
 * `"dragonfly"`
 * `"openbsd"`
 * `"netbsd"`
-* `"none"` (typical for embedded targets)
+* `"none"`（典型用于嵌入式目标）
 
 r[cfg.target_family]
 ### `target_family`
 
 r[cfg.target_family.def]
-Key-value option providing a more generic description of a target, such as the family of the operating systems or architectures that the target generally falls into. Any number of `target_family` key-value pairs can be set.
+键值选项，提供目标的更通用描述，例如目标通常属于的操作系统或架构家族。可以设置任意数量的 `target_family` 键值对。
 
 r[cfg.target_family.values]
-Example values:
+示例值：
 
 * `"unix"`
 * `"windows"`
 * `"wasm"`
-* Both `"unix"` and `"wasm"`
+* 同时 `"unix"` 和 `"wasm"`
 
 r[cfg.target_family.unix]
-### `unix` and `windows`
+### `unix` 和 `windows`
 
-`unix` is set if `target_family = "unix"` is set.
+如果设置了 `target_family = "unix"`，则 `unix` 被设置。
 
 r[cfg.target_family.windows]
-`windows` is set if `target_family = "windows"` is set.
+如果设置了 `target_family = "windows"`，则 `windows` 被设置。
 
 r[cfg.target_env]
 ### `target_env`
 
 r[cfg.target_env.def]
-Key-value option set with further disambiguating information about the target platform with information about the ABI or `libc` used. For historical reasons, this value is only defined as not the empty-string when actually needed for disambiguation. Thus, for example, on many GNU platforms, this value will be empty. This value is similar to the fourth element of the platform's target triple. One difference is that embedded ABIs such as `gnueabihf` will simply define `target_env` as `"gnu"`.
+键值选项，设置关于目标平台的进一步消歧信息，包含关于所用 ABI 或 `libc` 的信息。由于历史原因，此值仅在需要消歧时才定义为非空字符串。因此，例如在许多 GNU 平台上，此值将为空。该值类似于平台目标三元组的第四个元素。一个不同之处在于，像 `gnueabihf` 这样的嵌入式 ABI 将简单地将 `target_env` 定义为 `"gnu"`。
 
 r[cfg.target_env.values]
-Example values:
+示例值：
 
 * `""`
 * `"gnu"`
@@ -192,13 +192,13 @@ r[cfg.target_abi]
 ### `target_abi`
 
 r[cfg.target_abi.def]
-Key-value option set to further disambiguate the target with information about the target ABI.
+键值选项，设置为进一步消歧目标，包含关于目标 ABI 的信息。
 
 r[cfg.target_abi.disambiguation]
-For historical reasons, this value is only defined as not the empty-string when actually needed for disambiguation. Thus, for example, on many GNU platforms, this value will be empty.
+由于历史原因，此值仅在需要消歧时才定义为非空字符串。因此，例如在许多 GNU 平台上，此值将为空。
 
 r[cfg.target_abi.values]
-Example values:
+示例值：
 
 * `""`
 * `"llvm"`
@@ -208,16 +208,16 @@ Example values:
 r[cfg.target_endian]
 ### `target_endian`
 
-Key-value option set once with either a value of "little" or "big" depending on the endianness of the target's CPU.
+键值选项，设置一次，值为 `"little"` 或 `"big"`，取决于目标 CPU 的字节序。
 
 r[cfg.target_pointer_width]
 ### `target_pointer_width`
 
 r[cfg.target_pointer_width.def]
-Key-value option set once with the target's pointer width in bits.
+键值选项，设置一次，值为目标的指针宽度（以位为单位）。
 
 r[cfg.target_pointer_width.values]
-Example values:
+示例值：
 
 * `"16"`
 * `"32"`
@@ -227,10 +227,10 @@ r[cfg.target_vendor]
 ### `target_vendor`
 
 r[cfg.target_vendor.def]
-Key-value option set once with the vendor of the target.
+键值选项，设置一次，值为目标的供应商。
 
 r[cfg.target_vendor.values]
-Example values:
+示例值：
 
 * `"apple"`
 * `"fortanix"`
@@ -241,13 +241,13 @@ r[cfg.target_has_atomic]
 ### `target_has_atomic`
 
 r[cfg.target_has_atomic.def]
-Key-value option set for each bit width that the target supports atomic loads, stores, and compare-and-swap operations.
+键值选项，为目标支持原子加载、存储和比较并交换操作的每个位宽设置。
 
 r[cfg.target_has_atomic.stdlib]
-When this cfg is present, all of the stable [`core::sync::atomic`] APIs are available for the relevant atomic width.
+当此 cfg 存在时，所有稳定的 [`core::sync::atomic`] API 对相应的原子位宽都可用。
 
 r[cfg.target_has_atomic.values]
-Possible values:
+可能的值：
 
 * `"8"`
 * `"16"`
@@ -259,69 +259,68 @@ Possible values:
 r[cfg.test]
 ### `test`
 
-Enabled when compiling the test harness. Done with `rustc` by using the [`--test`] flag. See [Testing] for more on testing support.
+在编译测试框架时启用。通过使用 [`--test`] 标志与 `rustc` 一起完成。更多关于测试支持的信息，请参见[测试][Testing]。
 
 r[cfg.debug_assertions]
 ### `debug_assertions`
 
-Enabled by default when compiling without optimizations. This can be used to enable extra debugging code in development but not in production.  For example, it controls the behavior of the standard library's [`debug_assert!`] macro.
+在不进行优化编译时默认启用。这可以用于在开发中启用额外的调试代码，而在生产中不启用。例如，它控制标准库的 [`debug_assert!`] 宏的行为。
 
 r[cfg.proc_macro]
 ### `proc_macro`
 
-Set when the crate being compiled is being compiled with the `proc_macro` [crate type].
+当正在编译的 crate 以 `proc_macro` [crate 类型][crate type]编译时设置。
 
 r[cfg.panic]
 ### `panic`
 
 r[cfg.panic.def]
-Key-value option set depending on the [panic strategy]. Note that more values may be added in the future.
+键值选项，根据 [panic 策略][panic strategy]设置。注意将来可能会添加更多值。
 
 r[cfg.panic.values]
-Example values:
+示例值：
 
 * `"abort"`
 * `"unwind"`
 
 [panic strategy]: panic.md#panic-strategy
 
-## Forms of conditional compilation
+## 条件编译的形式
 
 <!-- template:attributes -->
 r[cfg.attr]
-### The `cfg` attribute
+### `cfg` 属性 {#the-cfg-attribute}
 
 r[cfg.attr.intro]
-The *`cfg` [attribute]* conditionally includes the form to which it is attached based on a configuration predicate.
+*`cfg` [属性][attribute]* 根据配置谓词有条件地包含它所附加的形式。
 
 > [!EXAMPLE]
 > ```rust
-> // The function is only included in the build when compiling for macOS
+> // 该函数仅在为 macOS 编译时包含在构建中
 > #[cfg(target_os = "macos")]
 > fn macos_only() {
 >   // ...
 > }
 >
-> // This function is only included when either foo or bar is defined
+> // 该函数仅在 foo 或 bar 被定义时包含
 > #[cfg(any(foo, bar))]
 > fn needs_foo_or_bar() {
 >   // ...
 > }
 >
-> // This function is only included when compiling for a unixish OS with a 32-bit
-> // architecture
+> // 该函数仅在为类 Unix 操作系统且 32 位架构编译时包含
 > #[cfg(all(unix, target_pointer_width = "32"))]
 > fn on_32bit_unix() {
 >   // ...
 > }
 >
-> // This function is only included when foo is not defined
+> // 该函数仅在 foo 未被定义时包含
 > #[cfg(not(foo))]
 > fn needs_not_foo() {
 >   // ...
 > }
 >
-> // This function is only included when the panic strategy is set to unwind
+> // 该函数仅在 panic 策略设置为 unwind 时包含
 > #[cfg(panic = "unwind")]
 > fn when_unwinding() {
 >   // ...
@@ -329,47 +328,46 @@ The *`cfg` [attribute]* conditionally includes the form to which it is attached 
 > ```
 
 r[cfg.attr.syntax]
-The syntax for the `cfg` attribute is:
+`cfg` 属性的语法为：
 
 ```grammar,configuration
 @root CfgAttribute -> `cfg` `(` ConfigurationPredicate `)`
 ```
 
 r[cfg.attr.allowed-positions]
-The `cfg` attribute may be used anywhere attributes are allowed.
+`cfg` 属性可以用于任何允许属性的地方。
 
 r[cfg.attr.duplicates]
-The `cfg` attribute may be used any number of times on a form. The form to which the attributes are attached will not be included if any of the `cfg` predicates are false except as described in [cfg.attr.crate-level-attrs].
+`cfg` 属性可以在同一个形式上使用任意次数。如果任何 `cfg` 谓词为 false，则属性所附加的形式将不会被包含，除非 [cfg.attr.crate-level-attrs] 中所述的情况。
 
 r[cfg.attr.effect]
-If the predicates are true, the form is rewritten to not have the `cfg` attributes on it. If any predicate is false, the form is removed from the source code.
+如果谓词为 true，则该形式被重写为不带 `cfg` 属性。如果任何谓词为 false，则该形式从源代码中移除。
 
 r[cfg.attr.crate-level-attrs]
-When a crate-level `cfg` has a false predicate, the crate itself still exists. Any crate attributes preceding the `cfg` are kept, and any crate attributes following the `cfg` are removed as well as removing all of the following crate contents.
+当 crate 级别的 `cfg` 具有 false 谓词时，crate 本身仍然存在。`cfg` 之前的任何 crate 属性会被保留，而 `cfg` 之后的任何 crate 属性会被移除，同时移除所有后续的 crate 内容。
 
 > [!EXAMPLE]
-> The behavior of not removing the preceding attributes allows you to do things such as include `#![no_std]` to avoid linking `std` even if a `#![cfg(...)]` has otherwise removed the contents of the crate. For example:
+> 不移除前置属性的行为允许你做诸如包含 `#![no_std]` 来避免链接 `std` 的事情，即使 `#![cfg(...)]` 已经移除了 crate 的内容。例如：
 >
 > <!-- ignore: test infrastructure can't handle no_std -->
 > ```rust,ignore
-> // This `no_std` attribute is kept even though the crate-level `cfg`
-> // attribute is false.
+> // 即使 crate 级别的 `cfg` 属性为 false，此 `no_std` 属性也会被保留。
 > #![no_std]
 > #![cfg(false)]
 >
-> // This function is not included.
+> // 此函数不会被包含。
 > pub fn example() {}
 > ```
 
 <!-- template:attributes -->
 r[cfg.cfg_attr]
-### The `cfg_attr` attribute
+### `cfg_attr` 属性 {#the-cfg_attr-attribute}
 
 r[cfg.cfg_attr.intro]
-The *`cfg_attr` [attribute]* conditionally includes attributes based on a configuration predicate.
+*`cfg_attr` [属性][attribute]* 根据配置谓词有条件地包含属性。
 
 > [!EXAMPLE]
-> The following module will either be found at `linux.rs` or `windows.rs` based on the target.
+> 以下模块将根据目标在 `linux.rs` 或 `windows.rs` 中找到。
 >
 > <!-- ignore: `mod` needs multiple files -->
 > ```rust,ignore
@@ -379,7 +377,7 @@ The *`cfg_attr` [attribute]* conditionally includes attributes based on a config
 > ```
 
 r[cfg.cfg_attr.syntax]
-The syntax for the `cfg_attr` attribute is:
+`cfg_attr` 属性的语法为：
 
 ```grammar,configuration
 @root CfgAttrAttribute -> `cfg_attr` `(` ConfigurationPredicate `,` CfgAttrs? `)`
@@ -388,19 +386,19 @@ CfgAttrs -> Attr (`,` Attr)* `,`?
 ```
 
 r[cfg.cfg_attr.allowed-positions]
-The `cfg_attr` attribute may be used anywhere attributes are allowed.
+`cfg_attr` 属性可以用于任何允许属性的地方。
 
 r[cfg.cfg_attr.duplicates]
-The `cfg_attr` attribute may be used any number of times on a form.
+`cfg_attr` 属性可以在同一个形式上使用任意次数。
 
 r[cfg.cfg_attr.attr-restriction]
-The [`crate_type`] and [`crate_name`] attributes cannot be used with `cfg_attr`.
+[`crate_type`] 和 [`crate_name`] 属性不能与 `cfg_attr` 一起使用。
 
 r[cfg.cfg_attr.behavior]
-When the configuration predicate is true, `cfg_attr` expands out to the attributes listed after the predicate.
+当配置谓词为 true 时，`cfg_attr` 展开为谓词之后列出的属性。
 
 r[cfg.cfg_attr.attribute-list]
-Zero, one, or more attributes may be listed. Multiple attributes will each be expanded into separate attributes.
+可以列出零个、一个或多个属性。多个属性将被分别展开为单独的属性。
 
 > [!EXAMPLE]
 > <!-- ignore: fake attributes -->
@@ -408,21 +406,21 @@ Zero, one, or more attributes may be listed. Multiple attributes will each be ex
 > #[cfg_attr(feature = "magic", sparkles, crackles)]
 > fn bewitched() {}
 >
-> // When the `magic` feature flag is enabled, the above will expand to:
+> // 当 `magic` 特性标志启用时，以上代码将展开为：
 > #[sparkles]
 > #[crackles]
 > fn bewitched() {}
 > ```
 
 > [!NOTE]
-> The `cfg_attr` can expand to another `cfg_attr`. For example, `#[cfg_attr(target_os = "linux", cfg_attr(feature = "multithreaded", some_other_attribute))]` is valid. This example would be equivalent to `#[cfg_attr(all(target_os = "linux", feature = "multithreaded"), some_other_attribute)]`.
+> `cfg_attr` 可以展开为另一个 `cfg_attr`。例如，`#[cfg_attr(target_os = "linux", cfg_attr(feature = "multithreaded", some_other_attribute))]` 是有效的。此示例将等价于 `#[cfg_attr(all(target_os = "linux", feature = "multithreaded"), some_other_attribute)]`。
 
 r[cfg.macro]
-### The `cfg` macro
+### `cfg` 宏 {#the-cfg-macro}
 
-The built-in `cfg` macro takes in a single configuration predicate and evaluates to the `true` literal when the predicate is true and the `false` literal when it is false.
+内置的 `cfg` 宏接受单个配置谓词，当谓词为 true 时求值为 `true` 字面量，为 false 时求值为 `false` 字面量。
 
-For example:
+例如：
 
 ```rust
 let machine_kind = if cfg!(unix) {
@@ -437,22 +435,22 @@ println!("I'm running on a {} machine!", machine_kind);
 ```
 
 r[cfg.cfg_select]
-### The `cfg_select` macro
+### `cfg_select` 宏 {#the-cfg_select-macro}
 
 r[cfg.cfg_select.intro]
-The built-in [`cfg_select!`][std::cfg_select] macro can be used to select code at compile-time based on multiple configuration predicates.
+内置的 [`cfg_select!`][std::cfg_select] 宏可用于在编译期根据多个配置谓词选择代码。
 
 > [!EXAMPLE]
 > ```rust
 > cfg_select! {
 >     unix => {
->         fn foo() { /* unix specific functionality */ }
+>         fn foo() { /* unix 特定功能 */ }
 >     }
 >     target_pointer_width = "32" => {
->         fn foo() { /* non-unix, 32-bit functionality */ }
+>         fn foo() { /* 非 unix、32 位功能 */ }
 >     }
 >     _ => {
->         fn foo() { /* fallback implementation */ }
+>         fn foo() { /* 回退实现 */ }
 >     }
 > }
 >
@@ -479,19 +477,19 @@ CfgSelectConfigurationPredicate ->
 ```
 
 r[cfg.cfg_select.first-arm]
-`cfg_select` expands to the payload of the first arm whose configuration predicate evaluates to true.
+`cfg_select` 展开为第一个其配置谓词求值为 true 的分支的载荷。
 
 r[cfg.cfg_select.braces]
-If the entire payload is wrapped in curly braces, the braces are removed during expansion.
+如果整个载荷被花括号包裹，展开时会移除花括号。
 
 r[cfg.cfg_select.wildcard]
-The configuration predicate `_` always evaluates to true.
+配置谓词 `_` 始终求值为 true。
 
 r[cfg.cfg_select.fallthrough]
-It is a compile error if none of the predicates evaluate to true.
+如果没有任何谓词求值为 true，则是编译错误。
 
 r[cfg.cfg_select.well-formed]
-Each right-hand side must be a syntactically valid expansion for the position in which the macro is invoked.
+每个右侧必须是对于宏调用所在位置语法有效的展开。
 
 [Testing]: attributes/testing.md
 [`--cfg`]: ../rustc/command-line-arguments.html#--cfg-configure-the-compilation-environment
