@@ -1,0 +1,60 @@
+name: Deploy to GitHub Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  MDBOOK_VERSION: 0.5.2
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust nightly
+        run: |
+          rustup set profile minimal
+          rustup toolchain install nightly
+          rustup default nightly
+
+      - name: Install mdbook
+        run: |
+          mkdir bin
+          curl -sSL https://github.com/rust-lang/mdBook/releases/download/v${MDBOOK_VERSION}/mdbook-v${MDBOOK_VERSION}-x86_64-unknown-linux-gnu.tar.gz | tar -xz --directory=bin
+          echo "$(pwd)/bin" >> $GITHUB_PATH
+
+      - name: Build reference book
+        env:
+          SPEC_RELATIVE: 0
+        run: mdbook build
+
+      - name: Build dev-guide
+        working-directory: dev-guide
+        run: mdbook build
+
+      - name: Prepare Pages artifact
+        run: |
+          mkdir -p out
+          cp -r book/* out/
+          cp -r dev-guide/book out/dev-guide
+          touch out/.nojekyll
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

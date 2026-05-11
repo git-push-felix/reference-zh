@@ -1,0 +1,94 @@
+name: Release PDFs
+on:
+  push:
+    branches: [main]
+
+env:
+  MDBOOK_VERSION: 0.5.2
+  MDBOOK_PDF_VERSION: 0.1.13
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust nightly
+        run: |
+          rustup set profile minimal
+          rustup toolchain install nightly
+          rustup default nightly
+
+      - name: Install mdbook
+        run: |
+          mkdir bin
+          curl -sSL https://github.com/rust-lang/mdBook/releases/download/v${MDBOOK_VERSION}/mdbook-v${MDBOOK_VERSION}-x86_64-unknown-linux-gnu.tar.gz | tar -xz --directory=bin
+          echo "$(pwd)/bin" >> $GITHUB_PATH
+
+      - name: Install mdbook-pdf
+        run: |
+          curl -Lf -o bin/mdbook-pdf https://github.com/HollowMan6/mdbook-pdf/releases/download/v${MDBOOK_PDF_VERSION}/mdbook-pdf-v${MDBOOK_PDF_VERSION}-x86_64-unknown-linux-gnu
+          chmod +x bin/mdbook-pdf
+
+      - name: Install Chrome and CJK fonts
+        run: |
+          wget -q -O /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo apt-get install -y /tmp/chrome.deb
+          sudo apt-get install -y fonts-noto-cjk
+
+      - name: Generate reference book PDF
+        env:
+          SPEC_RELATIVE: 0
+        run: |
+          cat >> book.toml << 'EOF'
+
+          [output.pdf]
+          print-background = true
+          prefer-css-page-size = true
+          generate-document-outline = true
+          static-site-url = "https://git-push-felix.github.io/reference-zh/"
+          EOF
+          mdbook build
+          mv book/pdf/output.pdf "Rust 参考手册.pdf"
+
+      - name: Generate dev-guide PDF
+        working-directory: dev-guide
+        run: |
+          cat >> book.toml << 'EOF'
+
+          [output.pdf]
+          print-background = true
+          prefer-css-page-size = true
+          generate-document-outline = true
+          static-site-url = "https://git-push-felix.github.io/reference-zh/dev-guide/"
+          EOF
+          mdbook build
+          mv book/pdf/output.pdf "../Rust 参考手册开发者指南.pdf"
+
+      - name: Generate release notes
+        run: |
+          cat > /tmp/notes.md << 'NOTES_END'
+          每次推送到主分支时自动生成的 PDF 文件。
+
+          ## 本次提交
+          NOTES_END
+          echo "- **SHA**: ${{ github.sha }}" >> /tmp/notes.md
+          echo "- **提交者**: ${{ github.event.head_commit.author.name }}" >> /tmp/notes.md
+          echo "- **时间**: ${{ github.event.head_commit.timestamp }}" >> /tmp/notes.md
+          echo >> /tmp/notes.md
+          echo '```text' >> /tmp/notes.md
+          git log -1 --format='%B' HEAD >> /tmp/notes.md
+          echo '```' >> /tmp/notes.md
+
+      - name: Publish PDFs to latest release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete latest --yes --cleanup-tag 2>/dev/null || true
+          gh release create latest \
+            --title "Latest PDFs" \
+            --notes-file /tmp/notes.md \
+            "Rust 参考手册.pdf" \
+            "Rust 参考手册开发者指南.pdf"
