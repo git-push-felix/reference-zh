@@ -36,7 +36,7 @@ Token 是语法中由正则（非递归）语言定义的基本产生式。Rust 
 [string table production]: notation.md#string-table-productions
 
 r[lex.token.literal]
-## 字面量
+## 字面量 {#literals}
 
 字面量是用于[字面量表达式][literal expressions]的 token。
 
@@ -58,7 +58,7 @@ r[lex.token.literal]
 [^nsets]: 同一直面量两侧的 `#` 数量必须相等。
 
 
-#### ASCII 转义
+#### ASCII 转义 {#ascii-escapes}
 
 |   | 名称 |
 |---|------|
@@ -69,7 +69,7 @@ r[lex.token.literal]
 | `\\` | 反斜杠 |
 | `\0` | 空 |
 
-#### 字节转义
+#### 字节转义 {#byte-escapes}
 
 |   | 名称 |
 |---|------|
@@ -80,13 +80,13 @@ r[lex.token.literal]
 | `\\` | 反斜杠 |
 | `\0` | 空 |
 
-#### Unicode 转义
+#### Unicode 转义 {#unicode-escapes}
 
 |   | 名称 |
 |---|------|
 | `\u{7FFF}` | 24 位 Unicode 字符码（最多 6 个十六进制数字） |
 
-#### 引号转义
+#### 引号转义 {#quote-escapes}
 
 |   | 名称 |
 |---|------|
