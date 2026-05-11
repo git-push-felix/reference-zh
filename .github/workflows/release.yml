@@ -91,6 +91,7 @@ jobs:
         run: |
           if gh release view latest &>/dev/null; then
             gh release delete latest --yes --cleanup-tag
+            sleep 5
           fi
           gh release create latest \
             --title "Latest PDFs" \
