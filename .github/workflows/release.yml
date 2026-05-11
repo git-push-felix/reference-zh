@@ -38,6 +38,9 @@ jobs:
           sudo apt-get install -y /tmp/chrome.deb
           sudo apt-get install -y fonts-noto-cjk
 
+      - name: Build spec preprocessor
+        run: cargo build --release --manifest-path tools/mdbook-spec/Cargo.toml
+
       - name: Generate reference book PDF
         env:
           SPEC_RELATIVE: 0
@@ -48,7 +51,7 @@ jobs:
           print-background = true
           prefer-css-page-size = true
           generate-document-outline = true
-          static-site-url = "https://git-push-felix.github.io/reference-zh/"
+          static-site-url = "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
           EOF
           mdbook build
           mv book/pdf/output.pdf "Rust 参考手册.pdf"
@@ -62,7 +65,7 @@ jobs:
           print-background = true
           prefer-css-page-size = true
           generate-document-outline = true
-          static-site-url = "https://git-push-felix.github.io/reference-zh/dev-guide/"
+          static-site-url = "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/dev-guide/"
           EOF
           mdbook build
           mv book/pdf/output.pdf "../Rust 参考手册开发者指南.pdf"
@@ -86,7 +89,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release delete latest --yes --cleanup-tag 2>/dev/null || true
+          if gh release view latest &>/dev/null; then
+            gh release delete latest --yes --cleanup-tag
+          fi
           gh release create latest \
             --title "Latest PDFs" \
             --notes-file /tmp/notes.md \

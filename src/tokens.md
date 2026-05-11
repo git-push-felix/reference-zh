@@ -31,7 +31,7 @@ Token 是语法中由正则（非递归）语言定义的基本产生式。Rust 
 * [标点符号](#punctuation)
 * [定界符](#delimiters)
 
-在本文档的语法中，"简单"token 以[字符串表产生式][string table production]的形式给出，并以 `monospace` 字体出现。
+在本文档的语法中，"简单" token 以[字符串表产生式][string table production]的形式给出，并以 `monospace` 字体呈现。
 
 [string table production]: notation.md#string-table-productions
 
@@ -55,14 +55,14 @@ r[lex.token.literal]
 | [C 字符串](#c-string-literals)               | `c"hello"`      | 0          | 所有 Unicode | [引号](#quote-escapes) 与 [字节](#byte-escapes) 与 [Unicode](#unicode-escapes)   |
 | [原始 C 字符串](#raw-c-string-literals)       | `cr#"hello"#`   | <256       | 所有 Unicode | `N/A`                                                                           |
 
-[^nsets]: 同一个字面量两侧的 `#` 数量必须相同。
+[^nsets]: 同一直面量两侧的 `#` 数量必须相等。
 
 
 #### ASCII 转义
 
 |   | 名称 |
 |---|------|
-| `\x41` | 7 位字符码（恰好 2 位十六进制数字，最大 0x7F） |
+| `\x41` | 7 位字符码（恰好 2 个十六进制数字，最大 0x7F） |
 | `\n` | 换行 |
 | `\r` | 回车 |
 | `\t` | 制表符 |
@@ -73,7 +73,7 @@ r[lex.token.literal]
 
 |   | 名称 |
 |---|------|
-| `\x7F` | 8 位字符码（恰好 2 位十六进制数字） |
+| `\x7F` | 8 位字符码（恰好 2 个十六进制数字） |
 | `\n` | 换行 |
 | `\r` | 回车 |
 | `\t` | 制表符 |
@@ -84,7 +84,7 @@ r[lex.token.literal]
 
 |   | 名称 |
 |---|------|
-| `\u{7FFF}` | 24 位 Unicode 字符码（最多 6 位十六进制数字） |
+| `\u{7FFF}` | 24 位 Unicode 字符码（最多 6 个十六进制数字） |
 
 #### 引号转义
 
@@ -109,7 +109,7 @@ r[lex.token.literal.suffix]
 #### 后缀
 
 r[lex.token.literal.literal.suffix.intro]
-后缀是一串紧跟在字面量主体部分之后（没有间隔空白）的字符，其形式与非原始标识符或关键字相同。
+后缀是一串紧跟在字面量主体部分之后（中间没有空白字符）的字符，其形式与非原始标识符或关键字相同。
 
 r[lex.token.literal.suffix.syntax]
 ```grammar,lexer
@@ -121,7 +121,7 @@ SUFFIX ->
 r[lex.token.literal.suffix.validity]
 任何类型的字面量（字符串、整数等）带有任意后缀作为 token 都是合法的。
 
-带任意后缀的字面量 token 可以传递给宏而不会产生错误。宏本身将决定如何解释这样的 token 以及是否产生错误。特别是，按示例宏的 `literal` 片段限定符可以匹配带任意后缀的字面量 token。
+带任意后缀的字面量 token 可以传递给宏而不会产生错误。宏本身将决定如何解释这样的 token 以及是否报错。特别是，按示例宏的 `literal` 片段限定符可以匹配带任意后缀的字面量 token。
 
 ```rust
 macro_rules! blackhole { ($tt:tt) => () }
@@ -132,7 +132,7 @@ blackhole_lit!(1suffix); // OK
 ```
 
 r[lex.token.literal.suffix.parse]
-然而，在作为字面量表达式或模式解释时，字面量 token 的后缀是受限的。非数字字面量 token 上的任何后缀都会被拒绝，而数字字面量 token 仅接受下表中的后缀。
+然而，在被解释为字面量表达式或模式时，字面量 token 的后缀是受限的。非数字字面量 token 上的任何后缀都会被拒绝，而数字字面量 token 仅接受下表中的后缀。
 
 | 整数 | 浮点数 |
 |---------|----------------|
@@ -195,7 +195,7 @@ r[lex.token.literal.char-escape.intro]
 在字符字面量或非原始字符串字面量中，还可以使用一些额外的*转义*。转义以 `U+005C`（`\`）开头，并以下列形式之一继续：
 
 r[lex.token.literal.char-escape.ascii]
-* *7 位码点转义*以 `U+0078`（`x`）开头，后跟恰好两位*十六进制数字*，值最大为 `0x7F`。它表示与提供的十六进制值相等的 ASCII 字符。不允许更高的值，因为它是表示 Unicode 码点还是字节值存在歧义。
+* *7 位码点转义*以 `U+0078`（`x`）开头，后跟恰好两位*十六进制数字*，值最大为 `0x7F`。它表示与提供的十六进制值相等的 ASCII 字符。不允许更高的值，因为无法确定它表示的是 Unicode 码点还是字节值。
 
 r[lex.token.literal.char-escape.unicode]
 * *24 位码点转义*以 `U+0075`（`u`）开头，后跟最多六位*十六进制数字*，并用花括号 `U+007B`（`{`）和 `U+007D`（`}`）包围。它表示与提供的十六进制值相等的 Unicode 码点。该值必须是合法的 Unicode 标量值。
@@ -230,13 +230,13 @@ r[lex.token.literal.str-raw.body]
 *原始字符串主体*可以包含除 `U+000D`（CR）外的任意 Unicode 字符序列。它仅由另一个 `U+0022`（双引号）字符后跟与起始 `U+0022`（双引号）字符之前相同数量的 `U+0023`（`#`）字符来终止。
 
 r[lex.token.literal.str-raw.content]
-原始字符串主体中包含的所有 Unicode 字符都表示其自身，字符 `U+0022`（双引号）（后跟至少与用于开始原始字符串字面量的 `U+0023`（`#`）字符数量相同时除外）或 `U+005C`（`\`）不具有任何特殊含义。
+原始字符串主体中包含的所有 Unicode 字符都表示其自身，`U+0022`（双引号，当后跟至少与启动原始字符串字面量时所用相同数量的 `U+0023`（`#`）字符时除外）或 `U+005C`（`\`）没有任何特殊含义。
 
-字符串字面量示例：
+字符串字面量的示例：
 
 ```rust
 "foo"; r"foo";                     // foo
-"\""foo\""; r#""foo""#;             // "foo"
+"\"foo\""; r#""foo""#;             // "foo"
 
 "foo #\"# bar";
 r##"foo #"# bar"##;                // foo #"# bar
@@ -286,7 +286,7 @@ r[lex.token.str-byte.escape]
 在字节字面量或非原始字节字符串字面量中，还可以使用一些额外的*转义*。转义以 `U+005C`（`\`）开头，并以下列形式之一继续：
 
 r[lex.token.str-byte.escape-byte]
-* *字节转义*以 `U+0078`（`x`）开头，后跟恰好两位*十六进制数字*。它表示与提供的十六进制值相等的字节。
+* *字节转义*转义以 `U+0078`（`x`）开头，后跟恰好两位*十六进制数字*。它表示与提供的十六进制值相等的字节。
 
 r[lex.token.str-byte.escape-whitespace]
 * *空白转义*是字符 `U+006E`（`n`）、`U+0072`（`r`）或 `U+0074`（`t`）之一，分别表示字节值 `0x0A`（ASCII LF）、`0x0D`（ASCII CR）或 `0x09`（ASCII HT）。
@@ -320,9 +320,9 @@ r[lex.token.str-byte-raw.body]
 *原始字符串主体*可以包含除 `U+000D`（CR）外的任意 ASCII 字符序列。它仅由另一个 `U+0022`（双引号）字符后跟与起始 `U+0022`（双引号）字符之前相同数量的 `U+0023`（`#`）字符来终止。原始字节字符串字面量不能包含任何非 ASCII 字节。
 
 r[lex.token.literal.str-byte-raw.content]
-原始字符串主体中包含的所有字符都表示其 ASCII 编码，字符 `U+0022`（双引号）（后跟至少与用于开始原始字符串字面量的 `U+0023`（`#`）字符数量相同时除外）或 `U+005C`（`\`）不具有任何特殊含义。
+原始字符串主体中包含的所有字符都表示其 ASCII 编码，`U+0022`（双引号，当后跟至少与启动原始字符串字面量时所用相同数量的 `U+0023`（`#`）字符时除外）或 `U+005C`（`\`）没有任何特殊含义。
 
-字节字符串字面量示例：
+字节字符串字面量的示例：
 
 ```rust
 b"foo"; br"foo";                     // foo
@@ -366,10 +366,10 @@ r[lex.token.str-c.escape]
 在非原始 C 字符串字面量中，还可以使用一些额外的*转义*。转义以 `U+005C`（`\`）开头，并以下列形式之一继续：
 
 r[lex.token.str-c.escape-byte]
-* *字节转义*以 `U+0078`（`x`）开头，后跟恰好两位*十六进制数字*。它表示与提供的十六进制值相等的字节。
+* *字节转义*转义以 `U+0078`（`x`）开头，后跟恰好两位*十六进制数字*。它表示与提供的十六进制值相等的字节。
 
 r[lex.token.str-c.escape-unicode]
-* *24 位码点转义*以 `U+0075`（`u`）开头，后跟最多六位*十六进制数字*，并用花括号 `U+007B`（`{`）和 `U+007D`（`}`）包围。它表示与提供的十六进制值相等的 Unicode 码点，并以 UTF-8 编码。
+* *24 位码点转义*以 `U+0075`（`u`）开头，后跟最多六位*十六进制数字*，并用花括号 `U+007B`（`{`）和 `U+007D`（`}`）包围。它表示与提供的十六进制值相等的 Unicode 码点，以 UTF-8 编码。
 
 r[lex.token.str-c.escape-whitespace]
 * *空白转义*是字符 `U+006E`（`n`）、`U+0072`（`r`）或 `U+0074`（`t`）之一，分别表示字节值 `0x0A`（ASCII LF）、`0x0D`（ASCII CR）或 `0x09`（ASCII HT）。
@@ -390,7 +390,7 @@ c"\xC3\xA6";
 
 r[lex.token.str-c.edition2021]
 > [!EDITION-2021]
-> C 字符串字面量在 2021 版本或更高版本中接受。在更早的版本中，token `c""` 被词法分析为 `c ""`。
+> C 字符串字面量在 2021 版本及更高版本中接受。在更早的版本中，token `c""` 被词法分析为 `c ""`。
 
 r[lex.token.str-c-raw]
 #### 原始 C 字符串字面量 {#raw-c-string-literals}
@@ -413,13 +413,13 @@ r[lex.token.str-c-raw.body]
 *原始 C 字符串主体*可以包含除 `U+0000`（NUL）和 `U+000D`（CR）外的任意 Unicode 字符序列。它仅由另一个 `U+0022`（双引号）字符后跟与起始 `U+0022`（双引号）字符之前相同数量的 `U+0023`（`#`）字符来终止。
 
 r[lex.token.str-c-raw.content]
-原始 C 字符串主体中包含的所有字符都以 UTF-8 编码表示其自身。字符 `U+0022`（双引号）（后跟至少与用于开始原始 C 字符串字面量的 `U+0023`（`#`）字符数量相同时除外）或 `U+005C`（`\`）不具有任何特殊含义。
+原始 C 字符串主体中包含的所有字符都以 UTF-8 编码表示其自身。`U+0022`（双引号，当后跟至少与启动原始 C 字符串字面量时所用相同数量的 `U+0023`（`#`）字符时除外）或 `U+005C`（`\`）没有任何特殊含义。
 
 r[lex.token.str-c-raw.edition2021]
 > [!EDITION-2021]
-> 原始 C 字符串字面量在 2021 版本或更高版本中接受。在更早的版本中，token `cr""` 被词法分析为 `cr ""`，`cr#""#` 被词法分析为 `cr #""#`（不合语法）。
+> 原始 C 字符串字面量在 2021 版本及更高版本中接受。在更早的版本中，token `cr""` 被词法分析为 `cr ""`，`cr#""#` 被词法分析为 `cr #""#`（不合语法）。
 
-#### C 字符串与原始 C 字符串字面量示例
+#### C 字符串与原始 C 字符串字面量的示例
 
 ```rust
 c"foo"; cr"foo";                     // foo
@@ -532,7 +532,7 @@ r[lex.token.literal.int.invalid]
 ##### 无效的整数字面量
 
 r[lex.token.literal.int.invalid.intro]
-某些整数字面量形式是无效的。为避免歧义，token 化器会拒绝它们，而不是将其拆分为多个 token。
+某些整数字面量形式是无效的。为避免歧义，分词器会拒绝它们，而不是将其拆分为多个 token。
 
 ```rust,compile_fail
 0b0102;  // 这不是 `0b010` 后跟 `2`。
@@ -555,7 +555,7 @@ r[lex.token.literal.int.exp]
 不带后缀的二进制或八进制字面量后紧跟字符 `e` 或 `E`（中间没有空白字符）是错误的。
 
 r[lex.token.literal.int.empty-with-radix]
-基数前缀之后（在任何可选的前导下划线之后）没有至少一个有效基数数字是错误的。
+基数前缀之后（在任何可选的前导下划线之后）没有至少一个有效的该进制数字是错误的。
 
 r[lex.token.literal.int.tuple-field]
 #### 元组索引
@@ -578,10 +578,10 @@ let example = ("dog", "cat", "horse");
 let dog = example.0;
 let cat = example.1;
 // 以下示例是无效的。
-let cat = example.01;  // 错误 没有名为 `01` 的字段
-let horse = example.0b10;  // 错误 没有名为 `0b10` 的字段
-let unicorn = example.0usize; // 错误 元组索引上的后缀是无效的
-let underscore = example.0_0; // 错误 类型 `(&str, &str, &str)` 上没有字段 `0_0`
+let cat = example.01;  // ERROR 没有名为 `01` 的字段
+let horse = example.0b10;  // ERROR 没有名为 `0b10` 的字段
+let unicorn = example.0usize; // ERROR 元组索引上的后缀是无效的
+let underscore = example.0_0; // ERROR 类型 `(&str, &str, &str)` 上没有字段 `0_0`
 ```
 
 r[lex.token.literal.float]
@@ -667,14 +667,14 @@ r[lex.token.life.raw.intro]
 原始生命周期类似于普通生命周期，但其标识符带有 `r#` 前缀。（注意，`r#` 前缀不算作实际生命周期的一部分。）
 
 r[lex.token.life.raw.allowed]
-与普通生命周期不同，原始生命周期可以使用任何严格或保留关键字，但 `RAW_LIFETIME` 中以上列出的除外。
+与普通生命周期不同，原始生命周期可以使用任何严格或保留关键字，但上述 `RAW_LIFETIME` 所列的除外。
 
 r[lex.token.life.raw.reserved]
 使用 [RESERVED_RAW_LIFETIME] token 是错误的。
 
 r[lex.token.life.raw.edition2021]
 > [!EDITION-2021]
-> 原始生命周期在 2021 版本或更高版本中接受。在更早的版本中，token `'r#lt` 被词法分析为 `'r # lt`。
+> 原始生命周期在 2021 版本及更高版本中接受。在更早的版本中，token `'r#lt` 被词法分析为 `'r # lt`。
 
 r[lex.token.punct]
 ## 标点符号 {#punctuation}
@@ -740,7 +740,7 @@ PUNCTUATION ->
 ```
 
 > [!NOTE]
-> 关于各标点符号的用法，请参阅[语法索引][syntax index]。
+> 关于各标点符号字符的用法，请参阅[语法索引][syntax index]。
 
 r[lex.token.delim]
 ## 定界符 {#delimiters}
