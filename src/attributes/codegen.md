@@ -98,7 +98,7 @@ r[attributes.codegen.cold.trait]
 当 `cold` 应用于 [trait] 中的函数时，它仅适用于[默认定义][default definition]的代码。
 
 r[attributes.codegen.naked]
-## `naked` 属性
+## `naked` 属性 {#the-naked-attribute}
 
 r[attributes.codegen.naked.intro]
 *`naked` [属性][attribute]* 阻止编译器为带属性的函数生成函数序言和尾声。

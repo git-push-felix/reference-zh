@@ -115,7 +115,7 @@ r[asm.scope.intro]
 内联汇编可以以三种方式之一使用。
 
 r[asm.scope.asm]
-使用 `asm!` 宏，汇编代码在函数作用域中发出并集成到编译器生成的函数汇编代码中。此汇编代码必须遵守[严格的规则](#内联汇编的规则)以避免未定义行为。请注意，在某些情况下编译器可能会选择将汇编代码作为单独的函数发出并生成对其的调用。
+使用 `asm!` 宏，汇编代码在函数作用域中发出并集成到编译器生成的函数汇编代码中。此汇编代码必须遵守[严格的规则](#rules-for-inline-assembly)以避免未定义行为。请注意，在某些情况下编译器可能会选择将汇编代码作为单独的函数发出并生成对其的调用。
 
 ```rust
 # #[cfg(target_arch = "x86_64")] {
@@ -208,7 +208,7 @@ unsafe { core::arch::asm!("/* {x} */", x = const 5, "ud2"); } // ERROR: unexpect
 ```
 
 r[asm.ts-args.positional-first]
-与格式字符串一样，位置参数必须出现在命名参数和显式[寄存器操作数](#寄存器操作数)之前。
+与格式字符串一样，位置参数必须出现在命名参数和显式[寄存器操作数](#register-operands)之前。
 
 ```rust,compile_fail
 # #[cfg(target_arch = "x86_64")] {
@@ -256,7 +256,7 @@ r[asm.ts-args.opaque]
 确切的汇编代码语法是平台特定的，对编译器是不透明的，除了操作数被替换到模板字符串中以形成传递给汇编器的代码的方式。
 
 r[asm.ts-args.llvm-syntax]
-目前，所有支持的目标都遵循 LLVM 内部汇编器使用的汇编代码语法，这通常对应于 GNU 汇编器 (GAS) 的语法。在 x86 上，默认使用 GAS 的 `.intel_syntax noprefix` 模式。在 ARM 上，使用 `.syntax unified` 模式。这些目标对汇编代码施加了一个额外的限制：任何汇编器状态（例如可以用 `.section` 更改的当前节）必须在 asm 字符串的末尾恢复到其原始值。不符合 GAS 语法的汇编代码将导致特定于汇编器的行为。内联汇编使用的指令的进一步约束由[指令支持](#指令支持)指示。
+目前，所有支持的目标都遵循 LLVM 内部汇编器使用的汇编代码语法，这通常对应于 GNU 汇编器 (GAS) 的语法。在 x86 上，默认使用 GAS 的 `.intel_syntax noprefix` 模式。在 ARM 上，使用 `.syntax unified` 模式。这些目标对汇编代码施加了一个额外的限制：任何汇编器状态（例如可以用 `.section` 更改的当前节）必须在 asm 字符串的末尾恢复到其原始值。不符合 GAS 语法的汇编代码将导致特定于汇编器的行为。内联汇编使用的指令的进一步约束由[指令支持](#directives-support)指示。
 
 [format-syntax]: std::fmt#syntax
 [rfc-2795]: https://github.com/rust-lang/rfcs/pull/2795
@@ -490,7 +490,7 @@ core::arch::global_asm!("/* {} {} */", const 0, sym foo);
 ```
 
 r[asm.register-operands]
-## 寄存器操作数
+## 寄存器操作数 {#register-operands}
 
 r[asm.register-operands.register-or-class]
 输入和输出操作数可以指定为显式寄存器或来自寄存器类别的寄存器，由寄存器分配器从中选择。显式寄存器作为字符串字面量（例如 `"eax"`）指定，而寄存器类别作为标识符（例如 `reg`）指定。
@@ -1307,7 +1307,7 @@ core::arch::global_asm!("", options(nomem));
 ```
 
 r[asm.rules]
-## 内联汇编的规则
+## 内联汇编的规则 {#rules-for-inline-assembly}
 
 r[asm.rules.intro]
 为避免未定义行为，在使用函数作用域内联汇编（`asm!`）时必须遵循以下规则：
@@ -1559,7 +1559,7 @@ r[asm.validity.non-exhaustive]
 因此，这些规则是*非穷尽的*。编译器不需要检查初始字符串的正确性和有效性，也不需要检查最终生成的汇编的正确性和有效性。汇编器可能检查正确性和有效性，但不要求这样做。在使用 `asm!` 时，一个排版错误可能就足以使程序不健全，而汇编的规则可能包含数千页的架构参考手册。程序员应谨慎行事，因为调用此 `unsafe` 功能意味着承担不违反编译器或架构规则的责任。
 
 r[asm.directives]
-### 指令支持
+### 指令支持 {#directives-support}
 
 r[asm.directives.subset-supported]
 内联汇编支持 GNU AS 和 LLVM 内部汇编器都支持的指令子集，如下所示。使用其他指令的结果是特定于汇编器的（可能引起错误，也可能按原样接受）。
