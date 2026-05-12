@@ -97,6 +97,9 @@ jobs:
           sleep 3
           gh release create latest \
             --title "Latest PDFs" \
-            --notes-file /tmp/notes.md \
+            --notes-file /tmp/notes.md
+          sleep 3
+          gh release upload latest \
             "Rust 参考手册.pdf" \
-            "Rust 参考手册开发者指南.pdf"
+            "Rust 参考手册开发者指南.pdf" \
+            --clobber
