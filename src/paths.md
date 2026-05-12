@@ -127,7 +127,7 @@ QualifiedPathInType -> QualifiedPathType (`::` TypePathSegment)+
 ```
 
 r[paths.qualified.intro]
-完全限定路径允许消除 [trait 实现][trait implementations]的路径歧义，并允许指定[规范路径](#规范路径)。在类型规范中使用时，它支持使用下面指定的类型语法。
+完全限定路径允许消除 [trait 实现][trait implementations]的路径歧义，并允许指定[规范路径](#canonical-paths)。在类型规范中使用时，它支持使用下面指定的类型语法。
 
 ```rust
 struct S;

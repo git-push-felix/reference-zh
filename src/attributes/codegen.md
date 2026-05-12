@@ -125,10 +125,10 @@ r[attributes.codegen.naked.unused-variables]
 [`unused_variables`] lint 在裸函数中被抑制。
 
 r[attributes.codegen.naked.inline]
-[`inline`](#inline-属性) 属性不能应用于裸函数。
+[`inline`](#the-inline-attribute) 属性不能应用于裸函数。
 
 r[attributes.codegen.naked.track_caller]
-[`track_caller`](#track_caller-属性) 属性不能应用于裸函数。
+[`track_caller`](#the-track_caller-attribute) 属性不能应用于裸函数。
 
 r[attributes.codegen.naked.testing]
 [测试属性](testing.md)不能应用于裸函数。

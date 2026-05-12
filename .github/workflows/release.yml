@@ -45,6 +45,7 @@ jobs:
         env:
           SPEC_RELATIVE: 0
         run: |
+          sed -i '/^\[output\.pdf\]/,$d' book.toml
           cat >> book.toml << 'EOF'
 
           [output.pdf]
@@ -55,10 +56,12 @@ jobs:
           EOF
           mdbook build
           mv book/pdf/output.pdf "Rust 参考手册.pdf"
+          ls -la "Rust 参考手册.pdf"
 
       - name: Generate dev-guide PDF
         working-directory: dev-guide
         run: |
+          sed -i '/^\[output\.pdf\]/,$d' book.toml
           cat >> book.toml << 'EOF'
 
           [output.pdf]
@@ -69,6 +72,7 @@ jobs:
           EOF
           mdbook build
           mv book/pdf/output.pdf "../Rust 参考手册开发者指南.pdf"
+          ls -la "../Rust 参考手册开发者指南.pdf"
 
       - name: Generate release notes
         run: |

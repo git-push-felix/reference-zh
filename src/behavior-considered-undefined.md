@@ -110,7 +110,7 @@ r[undefined.dangling.alloc-limit]
 
 r[undefined.validity]
 ## 无效值 {#invalid-values}
-[invalid-values]: #无效值
+[invalid-values]: #invalid-values
 
 r[undefined.validity.def]
 Rust 编译器假设程序执行期间产生的所有值都是"有效的"，因此产生无效值即构成即时 UB。

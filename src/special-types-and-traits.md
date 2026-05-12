@@ -51,7 +51,7 @@ r[lang-types.unsafe-cell.read-only-alloc]
 r[lang-types.phantom-data]
 ## `PhantomData<T>`
 
-[`std::marker::PhantomData<T>`] 是一个[零大小][zero-sized]、最小对齐的类型，对于[变型][variance]、[丢弃检查][drop check]和[自动 trait](#自动-trait)的目的，它被认为是拥有一个 `T`。
+[`std::marker::PhantomData<T>`] 是一个[零大小][zero-sized]、最小对齐的类型，对于[变型][variance]、[丢弃检查][drop check]和[自动 trait](#auto-traits)的目的，它被认为是拥有一个 `T`。
 
 r[lang-types.ops]
 ## 运算符 trait

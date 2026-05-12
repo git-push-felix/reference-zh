@@ -16,7 +16,7 @@ r[lifetime-elision.function.explicit-placeholder]
 占位生命周期 `'_` 也可以用来以相同的方式推断生命周期。对于路径中的生命周期，首选使用 `'_`。
 
 r[lifetime-elision.function.only-functions]
-Trait 对象的生命周期遵循[下面](#默认-trait-对象生命周期)讨论的不同规则。
+Trait 对象的生命周期遵循[下面](#default-trait-object-lifetimes)讨论的不同规则。
 
 r[lifetime-elision.function.implicit-lifetime-parameters]
 * 参数中的每个省略的生命周期成为一个独立的生命周期参数。

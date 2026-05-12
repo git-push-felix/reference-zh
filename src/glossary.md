@@ -31,7 +31,7 @@ r[glossary.abi]
 
 ### 毯式实现
 
-任何在其中类型以[未覆盖](#未覆盖类型)形式出现的实现。`impl<T> Foo for T`、`impl<T> Bar<T> for T`、`impl<T> Bar<Vec<T>> for T` 和 `impl<T> Bar<T> for Vec<T>` 被视为毯式 impl。然而，`impl<T> Bar<Vec<T>> for Vec<T>` 不是毯式 impl，因为在此 `impl` 中出现的所有 `T` 实例都被 `Vec` 覆盖。
+任何在其中类型以[未覆盖](#uncovered-type)形式出现的实现。`impl<T> Foo for T`、`impl<T> Bar<T> for T`、`impl<T> Bar<Vec<T>> for T` 和 `impl<T> Bar<T> for Vec<T>` 被视为毯式 impl。然而，`impl<T> Bar<Vec<T>> for Vec<T>` 不是毯式 impl，因为在此 `impl` 中出现的所有 `T` 实例都被 `Vec` 覆盖。
 
 ### 约束
 
@@ -75,7 +75,7 @@ Crate 是编译和链接的单位。存在不同[类型的 crate][types of crate
 
 基础类型构造器是这样一个类型：在其上实现[毯式实现](#毯式实现)是一个破坏性更改。`&`、`&mut`、`Box` 和 `Pin` 是基础类型构造器。
 
-任何时候类型 `T` 被认为是[局部的](#局部类型)，`&T`、`&mut T`、`Box<T>` 和 `Pin<T>` 也被认为是局部的。基础类型构造器不能[覆盖](#未覆盖类型)其他类型。任何时候使用术语"已覆盖类型"时，`&T`、`&mut T`、`Box<T>` 和 `Pin<T>` 中的 `T` 不被认为是被覆盖的。
+任何时候类型 `T` 被认为是[局部的](#local-type)，`&T`、`&mut T`、`Box<T>` 和 `Pin<T>` 也被认为是局部的。基础类型构造器不能[覆盖](#uncovered-type)其他类型。任何时候使用术语"已覆盖类型"时，`&T`、`&mut T`、`Box<T>` 和 `Pin<T>` 中的 `T` 不被认为是被覆盖的。
 
 ### 有人居住的
 
@@ -277,7 +277,7 @@ assert_eq!(0, size_of::<U>());
 [dyn compatibility]: items/traits.md#dyn-compatibility
 [enums]: items/enumerations.md
 [fields]: expressions/field-expr.md
-[free item]: #自由项
+[free item]: #free-item
 [function items]: type.fn-item
 [generic parameters]: items/generics.md
 [identifier]: identifiers.md

@@ -298,7 +298,7 @@ r[names.scopes.self.intro]
 尽管 [`Self`] 是具有特殊含义的关键字，但它与名称解析的交互方式类似于普通名称。
 
 r[names.scopes.self.def-scope]
-在 [struct]、[enum]、[union]、[trait] 或[实现][implementation]的定义中，隐式的 `Self` 类型被视为类似于[泛型参数](#泛型参数作用域)，并以与泛型类型参数相同的方式处于作用域中。
+在 [struct]、[enum]、[union]、[trait] 或[实现][implementation]的定义中，隐式的 `Self` 类型被视为类似于[泛型参数](#generic-parameter-scopes)，并以与泛型类型参数相同的方式处于作用域中。
 
 r[names.scopes.self.impl-scope]
 在[实现][implementation]的值[命名空间][namespace]中，隐式的 `Self` 构造函数在实现体（实现的[关联项][associated items]）内部处于作用域中。
