@@ -30,11 +30,11 @@ jobs:
           SPEC_RELATIVE: 0
         run: mdbook build
 
-  - name: Build dev-guide
-    working-directory: dev-guide
-    env:
-      SPEC_RELATIVE: 0
-    run: mdbook build
+      - name: Build dev-guide
+        working-directory: dev-guide
+        env:
+          SPEC_RELATIVE: 0
+        run: mdbook build
 
       - name: Prepare Pages artifact
         run: |
