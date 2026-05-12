@@ -55,8 +55,8 @@ jobs:
           static-site-url = "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
           EOF
           mdbook build
-          mv book/pdf/output.pdf "Rust 参考手册.pdf"
-          ls -la "Rust 参考手册.pdf"
+          mv book/pdf/output.pdf "rust-reference.pdf"
+          ls -la "rust-reference.pdf"
 
       - name: Generate dev-guide PDF
         working-directory: dev-guide
@@ -71,8 +71,8 @@ jobs:
           static-site-url = "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/dev-guide/"
           EOF
           mdbook build
-          mv book/pdf/output.pdf "../Rust 参考手册开发者指南.pdf"
-          ls -la "../Rust 参考手册开发者指南.pdf"
+          mv book/pdf/output.pdf "../rust-reference-dev-guide.pdf"
+          ls -la "../rust-reference-dev-guide.pdf"
 
       - name: Generate release notes
         run: |
@@ -94,11 +94,15 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release delete latest --yes 2>/dev/null || true
-          sleep 3
-          gh release create latest \
-            --title "Latest PDFs" \
-            --notes-file /tmp/notes.md
-          sleep 3
-          gh release upload latest "Rust 参考手册.pdf"
-          sleep 1
-          gh release upload latest "Rust 参考手册开发者指南.pdf"
+          for i in 1 2 3; do
+            sleep 3
+            if gh release create latest \
+              --title "Latest PDFs" \
+              --notes-file /tmp/notes.md \
+              "rust-reference.pdf" \
+              "rust-reference-dev-guide.pdf"; then
+              exit 0
+            fi
+            gh release delete latest --yes 2>/dev/null || true
+          done
+          exit 1
