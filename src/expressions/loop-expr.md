@@ -30,7 +30,7 @@ r[expr.loop.explicit-result]
 只有 `loop` 和带标签的块表达式支持[求值为非平凡值](#break-and-loop-values)。
 
 r[expr.loop.infinite]
-## 无限循环
+## 无限循环 {#infinite-loops}
 
 r[expr.loop.infinite.syntax]
 ```grammar,expressions
@@ -47,7 +47,7 @@ r[expr.loop.infinite.break]
 包含关联 [`break` 表达式](#break-expressions)的 `loop` 表达式可能终止，并且必须具有与 `break` 表达式的值兼容的类型。
 
 r[expr.loop.while]
-## 谓词循环
+## 谓词循环 {#predicate-loops}
 
 r[expr.loop.while.syntax]
 ```grammar,expressions
@@ -81,7 +81,7 @@ while i < 10 {
 ```
 
 r[expr.loop.while.let]
-### `while let` 模式
+### `while let` 模式 {#while-let-patterns}
 
 r[expr.loop.while.let.intro]
 `while` 条件中的 `let` 模式允许在模式成功匹配时将新变量绑定到作用域中。以下示例展示了使用 `let` 模式的绑定：
@@ -155,7 +155,7 @@ fn main() {
 ```
 
 r[expr.loop.for]
-## 迭代器循环
+## 迭代器循环 {#iterator-loops}
 
 r[expr.loop.for.syntax]
 ```grammar,expressions
@@ -229,7 +229,7 @@ r[expr.loop.for.lang-items]
 > 外层的 `match` 用于确保 `iter_expr` 中的任何[临时值][temporary values]不会在循环完成之前被丢弃。`next` 在被赋值之前声明，因为这更经常地使类型被正确推断。
 
 r[expr.loop.label]
-## 循环标签
+## 循环标签 {#loop-labels}
 
 r[expr.loop.label.syntax]
 ```grammar,expressions
@@ -258,7 +258,7 @@ r[expr.loop.label.ref]
 `'_` 不是有效的循环标签。
 
 r[expr.loop.break]
-## `break` 表达式
+## `break` 表达式 {#break-expressions}
 
 r[expr.loop.break.syntax]
 ```grammar,expressions
@@ -353,7 +353,7 @@ r[expr.loop.block-labels.type]
 > ```
 
 r[expr.loop.continue]
-## `continue` 表达式
+## `continue` 表达式 {#continue-expressions}
 
 r[expr.loop.continue.syntax]
 ```grammar,expressions
@@ -379,7 +379,7 @@ r[expr.loop.continue.in-loop-only]
 `continue` 表达式仅允许在循环体内部。
 
 r[expr.loop.break-value]
-## `break` 和循环值
+## `break` 和循环值 {#break-and-loop-values}
 
 r[expr.loop.break-value.intro]
 当与 `loop` 关联时，可以使用 break 表达式从该循环返回值，通过 `break EXPR` 或 `break 'label EXPR` 形式，其中 `EXPR` 是其结果从 `loop` 返回的表达式。例如：

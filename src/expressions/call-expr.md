@@ -33,7 +33,7 @@ let name: &'static str = (|| "Rust")();
 ```
 
 r[expr.call.desugar]
-## 消歧函数调用
+## 消歧函数调用 {#disambiguating-function-calls}
 
 r[expr.call.desugar.fully-qualified]
 所有函数调用都是更显式的[完全限定语法][fully-qualified syntax]的语法糖。

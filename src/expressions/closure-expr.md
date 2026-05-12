@@ -49,7 +49,7 @@ r[expr.closure.trait-impl]
 闭包类型实现哪些 trait 取决于变量的捕获方式、被捕获变量的类型以及 `async` 的存在。关于闭包如何以及何时实现 `Fn`、`FnMut` 和 `FnOnce`，请参见[调用 trait 和强制][call traits and coercions]章节。如果每个被捕获变量的类型也实现了该 trait，则闭包类型也实现 [`Send`] 和 [`Sync`]。
 
 r[expr.closure.async]
-## Async 闭包
+## Async 闭包 {#async-closures}
 
 r[expr.closure.async.intro]
 标记有 `async` 关键字的闭包表示它们是异步的，其方式类似于[异步函数][items.fn.async]。

@@ -44,7 +44,7 @@ r[type.bool.expr]
 当使用某些运算符表达式对布尔类型的操作数进行运算时，它们按照[布尔逻辑][boolean logic]的规则求值。
 
 r[type.bool.expr.not]
-### 逻辑非
+### 逻辑非 {#logical-not}
 
 | `b` | [`!b`][op-not] |
 |- | - |
@@ -52,7 +52,7 @@ r[type.bool.expr.not]
 | `false` | `true` |
 
 r[type.bool.expr.or]
-### 逻辑或
+### 逻辑或 {#logical-or}
 
 | `a` | `b` | [`a \| b`][op-or] |
 |- | - | - |
@@ -62,7 +62,7 @@ r[type.bool.expr.or]
 | `false` | `false` | `false` |
 
 r[type.bool.expr.and]
-### 逻辑与
+### 逻辑与 {#logical-and}
 
 | `a` | `b` | [`a & b`][op-and] |
 |- | - | - |
@@ -72,7 +72,7 @@ r[type.bool.expr.and]
 | `false` | `false` | `false` |
 
 r[type.bool.expr.xor]
-### 逻辑异或
+### 逻辑异或 {#logical-xor}
 
 | `a` | `b` | [`a ^ b`][op-xor] |
 |- | - | - |

@@ -56,7 +56,7 @@ r[comments.normal.tokenization]
 非文档注释被解释为一种空白字符。
 
 r[comments.doc]
-## 文档注释
+## 文档注释 {#doc-comments}
 
 r[comments.doc.syntax]
 以恰好*三*条斜杠（`///`）开头的行文档注释，以及块文档注释（`/** ... */`），都是外部文档注释，会被解释为 [`doc` 属性][`doc` attributes] 的特殊语法。

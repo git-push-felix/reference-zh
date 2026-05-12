@@ -10,7 +10,7 @@ Rust 的功能和语法可以通过称为宏的自定义定义来扩展。它们
 * [过程宏][Procedural Macros]使用操作输入 token 的函数来定义类函数宏、自定义派生宏和自定义属性宏。
 
 r[macro.invocation]
-## 宏调用
+## 宏调用 {#macro-invocation}
 
 r[macro.invocation.syntax]
 ```grammar,macros

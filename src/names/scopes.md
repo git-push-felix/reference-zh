@@ -5,7 +5,7 @@ r[names.scopes.intro]
 *作用域*是源文本中可以以其名称引用某命名[实体][entity]的区域。以下各节提供了作用域规则和行为的详细信息，这些取决于实体的类型及其声明位置。名称如何解析为实体的过程在[名称解析][name resolution]章节中描述。有关用于运行析构函数的"丢弃作用域"的更多信息，请参见[析构函数][destructors]章节。
 
 r[names.scopes.items]
-## 项作用域
+## 项作用域 {#item-scopes}
 
 r[names.scopes.items.module]
 直接在[模块][module]中声明的[项][items]的名称具有从模块开头延伸到模块末尾的作用域。这些项也是模块的成员，可以通过从其模块开始的[路径][path]引用。
@@ -79,7 +79,7 @@ fn shadow_example() {
 ```
 
 r[names.scopes.generic-parameters]
-## 泛型参数作用域
+## 泛型参数作用域 {#generic-parameter-scopes}
 
 r[names.scopes.generic-parameters.param-list]
 泛型参数在 [GenericParams] 列表中声明。泛型参数的作用域在其声明的项内部。
@@ -154,7 +154,7 @@ r[names.scopes.lifetimes.special]
 r[names.scopes.lifetimes.generic]
 [常量][Constant]和[静态][static]项以及 [const 上下文][const contexts] 仅允许 `'static` 生命周期引用，因此没有其他生命周期可以在它们的作用域中。[关联常量][Associated consts]确实允许引用在其 trait 或实现中声明的生命周期。
 
-#### 高阶 trait 约束作用域
+#### 高阶 trait 约束作用域 {#higher-ranked-trait-bound-scopes}
 
 r[names.scopes.lifetimes.higher-ranked]
 声明为[高阶 trait 约束][hrtb]的生命周期参数的作用域取决于其使用场景。
@@ -292,7 +292,7 @@ r[names.scopes.derive.shadow]
 辅助属性遮蔽作用域中同名的其他属性。
 
 r[names.scopes.self]
-## `Self` 作用域
+## `Self` 作用域 {#self-scope}
 
 r[names.scopes.self.intro]
 尽管 [`Self`] 是具有特殊含义的关键字，但它与名称解析的交互方式类似于普通名称。

@@ -98,7 +98,7 @@ foo!(3);
 ```
 
 r[macro.decl.meta]
-## 元变量
+## 元变量 {#metavariables}
 
 r[macro.decl.meta.intro]
 在匹配器中，`$`*名称*`:`*片段说明符*匹配指定类型的 Rust 语法片段，并将其绑定到元变量 `$`*名称*。
@@ -143,7 +143,7 @@ r[macro.decl.meta.edition2024]
 > `expr_2021` 片段说明符存在是为了与 2024 之前的版次保持向后兼容。
 
 r[macro.decl.repetition]
-## 重复
+## 重复 {#repetitions}
 
 r[macro.decl.repetition.intro]
 在匹配器和转写器中，重复通过将需要重复的 token 放入 `$(`…`)` 中，后跟一个重复运算符，中间可选地有一个分隔符 token 来表示。
@@ -359,7 +359,7 @@ pub use private_m; // 错误：`private_m` 仅在该 crate 内公开，
 
 <!-- template:attributes -->
 r[macro.decl.scope.macro_use]
-### `macro_use` 属性
+### `macro_use` 属性 {#the-macro_use-attribute}
 
 r[macro.decl.scope.macro_use.intro]
 *`macro_use` [属性][attributes]* 有两个用途：它可以用于模块以扩展其中定义的宏的作用域，也可以用于 [`extern crate`][items.extern-crate] 将另一个 crate 的宏导入 [`macro_use` 预导入][`macro_use` prelude]中。
@@ -445,7 +445,7 @@ r[macro.decl.scope.macro_use.export]
 
 <!-- template:attributes -->
 r[macro.decl.scope.macro_export]
-### `macro_export` 属性
+### `macro_export` 属性 {#the-macro_export-attribute}
 
 r[macro.decl.scope.macro_export.intro]
 *`macro_export` [属性][attributes]* 从 crate 中导出宏，并使其在 crate 根中可用于基于路径的解析。

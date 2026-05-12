@@ -82,7 +82,7 @@ fn frob(s: &str, t: &str) -> &str;                    // 非法
 ```
 
 r[lifetime-elision.trait-object]
-## 默认 trait 对象生命周期
+## 默认 trait 对象生命周期 {#default-trait-object-lifetimes}
 
 r[lifetime-elision.trait-object.intro]
 [trait 对象][trait object]持有的引用的假定生命周期称为其*默认对象生命周期约束*。这些定义在 [RFC 599] 中，并在 [RFC 1156] 中修订。
@@ -165,7 +165,7 @@ impl<'a> dyn Bar<'a> + 'a {}
 ```
 
 r[lifetime-elision.const-static]
-## `const` 和 `static` 省略
+## `const` 和 `static` 省略 {#const-and-static-elision}
 
 r[lifetime-elision.const-static.implicit-static]
 引用类型的[常量][constant]和[静态][static]声明都具有*隐式*的 `'static` 生命周期，除非指定了显式生命周期。因此，上面涉及 `'static` 的常量声明可以在没有生命周期的情况下编写。

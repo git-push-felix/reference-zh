@@ -4,7 +4,7 @@ r[attributes.limits]
 以下[属性][attributes]影响编译时限制。
 
 r[attributes.limits.recursion_limit]
-## `recursion_limit` 属性
+## `recursion_limit` 属性 {#the-recursion_limit-attribute}
 
 r[attributes.limits.recursion_limit.intro]
 *`recursion_limit` 属性*可以应用于 [crate] 级别，以设置可能无限递归的编译时操作（如宏展开或自动解引用）的最大深度。
@@ -39,7 +39,7 @@ a!{}
 
 <!-- template:attributes -->
 r[attributes.limits.type_length_limit]
-## `type_length_limit` 属性
+## `type_length_limit` 属性 {#the-type_length_limit-attribute}
 
 r[attributes.limits.type_length_limit.intro]
 *`type_length_limit` [属性][attributes]* 设置在单态化期间构造具体类型时允许的最大类型替换次数。

@@ -5,7 +5,7 @@ r[memory]
 > Rust 的内存模型尚不完整，且未完全确定。
 
 r[memory.bytes]
-## 字节
+## 字节 {#bytes}
 
 r[memory.bytes.intro]
 Rust 中最基本的内存单元是字节。

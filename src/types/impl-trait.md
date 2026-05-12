@@ -53,7 +53,7 @@ r[type.impl-trait.param.generic]
 > 对于函数参数，泛型类型参数和 `impl Trait` 并不完全等价。对于泛型参数如 `<T: Trait>`，调用者可以选择在调用处使用 [GenericArgs] 显式指定 `T` 的泛型参数，例如 `foo::<usize>(1)`。将参数从一种形式更改为另一种会构成函数的调用者的破坏性变更，因为这改变了泛型参数的数量。
 
 r[type.impl-trait.return]
-## 抽象返回类型
+## 抽象返回类型 {#abstract-return-types}
 
 > [!NOTE]
 > 这通常被称为"返回位置的 impl Trait"。
@@ -94,7 +94,7 @@ r[type.impl-trait.return-in-trait.desugaring]
 trait 的关联函数返回类型中的每个 `impl Trait` 都被脱糖为一个匿名关联类型。实现函数签名中出现的返回类型用于确定该关联类型的值。
 
 r[type.impl-trait.generic-captures]
-## 捕获
+## 捕获 {#capturing}
 
 每个返回位置 `impl Trait` 抽象类型背后都隐藏着某个具体类型。为了让这个具体类型使用泛型参数，该泛型参数必须被抽象类型*捕获*。
 
@@ -109,7 +109,7 @@ r[type.impl-trait.generic-capture.edition2024]
 > 在 2024 版本之前，对于自由函数以及固有 impl 的关联函数和方法，未出现在抽象返回类型边界中的泛型生命周期参数不会被自动捕获。
 
 r[type.impl-trait.generic-capture.precise]
-## 精确捕获
+## 精确捕获 {#precise-capturing}
 
 r[type.impl-trait.generic-capture.precise.use]
 返回位置 `impl Trait` 抽象类型所捕获的泛型参数集合可以通过 [`use<..>` 边界][`use<..>` bound]显式控制。如果存在，则只有在 `use<..>` 边界中列出的泛型参数才会被捕获。例如：

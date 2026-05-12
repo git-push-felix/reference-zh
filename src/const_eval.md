@@ -5,7 +5,7 @@ r[const-eval.intro]
 常量求值是在编译期间计算[表达式][expressions]结果的过程。只有所有表达式的一个子集可以在编译时求值。
 
 r[const-eval.const-expr]
-## 常量表达式
+## 常量表达式 {#constant-expressions}
 
 r[const-eval.const-expr.intro]
 某些形式的表达式（称为常量表达式）可以在编译时求值。
@@ -227,7 +227,7 @@ r[const-eval.const-expr.if-match]
 * [if] 和 [match] 表达式。
 
 r[const-eval.const-context]
-## Const 上下文
+## Const 上下文 {#const-context}
 [const context]: #const-context
 
 r[const-eval.const-context.def]
@@ -255,7 +255,7 @@ r[const-eval.const-context.outer-generics]
 数组类型长度表达式、数组重复长度表达式和 const 泛型参数在使用外部泛型参数时受到限制：此类表达式必须是单个 const 泛型参数，或者是不引用任何泛型参数的表达式。
 
 r[const-eval.const-fn]
-## Const 函数
+## Const 函数 {#const-functions}
 
 r[const-eval.const-fn.intro]
 *const 函数*是可以从 const 上下文调用的函数。它使用 `const` 限定符定义，也包括[元组结构体][tuple struct]和[元组枚举变体][tuple enum variant]构造函数。

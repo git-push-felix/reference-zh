@@ -4,7 +4,7 @@ r[attributes.type-system]
 以下[属性][attributes]用于改变类型的使用方式。
 
 r[attributes.type-system.non_exhaustive]
-## `non_exhaustive` 属性
+## `non_exhaustive` 属性 {#the-non_exhaustive-attribute}
 
 r[attributes.type-system.non_exhaustive.intro]
 *`non_exhaustive` 属性*指示一个类型或变体可能在将来添加更多字段或变体。

@@ -63,7 +63,7 @@ Crate 是编译和链接的单位。存在不同[类型的 crate][types of crate
 
 例如，`2 + (3 * 4)` 是一个返回值为 14 的表达式。
 
-### 自由项
+### 自由项 {#free-item}
 
 不是[实现][implementation]成员的[项][item]，例如*自由函数*或*自由常量*。与[关联项][associated item]对比。
 
@@ -71,7 +71,7 @@ Crate 是编译和链接的单位。存在不同[类型的 crate][types of crate
 
 基础 trait 是这样一个 trait：为现有类型添加一个 impl 是一个破坏性更改。`Fn` trait 和 `Sized` 是基础 trait。
 
-### 基础类型构造器
+### 基础类型构造器 {#fundamental-type-constructors}
 
 基础类型构造器是这样一个类型：在其上实现[毯式实现](#毯式实现)是一个破坏性更改。`&`、`&mut`、`Box` 和 `Pin` 是基础类型构造器。
 
@@ -89,15 +89,15 @@ Crate 是编译和链接的单位。存在不同[类型的 crate][types of crate
 
 在[固有实现][inherent implementation]中定义的[方法][method]，而非在 trait 实现中。
 
-### 已初始化
+### 已初始化 {#initialized}
 
 如果一个变量已被赋值且此后未被移动，则该变量是已初始化的。所有其他内存位置被假定为未初始化的。只有不安全 Rust 可以创建未初始化内存位置。
 
-### 局部 trait
+### 局部 trait {#local-trait}
 
 在当前 crate 中定义的 `trait`。一个 trait 定义是局部的或不取决于应用的类型参数。给定 `trait Foo<T, U>`，`Foo` 始终是局部的，无论替换 `T` 和 `U` 的类型是什么。
 
-### 局部类型
+### 局部类型 {#local-type}
 
 在当前 crate 中定义的 `struct`、`enum` 或 `union`。这不受应用的类型参数影响。`struct Foo` 被认为是局部的，但 `Vec<Foo>` 不是。`LocalType<ForeignType>` 是局部的。类型别名不影响局部性。
 
@@ -141,7 +141,7 @@ Crate 是编译和链接的单位。存在不同[类型的 crate][types of crate
 
 [*作用域*][*scope*] 是源文本中可以以其名称引用某命名[实体](#实体)的区域。
 
-### 被匹配项
+### 被匹配项 {#scrutinee}
 
 被匹配项是在 `match` 表达式和类似模式匹配构造中被匹配的表达式。例如，在 `match x { A => 1, B => 2 }` 中，表达式 `x` 是被匹配项。
 
@@ -198,7 +198,7 @@ let vec = [1, 2, 3].iter().map(|n| n * 2).collect::<Vec<_>>();
 
 此 `::` 前缀对于在有多个比较的逗号分隔列表中消除泛型路径的歧义是必需的。参见 [the bastion of the turbofish][turbofish test] 了解不加前缀会产生歧义的示例。
 
-### 未覆盖类型
+### 未覆盖类型 {#uncovered-type}
 
 不作为其他类型参数出现的类型。例如，`T` 是未覆盖的，但 `Vec<T>` 中的 `T` 是已覆盖的。这仅与类型参数相关。
 

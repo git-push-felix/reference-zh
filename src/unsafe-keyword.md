@@ -24,7 +24,7 @@ r[unsafe.positions]
 - 不安全属性（`#[unsafe(attr)]`）
 
 r[unsafe.fn]
-## 不安全函数（`unsafe fn`）
+## 不安全函数（`unsafe fn`）{#unsafe-functions-unsafe-fn}
 
 r[unsafe.fn.intro]
 不安全函数是指并非在所有上下文和/或所有可能输入下都安全的函数。
@@ -36,7 +36,7 @@ r[unsafe.fn.safety]
 此类函数必须以 `unsafe` 关键字为前缀，并且只能在 `unsafe` 块内调用，或者在未启用 [`unsafe_op_in_unsafe_fn`] lint 的情况下，在 `unsafe fn` 内部调用。
 
 r[unsafe.block]
-## 不安全块（`unsafe {}`）
+## 不安全块（`unsafe {}`）{#unsafe-blocks-unsafe-}
 
 r[unsafe.block.intro]
 代码块可以用 `unsafe` 关键字作为前缀，以允许使用[不安全操作][Unsafety]章节中定义的那些不安全动作，例如调用其他不安全函数或解引用裸指针。

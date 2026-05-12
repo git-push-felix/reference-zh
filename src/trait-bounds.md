@@ -120,7 +120,7 @@ r[bound.lifetime.outlive-type]
 `T: 'a` 意味着 `T` 的所有生命周期参数都存活不短于 `'a`。例如，如果 `'a` 是一个无约束的生命周期参数，那么 `i32: 'static` 和 `&'static str: 'a` 是满足的，但 `Vec<&'a ()>: 'static` 则不满足。
 
 r[bound.higher-ranked]
-## 高阶 trait 约束
+## 高阶 trait 约束 {#higher-ranked-trait-bounds}
 
 r[bound.higher-ranked.syntax]
 ```grammar,miscellaneous
@@ -233,7 +233,7 @@ impl<'a, T> Trait<'a, T> for &'a T {}
 ```
 
 r[bound.use]
-## Use 约束
+## Use 约束 {#use-bounds}
 
 某些约束列表可以包含 `use<..>` 约束来控制哪些泛型参数被 `impl Trait` [抽象返回类型][abstract return type]所捕获。更多细节请参阅[精确捕获][precise capturing]。
 

@@ -71,7 +71,7 @@ r[attributes.derive.behavior]
 
 <!-- template:attributes -->
 r[attributes.derive.automatically_derived]
-## `automatically_derived` 属性
+## `automatically_derived` 属性 {#the-automatically_derived-attribute}
 
 r[attributes.derive.automatically_derived.intro]
 *`automatically_derived` [属性][attributes]* 用于标注一个[实现][implementation]，以表明它是由[派生宏][derive macro]自动创建的。它没有直接影响，但可以被工具和诊断 lint 用于检测这些自动生成的实现。

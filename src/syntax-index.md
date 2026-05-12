@@ -64,7 +64,7 @@
 | `while`       | [谓词循环][predicate loops] |
 | `yield`       | [保留关键字][reserved keyword] |
 
-## 运算符和标点符号
+## 运算符和标点符号 {#operators-and-punctuation}
 
 | 符号 | 名称        | 使用 |
 |--------|-------------|-----|

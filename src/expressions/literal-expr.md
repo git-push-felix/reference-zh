@@ -40,7 +40,7 @@ r[expr.literal.string-representation]
 > 此字符串表示永远不会包含紧跟在 `U+000A`（LF）之前的字符 `U+000D`（CR）：这对字符会预先转换为单个 `U+000A`（LF）。
 
 r[expr.literal.escape]
-## 转义
+## 转义 {#escapes}
 
 r[expr.literal.escape.intro]
 以下文本字面量表达式的描述中使用了多种形式的*转义*。
@@ -55,7 +55,7 @@ r[expr.literal.escape.sequence]
  * *十六进制数字*是范围 \[`0`-`9`]、\[`a`-`f`] 或 \[`A`-`F`] 中的任何字符。
 
 r[expr.literal.escape.simple]
-### 简单转义
+### 简单转义 {#simple-escapes}
 
 下表中第一列出现的每个字符序列都是一个转义序列。
 
@@ -72,7 +72,7 @@ r[expr.literal.escape.simple]
 | `\\`           | U+005C (REVERSE SOLIDUS) |
 
 r[expr.literal.escape.hex-octet]
-### 8 位转义
+### 8 位转义 {#8-bit-escapes}
 
 转义序列由 `\x` 后跟两个十六进制数字组成。
 
@@ -82,14 +82,14 @@ r[expr.literal.escape.hex-octet]
 > 因此，转义值的 [Unicode 标量值][Unicode scalar value]在 [`u8`][numeric types] 的范围内。
 
 r[expr.literal.escape.hex-ascii]
-### 7 位转义
+### 7 位转义 {#7-bit-escapes}
 
 转义序列由 `\x` 后跟一个八进制数字和一个十六进制数字组成。
 
 转义值是其 [Unicode 标量值][Unicode scalar value]等于将转义序列最后两个字符解释为十六进制整数的字符，如同使用 [`u8::from_str_radix`] 以基数 16 解释。
 
 r[expr.literal.escape.unicode]
-### Unicode 转义
+### Unicode 转义 {#unicode-escapes}
 
 转义序列由 `\u{` 后跟一串字符（每个字符是十六进制数字或 `_`）再后跟 `}` 组成。
 
@@ -99,7 +99,7 @@ r[expr.literal.escape.unicode]
 > [CHAR_LITERAL] 或 [STRING_LITERAL] 记号的允许形式确保存在这样一个字符。
 
 r[expr.literal.continuation]
-### 字符串续行转义
+### 字符串续行转义 {#string-continuation-escapes}
 
 转义序列由 `\` 后紧跟 `U+000A`（LF）以及下一个非空白字符之前的所有空白字符组成。为此，空白字符是 `U+0009`（HT）、`U+000A`（LF）、`U+000D`（CR）和 `U+0020`（SPACE）。
 
@@ -355,7 +355,7 @@ c"\u{00E6}".to_bytes();              // [195, 166]
 ```
 
 r[expr.literal.int]
-## 整数字面量表达式
+## 整数字面量表达式 {#integer-literal-expressions}
 
 r[expr.literal.int.intro]
 整数字面量表达式由单个 [INTEGER_LITERAL] 记号组成。
@@ -429,7 +429,7 @@ r[expr.literal.int.cast]
 > 例如 `-1i8` 是[取反运算符][negation operator]应用于字面量表达式 `1i8`，而不是单个整数字面量表达式。参见[溢出][Overflow]获取有关表示有符号类型最负值的说明。
 
 r[expr.literal.float]
-## 浮点字面量表达式
+## 浮点字面量表达式 {#floating-point-literal-expressions}
 
 r[expr.literal.float.intro]
 浮点字面量表达式有两种形式之一：

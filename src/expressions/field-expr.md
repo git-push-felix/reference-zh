@@ -43,7 +43,7 @@ foo().x;
 ```
 
 r[expr.field.autoref-deref]
-## 自动解引用
+## 自动解引用 {#automatic-dereferencing}
 
 如果容器操作数的类型实现了 [`Deref`] 或 [`DerefMut`][`Deref`]（取决于操作数是否是[可变][mutable]的），它将被*自动解引用*，解引用的次数根据需要，以使字段访问成为可能。此过程也简称为*自动解引用*。
 

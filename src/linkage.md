@@ -68,7 +68,7 @@ r[link.dependency-dynamic]
 总的来说，`--crate-type=bin` 或 `--crate-type=lib` 应该足以满足所有编译需求，其他选项仅在需要更精细地控制 crate 的输出格式时才可用。
 
 r[link.crt]
-## 静态和动态 C 运行时
+## 静态和动态 C 运行时 {#static-and-dynamic-c-runtimes}
 
 r[link.crt.intro]
 标准库通常努力为目标平台适当支持静态链接和动态链接的 C 运行时。例如，`x86_64-pc-windows-msvc` 和 `x86_64-unknown-linux-musl` 目标通常附带两种运行时，用户可以选择他们喜欢的运行时。编译器中的所有目标都有链接到 C 运行时的默认模式。通常目标是默认动态链接的，但有一些例外默认是静态链接的，例如：

@@ -1,5 +1,5 @@
 r[vis]
-# 可见性和隐私
+# 可见性和隐私 {#visibility-and-privacy}
 
 r[vis.syntax]
 ```grammar,items
@@ -110,7 +110,7 @@ pub mod submodule {
 为了让 Rust 程序通过隐私检查关，所有路径必须是给定上述两条规则的有效访问。这包括所有 use 语句、表达式、类型等。
 
 r[vis.scoped]
-## `pub(in path)`、`pub(crate)`、`pub(super)` 和 `pub(self)`
+## `pub(in path)`、`pub(crate)`、`pub(super)` 和 `pub(self)` {#pubin-path-pubcrate-pubsuper-and-pubself}
 
 r[vis.scoped.intro]
 除了 public 和 private 之外，Rust 允许用户将项声明为仅在给定作用域内可见。`pub` 限制的规则如下：

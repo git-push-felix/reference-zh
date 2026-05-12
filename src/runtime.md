@@ -5,7 +5,7 @@ r[runtime]
 
 <!-- template:attributes -->
 r[runtime.global_allocator]
-## `global_allocator` 属性
+## `global_allocator` 属性 {#the-global_allocator-attribute}
 
 r[runtime.global_allocator.intro]
 *`global_allocator` [属性][attributes]* 选择一个[内存分配器][std::alloc]。
@@ -47,7 +47,7 @@ r[runtime.global_allocator.stdlib]
 
 <!-- template:attributes -->
 r[runtime.windows_subsystem]
-## `windows_subsystem` 属性
+## `windows_subsystem` 属性 {#the-windows_subsystem-attribute}
 
 r[runtime.windows_subsystem.intro]
 *`windows_subsystem` [属性][attributes]* 在 Windows 目标上链接时设置[子系统][subsystem]。

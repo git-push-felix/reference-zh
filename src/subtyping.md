@@ -36,7 +36,7 @@ let supertype: &for<'c> fn(&'c i32, &'c i32) = subtype;
 ```
 
 r[subtyping.variance]
-## 型变
+## 型变 {#variance}
 
 r[subtyping.variance.intro]
 型变是泛型类型相对于其参数所具有的一种性质。泛型类型在某个参数上的*型变*描述了该参数的子类型关系如何影响该类型的子类型关系。

@@ -51,7 +51,7 @@ r[crate.attributes]
 ```
 
 r[crate.main]
-## main 函数
+## main 函数 {#main-functions}
 
 r[crate.main.executable]
 包含 `main` [函数][function]的 crate 可以被编译为可执行文件。
@@ -105,12 +105,12 @@ r[crate.uncaught-foreign-unwinding]
 更多信息请参阅 [panic 文档][panic-docs]。
 
 r[crate.no_main]
-### `no_main` 属性
+### `no_main` 属性 {#the-no_main-attribute}
 
 *`no_main` [属性][attribute]* 可以用在 crate 级别，以禁止为可执行二进制文件生成 `main` 符号。这在链接的其他对象定义了 `main` 时很有用。
 
 r[crate.crate_name]
-## `crate_name` 属性
+## `crate_name` 属性 {#the-crate_name-attribute}
 
 r[crate.crate_name.general]
 *`crate_name` [属性][attribute]* 可以用在 crate 级别，以通过 [MetaNameValueStr] 语法指定 crate 的名称。

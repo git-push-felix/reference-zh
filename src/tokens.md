@@ -106,7 +106,7 @@ r[lex.token.literal]
 [^nl]: 所有数字字面量都允许 `_` 作为视觉分隔符：`1_234.0E+18f64`
 
 r[lex.token.literal.suffix]
-#### 后缀
+#### 后缀 {#suffixes}
 
 r[lex.token.literal.literal.suffix.intro]
 后缀是一串紧跟在字面量主体部分之后（中间没有空白字符）的字符，其形式与非原始标识符或关键字相同。
@@ -335,7 +335,7 @@ b"\x52"; b"R"; br"R";                // R
 b"\\x52"; br"\x52";                  // \x52
 ```
 
-### C 字符串与原始 C 字符串字面量
+### C 字符串与原始 C 字符串字面量 {#c-string-and-raw-c-string-literals}
 
 r[lex.token.str-c]
 #### C 字符串字面量 {#c-string-literals}
@@ -438,7 +438,7 @@ r[lex.token.literal.num]
 *数字字面量*可以是*整数字面量*或*浮点数字面量*。识别这两种字面量的语法是混合的。
 
 r[lex.token.literal.int]
-#### 整数字面量
+#### 整数字面量 {#integer-literals}
 
 r[lex.token.literal.int.syntax]
 ```grammar,lexer

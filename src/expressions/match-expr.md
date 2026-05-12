@@ -133,7 +133,7 @@ r[expr.match.diverging]
 如果受检者表达式或所有匹配分支发散，则整个 `match` 表达式也发散。
 
 r[expr.match.guard]
-## 匹配守卫
+## 匹配守卫 {#match-guards}
 
 r[expr.match.guard.intro]
 匹配分支可以接受*匹配守卫*以进一步细化匹配某个情况的条件。
@@ -210,7 +210,7 @@ r[expr.match.guard.let]
 > ```
 
 r[expr.match.guard.chains]
-## 匹配守卫链
+## 匹配守卫链 {#match-guard-chains}
 
 r[expr.match.guard.chains.intro]
 多个守卫条件操作数可以用 `&&` 分隔。

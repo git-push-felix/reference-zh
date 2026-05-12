@@ -83,7 +83,7 @@ r[patterns.for]
 * [`for` 表达式](expressions/loop-expr.md#iterator-loops)
 
 r[patterns.destructure]
-## 解构
+## 解构 {#destructuring}
 
 r[patterns.destructure.intro]
 模式可用于*解构* [structs]、[enums] 和 [tuples]。解构将一个值分解为其组成部分。使用的语法几乎与创建此类值时的语法相同。
@@ -159,7 +159,7 @@ for i in -2..5 {
 ```
 
 r[patterns.ident]
-## 标识符模式
+## 标识符模式 {#identifier-patterns}
 
 r[patterns.ident.syntax]
 ```grammar,patterns
@@ -273,7 +273,7 @@ r[patterns.ident.refutable]
 如果 `@` 子模式不可反驳或未指定子模式，则标识符模式是不可反驳的。
 
 r[patterns.ident.binding]
-### 绑定模式
+### 绑定模式 {#binding-modes}
 
 r[patterns.ident.binding.intro]
 为了提供更好的人体工学，模式在不同的*绑定模式*下运作，以便更容易地将引用绑定到值。当引用值被非引用模式匹配时，它将被自动处理为 `ref` 或 `ref mut` 绑定。示例：
@@ -351,7 +351,7 @@ let Person { name, ref age } = person;
 ```
 
 r[patterns.wildcard]
-## 通配符模式
+## 通配符模式 {#wildcard-pattern}
 
 r[patterns.wildcard.syntax]
 ```grammar,patterns
@@ -456,7 +456,7 @@ match tuple {
 ```
 
 r[patterns.range]
-## 范围模式
+## 范围模式 {#range-patterns}
 
 r[patterns.range.syntax]
 ```grammar,patterns
@@ -651,7 +651,7 @@ r[patterns.range.edition2021]
 > 在 2021 版之前，同时具有下界和上界的范围模式也可以使用 `...` 代替 `..=` 来书写，含义相同。
 
 r[patterns.ref]
-## 引用模式
+## 引用模式 {#reference-patterns}
 
 r[patterns.ref.syntax]
 ```grammar,patterns
@@ -682,7 +682,7 @@ r[patterns.ref.refutable]
 引用模式始终是不可反驳的。
 
 r[patterns.struct]
-## 结构体模式
+## 结构体模式 {#struct-patterns}
 
 r[patterns.struct.syntax]
 ```grammar,patterns
@@ -799,7 +799,7 @@ r[patterns.struct.namespace]
 结构体模式在[类型命名空间][type namespace]中匹配其构造器由 [PathInExpression] 解析到的结构体、联合体或枚举变体。更多细节请参见 [patterns.tuple-struct.namespace]。
 
 r[patterns.tuple-struct]
-## 元组结构体模式
+## 元组结构体模式 {#tuple-struct-patterns}
 
 r[patterns.tuple-struct.syntax]
 ```grammar,patterns
@@ -853,7 +853,7 @@ r[patterns.tuple-struct.namespace]
 > 语言团队已经做出了某些决策，例如 [PR #138458] 中的决策，这引发了对以这种方式在模式中使用值命名空间的合理性的质疑，如 [PR #140593] 中所述。在你的代码中有意依赖这种细微差别可能是不明智的。
 
 r[patterns.tuple]
-## 元组模式
+## 元组模式 {#tuple-patterns}
 
 r[patterns.tuple.syntax]
 ```grammar,patterns
@@ -904,7 +904,7 @@ match int_reference {
 ```
 
 r[patterns.slice]
-## 切片模式
+## 切片模式 {#slice-patterns}
 
 r[patterns.slice.syntax]
 ```grammar,patterns
@@ -944,7 +944,7 @@ r[patterns.slice.restriction]
 在切片内部，没有同时指定下界和上界的范围模式必须括在括号中，如 `(a..)`，以明确其意图是匹配单个切片元素。同时具有下界和上界的范围模式，如 `a..=b`，不需要括在括号中。
 
 r[patterns.path]
-## 路径模式
+## 路径模式 {#path-patterns}
 
 r[patterns.path.syntax]
 ```grammar,patterns
@@ -1008,7 +1008,7 @@ r[patterns.const.translation]
 在确保满足所有条件后，常量值被转换为模式，并且现在其行为完全如同直接书写了该模式一样。特别是，它完全参与穷尽性检查。（对于裸指针，常量是书写此类模式的唯一方式。对于这些类型，只有 `_` 被认为是有穷尽性的。）
 
 r[patterns.or]
-## 或模式
+## 或模式 {#or-patterns}
 
 *或模式*是匹配两个或多个子模式之一的模式（例如 `A | B | C`）。它们可以任意嵌套。在语法上，或模式允许出现在任何允许其他模式的地方（由 [Pattern] 产生式表示），但 `let` 绑定以及函数和闭包参数除外（由 [PatternNoTopAlt] 产生式表示）。
 

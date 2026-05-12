@@ -166,7 +166,7 @@ r[expr.block.value]
 > ```
 
 r[expr.block.async]
-## `async` 块
+## `async` 块 {#async-blocks}
 
 r[expr.block.async.syntax]
 ```grammar,expressions
@@ -201,7 +201,7 @@ r[expr.block.async.capture]
 Async 块使用与闭包相同的[捕获模式][capture modes]从环境中捕获变量。与闭包类似，当写为 `async { .. }` 时，每个变量的捕获模式将根据块的内容推断。而 `async move { .. }` 块则会将所有引用的变量移动到生成的 future 中。
 
 r[expr.block.async.context]
-### 异步上下文
+### 异步上下文 {#async-context}
 
 因为 async 块构造一个 future，它们定义了一个**异步上下文**，其中又可以包含 [`await` 表达式][`await` expressions]。异步上下文由 async 块以及异步函数体建立，异步函数的语义是通过 async 块来定义的。
 
@@ -226,7 +226,7 @@ loop {
 ```
 
 r[expr.block.const]
-## `const` 块
+## `const` 块 {#const-blocks}
 
 r[expr.block.const.syntax]
 ```grammar,expressions
@@ -287,7 +287,7 @@ if false {
 ```
 
 r[expr.block.unsafe]
-## `unsafe` 块
+## `unsafe` 块 {#unsafe-blocks}
 
 r[expr.block.unsafe.syntax]
 ```grammar,expressions
@@ -312,12 +312,12 @@ let a = unsafe { an_unsafe_fn() };
 ```
 
 r[expr.block.label]
-## 带标签的块表达式
+## 带标签的块表达式 {#labeled-block-expressions}
 
 带标签的块表达式在[循环和其他可中断表达式][Loops and other breakable expressions]一节中描述。
 
 r[expr.block.attributes]
-## 块表达式上的属性
+## 块表达式上的属性 {#attributes-on-block-expressions}
 
 r[expr.block.attributes.inner-attributes]
 在以下情况下，允许在块表达式的开花括号后直接放置[内部属性][inner attributes]：

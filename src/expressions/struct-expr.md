@@ -90,7 +90,7 @@ r[expr.struct.field.union-constraint]
 [联合体][union]类型的值只能使用此语法创建，并且必须恰好指定一个字段。
 
 r[expr.struct.update]
-## 函数式更新语法
+## 函数式更新语法 {#functional-update-syntax}
 
 r[expr.struct.update.intro]
 构造结构体类型值的结构体表达式可以用 `..` 后跟一个表达式作为结尾，以表示函数式更新。

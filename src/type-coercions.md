@@ -10,7 +10,7 @@ r[coerce.as]
 自动强转最初在 [RFC 401] 中定义，并在 [RFC 1558] 中扩展。
 
 r[coerce.site]
-## 强转位置
+## 强转位置 {#coercion-sites}
 
 r[coerce.site.intro]
 自动强转只能在程序的特定强转位置发生；这些通常是期望的类型是显式的或可以通过显式类型推导出来的位置（不需要类型推断）。可能的强转位置包括：
@@ -98,7 +98,7 @@ r[coerce.site.block]
 * 块：如果块的类型为 `U`，则块中的最后一个表达式（如果没有用分号结束）是到 `U` 的强转位置。这包括作为控制流语句一部分的块，如 `if`/`else`，如果该块具有已知类型的话。
 
 r[coerce.types]
-## 强转类型
+## 强转类型 {#coercion-types}
 
 r[coerce.types.intro]
 允许在以下类型之间进行自动强转：
@@ -174,7 +174,7 @@ r[coerce.types.never]
 * `!` 到任何 `T`
 
 r[coerce.unsize]
-### 非固定大小强转
+### 非固定大小强转 {#unsized-coercions}
 
 r[coerce.unsize.intro]
 以下强转称为*非固定大小强转*，因为它们涉及将类型转换为非固定大小类型（unsized types），并且在上文描述的其他强转不被允许的少数情况下也是被允许的。它们仍然可以在任何允许强转的地方发生。

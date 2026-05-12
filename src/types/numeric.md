@@ -2,7 +2,7 @@ r[type.numeric]
 # 数值类型
 
 r[type.numeric.int]
-## 整数类型
+## 整数类型 {#integer-types}
 
 r[type.numeric.int.unsigned]
 无符号整数类型包括：
@@ -27,12 +27,12 @@ r[type.numeric.int.signed]
 `i128` | -(2<sup>127</sup>) | 2<sup>127</sup>-1
 
 r[type.numeric.float]
-## 浮点类型
+## 浮点类型 {#floating-point-types}
 
 IEEE 754-2008 "binary32" 和 "binary64" 浮点类型分别为 `f32` 和 `f64`。
 
 r[type.numeric.int.size]
-## 依赖机器的整数类型
+## 依赖机器的整数类型 {#machine-dependent-integer-types}
 
 r[type.numeric.int.size.usize]
 `usize` 类型是一种无符号整数类型，其位数与平台的指针类型相同。它可以表示进程中的每个内存地址。

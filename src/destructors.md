@@ -53,7 +53,7 @@ core::mem::forget(partial_move.1);
 ```
 
 r[destructors.scope]
-## 丢弃作用域
+## 丢弃作用域 {#drop-scopes}
 
 r[destructors.scope.intro]
 每个变量或临时值都关联到一个*丢弃作用域*。当控制流离开丢弃作用域时，与该作用域关联的所有变量按声明（对于变量）或创建（对于临时值）的逆序被丢弃。
@@ -253,7 +253,7 @@ or_pattern_drop_order(Err([
 ```
 
 r[destructors.scope.temporary]
-### 临时值作用域
+### 临时值作用域 {#temporary-scopes}
 
 r[destructors.scope.temporary.intro]
 表达式的*临时值作用域*是用于在[位置上下文][place context]中使用该表达式时保存该表达式结果的临时变量的作用域，除非它被[提升][promoted]。
@@ -369,12 +369,12 @@ loop {
 ```
 
 r[destructors.scope.const-promotion]
-### 常量提升
+### 常量提升 {#constant-promotion}
 
 当值表达式可以写为常量并被借用，且该借用可以在原本书写表达式的位置被解引用而不改变运行时行为时，该表达式可以被提升到 `'static` 槽位。也就是说，提升后的表达式可以在编译时求值，其结果值不包含[内部可变性][interior mutability]或[析构器][destructors]（这些属性在可能的情况下根据值确定，例如 `&None` 始终具有类型 `&'static Option<_>`，因为它不包含任何禁止的内容）。
 
 r[destructors.scope.lifetime-extension]
-### 临时值生命周期延长
+### 临时值生命周期延长 {#temporary-lifetime-extension}
 
 > [!NOTE]
 > 临时值生命周期延长的确切规则可能会变更。这里仅描述当前行为。
@@ -469,7 +469,7 @@ let &ref x = &*&temp(); // OK
 ```
 
 r[destructors.scope.lifetime-extension.exprs]
-#### 基于表达式的延长
+#### 基于表达式的延长 {#extending-based-on-expressions}
 
 r[destructors.scope.lifetime-extension.exprs.extending]
 对于带有初始化器的 let 语句，*扩展表达式*是以下之一的表达式：

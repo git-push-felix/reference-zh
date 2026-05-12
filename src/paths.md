@@ -115,7 +115,7 @@ r[paths.expr.impl-trait-params]
 对应于 `impl Trait` 类型的合成类型参数是隐式的，不能显式指定。
 
 r[paths.qualified]
-## 限定路径
+## 限定路径 {#qualified-paths}
 
 r[paths.qualified.syntax]
 ```grammar,paths
@@ -148,7 +148,7 @@ S::f();  // 调用固有 impl。
 ```
 
 r[paths.type]
-### 类型中的路径
+### 类型中的路径 {#paths-in-types}
 
 r[paths.type.syntax]
 ```grammar,paths
@@ -184,7 +184,7 @@ type G = std::boxed::Box<dyn std::ops::FnOnce(isize) -> isize>;
 ```
 
 r[paths.qualifiers]
-## 路径限定符
+## 路径限定符 {#path-qualifiers}
 
 路径可以使用各种前导限定符来表示，以改变其解析方式的含义。
 
@@ -416,7 +416,7 @@ macro_rules! inc {
 ```
 
 r[paths.canonical]
-## 规范路径
+## 规范路径 {#canonical-paths}
 
 r[paths.canonical.intro]
 在模块或实现中定义的每个项都有一个*规范路径*，对应于其在其 crate 内的定义位置。

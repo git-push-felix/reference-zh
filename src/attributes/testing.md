@@ -5,7 +5,7 @@ r[attributes.testing]
 
 <!-- template:attributes -->
 r[attributes.testing.test]
-## `test` 属性
+## `test` 属性 {#the-test-attribute}
 
 r[attributes.testing.test.intro]
 *`test` [属性][attributes]* 将一个函数标记为作为测试执行。
@@ -71,7 +71,7 @@ r[attributes.testing.test.success]
 
 <!-- template:attributes -->
 r[attributes.testing.ignore]
-## `ignore` 属性
+## `ignore` 属性 {#the-ignore-attribute}
 
 r[attributes.testing.ignore.intro]
 *`ignore` [属性][attributes]* 可以与 [`test` 属性][attributes.testing.test]一起使用，告知测试框架不要将该函数作为测试执行。
@@ -120,7 +120,7 @@ r[attributes.testing.ignore.behavior]
 
 <!-- template:attributes -->
 r[attributes.testing.should_panic]
-## `should_panic` 属性
+## `should_panic` 属性 {#the-should_panic-attribute}
 
 r[attributes.testing.should_panic.intro]
 *`should_panic` [属性][attributes]* 使测试仅在应用该属性的[测试函数][attributes.testing.test]发生 panic 时通过。

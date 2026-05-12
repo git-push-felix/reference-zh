@@ -1,5 +1,5 @@
 r[expr.if]
-# `if` 表达式
+# `if` 表达式 {#if-expressions}
 
 r[expr.if.syntax]
 ```grammar,expressions
@@ -98,7 +98,7 @@ fn diverging_arms() -> ! {
 ```
 
 r[expr.if.let]
-## `if let` 模式
+## `if let` 模式 {#if-let-patterns}
 
 r[expr.if.let.intro]
 `if` 条件中的 `let` 模式允许在模式成功匹配时将新变量绑定到作用域中。
@@ -142,7 +142,7 @@ if let E::X(n) | E::Y(n) = v {
 ```
 
 r[expr.if.chains]
-## 条件链
+## 条件链 {#chains-of-conditions}
 
 r[expr.if.chains.intro]
 多个条件操作数可以用 `&&` 分隔。

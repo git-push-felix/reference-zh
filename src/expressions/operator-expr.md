@@ -23,7 +23,7 @@ r[expr.operator.trait]
 以下许多运算符也可以通过使用 `std::ops` 或 `std::cmp` 中的 trait 进行重载。
 
 r[expr.operator.int-overflow]
-## 溢出
+## 溢出 {#overflow}
 
 r[expr.operator.int-overflow.intro]
 整数运算符在调试模式下编译时，溢出时会 panic。`-C debug-assertions` 和 `-C overflow-checks` 编译器标志可用于更直接地控制此行为。以下情况被视为溢出：
@@ -50,7 +50,7 @@ r[expr.operator.int-overflow.shift]
 > 在 `rustc` 中，这些最负表达式也会被 `overflowing_literals` lint 检查忽略。
 
 r[expr.operator.borrow]
-## 借用运算符
+## 借用运算符 {#borrow-operators}
 
 r[expr.operator.borrow.syntax]
 ```grammar,expressions
@@ -106,7 +106,7 @@ let a = & & & & mut 10;
 ```
 
 r[expr.borrow.raw]
-### 裸借用运算符
+### 裸借用运算符 {#raw-borrow-operators}
 
 r[expr.borrow.raw.intro]
 `&raw const` 和 `&raw mut` 是*裸借用运算符*。
@@ -153,7 +153,7 @@ let init = unsafe { uninit.assume_init() };
 ```
 
 r[expr.deref]
-## 解引用运算符
+## 解引用运算符 {#the-dereference-operator}
 
 r[expr.deref.syntax]
 ```grammar,expressions
@@ -325,7 +325,7 @@ try 传播运算符可以应用于以下类型的表达式：
     - `Poll::Pending` 求值为 `Poll::Pending`。
 
 r[expr.negate]
-## 取反运算符
+## 取反运算符 {#negation-operators}
 
 r[expr.negate.syntax]
 ```grammar,expressions
@@ -357,7 +357,7 @@ assert_eq!(true, !false);
 ```
 
 r[expr.arith-logic]
-## 算术和逻辑二元运算符
+## 算术和逻辑二元运算符 {#arithmetic-and-logical-binary-operators}
 
 r[expr.arith-logic.syntax]
 ```grammar,expressions
@@ -417,7 +417,7 @@ assert_eq!(-10 >> 2, -3);
 ```
 
 r[expr.cmp]
-## 比较运算符
+## 比较运算符 {#comparison-operators}
 
 r[expr.cmp.syntax]
 ```grammar,expressions
@@ -475,7 +475,7 @@ assert!("World" >= "Hello");
 ```
 
 r[expr.bool-logic]
-## 惰性布尔运算符
+## 惰性布尔运算符 {#lazy-boolean-operators}
 
 r[expr.bool-logic.syntax]
 ```grammar,expressions
@@ -496,7 +496,7 @@ let y = false && panic!(); // false，不求值 `panic!()`
 ```
 
 r[expr.as]
-## 类型转换表达式
+## 类型转换表达式 {#type-cast-expressions}
 
 r[expr.as.syntax]
 ```grammar,expressions
@@ -546,10 +546,10 @@ r[expr.as.coercions]
 
 [^no-capture]: 只有不捕获（封闭）任何局部变量的闭包才能转换为函数指针。
 
-### 语义
+### 语义 {#semantics}
 
 r[expr.as.numeric]
-#### 数值转换
+#### 数值转换 {#numeric-cast}
 
 r[expr.as.numeric.int-same-size]
 * 相同大小的两个整数之间的转换（例如 i32 -> u32）是无操作（Rust 使用二进制补码处理固定整数的负值）
@@ -900,7 +900,7 @@ r[expr.as.pointer.unsized.compound]
   > ```
 
 r[expr.assign]
-## 赋值表达式
+## 赋值表达式 {#assignment-expressions}
 
 r[expr.assign.syntax]
 ```grammar,expressions
@@ -1086,7 +1086,7 @@ r[expr.assign.destructure.tmp-ext]
 > ```
 
 r[expr.compound-assign]
-## 复合赋值表达式
+## 复合赋值表达式 {#compound-assignment-expressions}
 
 r[expr.compound-assign.syntax]
 ```grammar,expressions

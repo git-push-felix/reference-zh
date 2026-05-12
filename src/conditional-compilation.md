@@ -164,7 +164,7 @@ r[cfg.target_family.values]
 * 同时包含 `"unix"` 和 `"wasm"`
 
 r[cfg.target_family.unix]
-### `unix` 和 `windows`
+### `unix` 和 `windows` {#unix-and-windows}
 
 如果 `target_family = "unix"` 被设置，则 `unix` 被设置。
 
@@ -289,7 +289,7 @@ r[cfg.panic.values]
 
 <!-- template:attributes -->
 r[cfg.attr]
-### `cfg` 属性
+### `cfg` 属性 {#the-cfg-attribute}
 
 r[cfg.attr.intro]
 *`cfg` [属性][attribute]* 根据配置谓词有条件地包含其所附着的代码形式。
@@ -362,7 +362,7 @@ r[cfg.attr.crate-level-attrs]
 
 <!-- template:attributes -->
 r[cfg.cfg_attr]
-### `cfg_attr` 属性
+### `cfg_attr` 属性 {#the-cfg_attr-attribute}
 
 r[cfg.cfg_attr.intro]
 *`cfg_attr` [属性][attribute]* 根据配置谓词有条件地包含属性。
@@ -417,7 +417,7 @@ r[cfg.cfg_attr.attribute-list]
 > `cfg_attr` 可以展开为另一个 `cfg_attr`。例如，`#[cfg_attr(target_os = "linux", cfg_attr(feature = "multithreaded", some_other_attribute))]` 是有效的。此示例等效于 `#[cfg_attr(all(target_os = "linux", feature = "multithreaded"), some_other_attribute)]`。
 
 r[cfg.macro]
-### `cfg` 宏
+### `cfg` 宏 {#the-cfg-macro}
 
 内置的 `cfg` 宏接受一个配置谓词，当谓词为 true 时求值为 `true` 字面量，当谓词为 false 时求值为 `false` 字面量。
 
@@ -436,7 +436,7 @@ println!("I'm running on a {} machine!", machine_kind);
 ```
 
 r[cfg.cfg_select]
-### `cfg_select` 宏
+### `cfg_select` 宏 {#the-cfg_select-macro}
 
 r[cfg.cfg_select.intro]
 内置的 [`cfg_select!`][std::cfg_select] 宏可以在编译时根据多个配置谓词选择代码。

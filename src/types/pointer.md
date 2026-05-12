@@ -5,7 +5,7 @@ r[type.pointer.intro]
 所有指针都是显式的一等值。它们可以被移动或复制，存储在数据结构中，并从函数返回。
 
 r[type.pointer.reference]
-## 引用（`&` 和 `&mut`）
+## 引用（`&` 和 `&mut`）{#references--and-mut}
 
 r[type.pointer.reference.syntax]
 ```grammar,types
@@ -13,7 +13,7 @@ ReferenceType -> `&` Lifetime? `mut`? TypeNoBounds
 ```
 
 r[type.pointer.reference.shared]
-### 共享引用（`&`）
+### 共享引用（`&`）{#shared-references-}
 
 r[type.pointer.reference.shared.intro]
 共享引用指向由某个其他值拥有的内存。
@@ -25,7 +25,7 @@ r[type.pointer.reference.shared.copy]
 复制引用是一种"浅"操作：它只涉及复制指针本身，也就是说，指针是 `Copy` 的。释放引用对其指向的值没有影响，但对[临时值][temporary value]的引用会在引用自身的作用域期间保持该临时值的存活。
 
 r[type.pointer.reference.mut]
-### 可变引用（`&mut`）
+### 可变引用（`&mut`）{#mutable-references-mut}
 
 r[type.pointer.reference.mut.intro]
 可变引用指向由某个其他值拥有的内存。可变引用类型写作 `&mut type` 或 `&'a mut type`。
@@ -34,7 +34,7 @@ r[type.pointer.reference.mut.copy]
 可变引用（未被借出的）是访问其指向值的唯一方式，因此不是 `Copy` 的。
 
 r[type.pointer.raw]
-## 裸指针（`*const` 和 `*mut`）
+## 裸指针（`*const` 和 `*mut`）{#raw-pointers-const-and-mut}
 
 r[type.pointer.raw.syntax]
 ```grammar,types

@@ -8,7 +8,7 @@ r[abi.intro]
 
 <!-- template:attributes -->
 r[abi.used]
-## `used` 属性
+## `used` 属性 {#the-used-attribute}
 
 r[abi.used.intro]
 *`used` [属性][attribute]* 强制将一个 [static] 保留在输出目标文件（.o、.rlib 等，但不包括最终二进制文件）中，即使它在 crate 中从未被其他程序项使用或引用。不过，链接器仍然可以自由地移除它。
@@ -60,7 +60,7 @@ r[abi.used.duplicates]
 > `rustc` 会对第一次之后的任何使用给出 lint 警告。
 
 r[abi.no_mangle]
-## `no_mangle` 属性
+## `no_mangle` 属性 {#the-no_mangle-attribute}
 
 r[abi.no_mangle.intro]
 *`no_mangle` 属性*可用于任何[程序项][item]，以禁用在符号名称上应用标准的名称修饰。该程序项的符号将是该程序项名称的标识符。
@@ -81,7 +81,7 @@ r[abi.no_mangle.edition2024]
 > 在 2024 版之前，允许在不使用 `unsafe` 限定的情况下使用 `no_mangle` 属性。
 
 r[abi.link_section]
-## `link_section` 属性
+## `link_section` 属性 {#the-link_section-attribute}
 
 r[abi.link_section.intro]
 *`link_section` 属性*指定将[函数][function]或 [static] 的内容放入目标文件的哪个节中。
@@ -112,7 +112,7 @@ r[abi.link_section.edition2024]
 > 在 2024 版之前，允许在不使用 `unsafe` 限定的情况下使用 `link_section` 属性。
 
 r[abi.export_name]
-## `export_name` 属性
+## `export_name` 属性 {#the-export_name-attribute}
 
 r[abi.export_name.intro]
 *`export_name` 属性*指定将在[函数][function]或 [static] 上导出的符号名称。

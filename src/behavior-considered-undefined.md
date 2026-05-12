@@ -67,7 +67,7 @@ r[undefined.runtime]
 > 未定义行为影响整个程序。例如，调用 C 中表现出 C 的未定义行为的函数意味着你的整个程序包含未定义行为，这也会影响 Rust 代码。反之亦然，Rust 中的未定义行为可能对通过任何 FFI 调用其他语言执行的代码产生不利影响。
 
 r[undefined.pointed-to]
-## 指向的字节
+## 指向的字节 {#pointed-to-bytes}
 
 指针或引用"指向"的字节范围由指针值和指向对象类型的大小（使用 `size_of_val`）确定。
 
@@ -109,7 +109,7 @@ r[undefined.dangling.alloc-limit]
 特别是，Rust 值的动态大小（由 `size_of_val` 确定）绝不能超过 `isize::MAX`，因为单个分配不可能大于 `isize::MAX`。
 
 r[undefined.validity]
-## 无效值
+## 无效值 {#invalid-values}
 [invalid-values]: #无效值
 
 r[undefined.validity.def]

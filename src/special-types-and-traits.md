@@ -59,7 +59,7 @@ r[lang-types.ops]
 [`std::ops`] 和 [`std::cmp`] 中的 trait 用于重载[运算符][operators]、[索引表达式][indexing expressions]和[调用表达式][call expressions]。
 
 r[lang-types.deref]
-## `Deref` 和 `DerefMut`
+## `Deref` 和 `DerefMut` {#deref-and-derefmut}
 
 除了重载一元 `*` 运算符外，[`Deref`] 和 [`DerefMut`] 还用于[方法解析][method resolution]和[解引用强制转换][deref coercions]。
 
@@ -133,7 +133,7 @@ r[lang-types.termination]
 [`Termination`] trait 指示 [main 函数][main function]和[测试函数][test functions]可接受的返回类型。
 
 r[lang-types.auto-traits]
-## 自动 trait
+## 自动 trait {#auto-traits}
 
 [`Send`]、[`Sync`]、[`Unpin`]、[`UnwindSafe`] 和 [`RefUnwindSafe`] trait 是*自动 trait*。自动 trait 具有特殊属性。
 

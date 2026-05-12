@@ -17,7 +17,7 @@ r[panic.control]
 > 标准库提供了通过 [`panic!` 宏][panic!]显式 panic 的能力。
 
 r[panic.panic_handler]
-## `panic_handler` 属性
+## `panic_handler` 属性 {#the-panic_handler-attribute}
 
 r[panic.panic_handler.intro]
 *`panic_handler` 属性*可以应用于一个函数以定义 panic 的行为。
@@ -84,7 +84,7 @@ r[panic.panic_handler.std.no_std]
 链接 [`no_std`] 二进制文件、dylib、cdylib 或 staticlib 将需要指定你自己的 panic 处理器。
 
 r[panic.strategy]
-## Panic 策略
+## Panic 策略 {#panic-strategy}
 
 r[panic.strategy.intro]
 *panic 策略* 定义了 crate 构建所支持的 panic 行为类型。
@@ -101,7 +101,7 @@ r[panic.strategy.intro]
 > 有关链接具有不同 panic 策略的 crate 的限制，请参见 [link.unwinding]。一个推论是，使用 `unwind` 策略构建的 crate 可以使用 `abort` panic 处理器，但 `abort` 策略不能使用 `unwind` panic 处理器。
 
 r[panic.unwind]
-## 展开（Unwinding）
+## 展开（Unwinding） {#unwinding}
 
 r[panic.unwind.intro]
 Panic 可以是可恢复的或不可恢复的，尽管可以通过选择非展开 panic 处理器将其配置为始终不可恢复。（反过来不成立：`unwind` 处理器不保证所有 panic 都是可恢复的，只保证通过 `panic!` 宏和类似的标准库机制的 panic 是可恢复的。）
@@ -116,7 +116,7 @@ r[panic.unwind.destruction]
 > 标准库提供了两种从 panic 恢复的机制，[`std::panic::catch_unwind`]（允许在 panic 线程内恢复）和 [`std::thread::spawn`]（自动为生成的线程设置 panic 恢复，以便其他线程可以继续运行）。
 
 r[panic.unwind.ffi]
-### 跨 FFI 边界的展开
+### 跨 FFI 边界的展开 {#unwinding-across-ffi-boundaries}
 
 r[panic.unwind.ffi.intro]
 可以使用[适当的 ABI 声明][unwind-abi]跨 FFI 边界展开。虽然在某些情况下有用，但这为未定义行为创造了独特的机会，特别是在涉及多个语言运行时的情况下。

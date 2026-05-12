@@ -18,14 +18,14 @@ r[statement.kind]
 Rust 有两种语句：[声明语句](#declaration-statements)和[表达式语句](#expression-statements)。
 
 r[statement.decl]
-## 声明语句
+## 声明语句 {#declaration-statements}
 
 *声明语句*是在所包含的语句块中引入一个或多个*名称*的语句。声明的名称可以表示新的变量或新的[项][item]。
 
 声明语句有两种：项声明和 `let` 语句。
 
 r[statement.item]
-### 项声明
+### 项声明 {#item-declarations}
 
 r[statement.item.intro]
 *项声明语句*的语法形式与[模块][module]中的[项声明][item]完全相同。
@@ -50,7 +50,7 @@ fn outer() {
 ```
 
 r[statement.let]
-### `let` 语句
+### `let` 语句 {#let-statements}
 
 r[statement.let.syntax]
 ```grammar,statements
@@ -89,7 +89,7 @@ let [u, v] = [v[0], v[1]] else { // 此模式是不可反驳的，因此编译�
 ```
 
 r[statement.expr]
-## 表达式语句
+## 表达式语句 {#expression-statements}
 
 r[statement.expr.syntax]
 ```grammar,statements

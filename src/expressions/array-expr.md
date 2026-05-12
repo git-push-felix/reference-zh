@@ -1,7 +1,7 @@
 r[expr.array]
 # 数组和数组索引表达式
 
-## 数组表达式
+## 数组表达式 {#array-expressions}
 
 r[expr.array.syntax]
 ```grammar,expressions
@@ -73,7 +73,7 @@ const EMPTY: Vec<i32> = Vec::new();
 ```
 
 r[expr.array.index]
-## 数组和切片索引表达式
+## 数组和切片索引表达式 {#array-and-slice-indexing-expressions}
 
 r[expr.array.index.syntax]
 ```grammar,expressions

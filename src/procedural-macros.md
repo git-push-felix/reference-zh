@@ -51,7 +51,7 @@ r[macro.proc.hygiene]
 <!-- TODO: rule name needs improvement -->
 <!-- template:attributes -->
 r[macro.proc.proc_macro]
-## `proc_macro` 属性
+## `proc_macro` 属性 {#the-proc_macro-attribute}
 
 r[macro.proc.proc_macro.intro]
 *`proc_macro` [属性][attributes]* 定义了一个[类函数][macro.invocation]过程宏。
@@ -176,7 +176,7 @@ r[macro.proc.derive.output]
 输入的 [`TokenStream`] 是应用了 `derive` 属性的项的 token 流。输出的 [`TokenStream`] 必须是（可能为空的）一组项。这些项被追加到同一个[模块][module]或[块][block]中的输入项之后。
 
 r[macro.proc.derive.attributes]
-### 派生宏辅助属性
+### 派生宏辅助属性 {#derive-macro-helper-attributes}
 
 r[macro.proc.derive.attributes.intro]
 派生宏可以声明*派生宏辅助属性*，这些属性可以在应用了该派生宏的[项][item]的作用域内使用。这些[属性][attributes]是[惰性的][inert]。虽然它们的目的是供声明它们的宏使用，但任何宏都可以看到它们。
@@ -229,7 +229,7 @@ r[macro.proc.derive.attributes.scope]
 
 <!-- template:attributes -->
 r[macro.proc.attribute]
-## `proc_macro_attribute` 属性
+## `proc_macro_attribute` 属性 {#the-proc_macro_attribute-attribute}
 
 r[macro.proc.attribute.intro]
 *`proc_macro_attribute` [属性][attributes]* 定义了一个*属性宏*，该宏可以作为[外部属性][attributes]来使用。

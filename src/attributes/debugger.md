@@ -5,7 +5,7 @@ r[attributes.debugger]
 
 <!-- template:attributes -->
 r[attributes.debugger.debugger_visualizer]
-## `debugger_visualizer` 属性
+## `debugger_visualizer` 属性 {#the-debugger_visualizer-attribute}
 
 r[attributes.debugger.debugger_visualizer.intro]
 *`debugger_visualizer` [属性][attributes]* 可用于将调试器可视化文件嵌入到调试信息中。这改善了显示值时的调试器体验。
@@ -171,7 +171,7 @@ r[attributes.debugger.debugger_visualizer.gdb.path]
 
 <!-- template:attributes -->
 r[attributes.debugger.collapse_debuginfo]
-## `collapse_debuginfo` 属性
+## `collapse_debuginfo` 属性 {#the-collapse_debuginfo-attribute}
 
 r[attributes.debugger.collapse_debuginfo.intro]
 *`collapse_debuginfo` [属性][attribute]* 控制在为调用此宏的代码生成调试信息时，是否将宏定义中的代码位置折叠为与宏调用点关联的单个位置。

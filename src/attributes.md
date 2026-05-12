@@ -94,7 +94,7 @@ r[attributes.allowed-position]
 * [内联汇编][Inline assembly]模板字符串和操作数接受外部属性。只有某些属性在语义上被接受；详情请参阅 [asm.attributes.supported-attributes]。
 
 r[attributes.meta]
-## 元项属性语法
+## 元项属性语法 {#meta-item-attribute-syntax}
 
 r[attributes.meta.intro]
 "元项"是大多数[内置属性][built-in attributes]为 [Attr] 规则所使用的语法。它具有以下文法：
@@ -171,7 +171,7 @@ MetaNameValueStr ->
 [MetaListNameValueStr]                             | `link(name = "CoreFoundation", kind = "framework")`
 
 r[attributes.activity]
-## 活跃属性与惰性属性
+## 活跃属性与惰性属性 {#active-and-inert-attributes}
 
 r[attributes.activity.intro]
 属性要么是活跃的，要么是惰性的。在属性处理期间，*活跃属性*会从其所附着的代码形式中移除自身，而*惰性属性*会保留。
@@ -179,7 +179,7 @@ r[attributes.activity.intro]
 [`cfg`] 和 [`cfg_attr`] 属性是活跃的。[属性宏][Attribute macros]是活跃的。所有其他属性都是惰性的。
 
 r[attributes.tool]
-## 工具属性
+## 工具属性 {#tool-attributes}
 
 r[attributes.tool.intro]
 编译器可以允许外部工具的属性，其中每个工具驻留在[工具预导入][tool prelude]中的自己的模块中。属性路径的第一个段是工具的名称，可以有一个或多个额外的段，其解释由工具决定。
@@ -205,7 +205,7 @@ pub fn f() {}
 > `rustc` 目前识别工具 "clippy"、"rustfmt"、"diagnostic"、"miri" 和 "rust_analyzer"。
 
 r[attributes.builtin]
-## 内置属性索引
+## 内置属性索引 {#built-in-attributes-index}
 
 以下是所有内置属性的索引。
 

@@ -4,7 +4,7 @@ r[attributes.diagnostics]
 以下[属性][attributes]用于控制或生成编译期间的诊断消息。
 
 r[attributes.diagnostics.lint]
-## Lint 检查属性
+## Lint 检查属性 {#lint-check-attributes}
 
 Lint 检查命名了一种潜在的不受欢迎的编码模式，例如不可达代码或遗漏的文档。
 
@@ -230,7 +230,7 @@ fn example_err() {
 ```
 
 r[attributes.diagnostics.lint.tool]
-### 工具 lint 属性
+### 工具 lint 属性 {#tool-lint-attributes}
 
 r[attributes.diagnostics.lint.tool.intro]
 工具 lint 允许使用作用域限定 lint，以 `allow`、`warn`、`deny` 或 `forbid` 某些工具的 lint。
@@ -261,7 +261,7 @@ fn foo() {
 > `rustc` 目前识别 "[clippy]" 和 "[rustdoc]" 的工具 lint。
 
 r[attributes.diagnostics.deprecated]
-## `deprecated` 属性
+## `deprecated` 属性 {#the-deprecated-attribute}
 
 r[attributes.diagnostics.deprecated.intro]
 *`deprecated` 属性*将项标记为已弃用。`rustc` 将在使用 `#[deprecated]` 项时发出警告。`rustdoc` 将显示项弃用信息，包括 `since` 版本和 `note`（如果可用）。
@@ -293,7 +293,7 @@ pub fn bar() {}
 
 <!-- template:attributes -->
 r[attributes.diagnostics.must_use]
-## `must_use` 属性
+## `must_use` 属性 {#the-must_use-attribute}
 
 r[attributes.diagnostics.must_use.intro]
 *`must_use` [属性][attribute]* 标记一个应该被使用的值。
@@ -494,7 +494,7 @@ r[attributes.diagnostic.namespace.unknown-invalid-syntax]
 此命名空间中的未知属性被接受，尽管可能发出未使用属性的警告。此外，对已知属性的无效输入通常将是警告（详见属性定义）。这意味着允许在未来添加或丢弃属性和更改输入，而无需保持无意义的属性或选项正常工作。
 
 r[attributes.diagnostic.on_unimplemented]
-### `diagnostic::on_unimplemented` 属性
+### `diagnostic::on_unimplemented` 属性 {#the-diagnosticon_unimplemented-attribute}
 
 r[attributes.diagnostic.on_unimplemented.intro]
 `#[diagnostic::on_unimplemented]` 属性是对编译器的提示，用于补充在需要 trait 但类型未实现该 trait 的情况下通常会生成的错误消息。
@@ -569,7 +569,7 @@ error[E0277]: My Message for `ImportantTrait<i32>` implemented for `String`
 ```
 
 r[attributes.diagnostic.do_not_recommend]
-### `diagnostic::do_not_recommend` 属性
+### `diagnostic::do_not_recommend` 属性 {#the-diagnosticdo_not_recommend-attribute}
 
 r[attributes.diagnostic.do_not_recommend.intro]
 `#[diagnostic::do_not_recommend]` 属性是对编译器的提示，不要在诊断消息中显示标注的 trait 实现。

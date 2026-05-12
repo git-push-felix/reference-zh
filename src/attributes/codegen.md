@@ -5,7 +5,7 @@ r[attributes.codegen]
 
 <!-- template:attributes -->
 r[attributes.codegen.inline]
-### `inline` 属性
+### `inline` 属性 {#the-inline-attribute}
 
 r[attributes.codegen.inline.intro]
 *`inline` [属性][attribute]* 建议是将带属性函数的代码副本放置在调用者中，还是生成对函数的调用。
@@ -74,7 +74,7 @@ r[attributes.codegen.inline.externally-exported]
 
 <!-- template:attributes -->
 r[attributes.codegen.cold]
-### `cold` 属性
+### `cold` 属性 {#the-cold-attribute}
 
 r[attributes.codegen.cold.intro]
 *`cold` [属性][attribute]* 建议带属性的函数不太可能被调用，这可能帮助编译器生成更好的代码。
@@ -135,7 +135,7 @@ r[attributes.codegen.naked.testing]
 
 <!-- template:attributes -->
 r[attributes.codegen.no_builtins]
-## `no_builtins` 属性
+## `no_builtins` 属性 {#the-no_builtins-attribute}
 
 r[attributes.codegen.no_builtins.intro]
 *`no_builtins` [属性][attribute]* 禁用与调用假定存在的库函数相关的某些代码模式的优化。
@@ -158,7 +158,7 @@ r[attributes.codegen.no_builtins.duplicates]
 > `rustc` 会对第一次之后的使用发出 lint 警告。
 
 r[attributes.codegen.target_feature]
-## `target_feature` 属性
+## `target_feature` 属性 {#the-target_feature-attribute}
 
 r[attributes.codegen.target_feature.intro]
 *`target_feature` [属性][attribute]* 可以应用于函数，以为特定平台架构特性启用该函数的代码生成。它使用 [MetaListNameValueStr] 语法，带有单个键 `enable`，其值是一个以逗号分隔的要启用的特性名称字符串。
@@ -489,7 +489,7 @@ r[attributes.codegen.target_feature.remark-rt]
 > `rustc` 为每个目标和 CPU 设置了一组默认启用的特性。CPU 可以通过 [`-C target-cpu`] 标志选择。可以通过 [`-C target-feature`] 标志为整个 crate 启用或禁用各个特性。
 
 r[attributes.codegen.track_caller]
-## `track_caller` 属性
+## `track_caller` 属性 {#the-track_caller-attribute}
 
 r[attributes.codegen.track_caller.allowed-positions]
 `track_caller` 属性可以应用于任何具有 [`"Rust"` ABI][rust-abi] 的函数，但入口点 `fn main` 除外。
@@ -538,7 +538,7 @@ r[attributes.codegen.track_caller.decay]
 
 <!-- template:attributes -->
 r[attributes.codegen.instruction_set]
-## `instruction_set` 属性
+## `instruction_set` 属性 {#the-instruction_set-attribute}
 
 r[attributes.codegen.instruction_set.intro]
 *`instruction_set` [属性][attribute]* 指定函数在代码生成期间将使用的指令集。这允许在单个程序中混合多个指令集。

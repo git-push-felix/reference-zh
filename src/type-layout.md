@@ -10,7 +10,7 @@ r[layout.guarantees]
 注意，即使是具有相同布局的类型，其在跨函数边界的传递方式仍可能不同。关于类型的函数调用 ABI 兼容性，请参见[此处][fn-abi-compatibility]。
 
 r[layout.properties]
-## 大小与对齐
+## 大小与对齐 {#size-and-alignment}
 
 所有值都具有对齐方式和大小。
 
@@ -110,7 +110,7 @@ r[layout.closure]
 闭包没有布局保证。
 
 r[layout.repr]
-## 表示法
+## 表示法 {#representations}
 
 r[layout.repr.intro]
 所有用户定义的复合类型（`struct`、`enum` 和 `union`）都有一个*表示法*，该表示法指定了该类型的布局。
@@ -164,7 +164,7 @@ r[layout.repr.inter-field]
 
 <a id="the-default-representation"></a>
 r[layout.repr.rust]
-### `Rust` 表示法
+### `Rust` 表示法 {#the-rust-representation}
 
 r[layout.repr.rust.intro]
 `Rust` 表示法是未标注 `repr` 属性的名义类型的默认表示法。通过 `repr` 属性显式使用此表示法，保证与完全省略该属性时相同。
@@ -184,7 +184,7 @@ r[layout.repr.rust.unspecified]
 此表示法对数据布局没有其他保证。
 
 r[layout.repr.c]
-### `C` 表示法
+### `C` 表示法 {#the-c-representation}
 
 r[layout.repr.c.intro]
 `C` 表示法设计用于双重目的。一个目的是创建与 C 语言可互操作的类型。第二个目的是创建可以安全地执行依赖于数据布局的操作的类型，例如将值重新解释为不同的类型。
@@ -251,7 +251,7 @@ struct.size = current_offset + padding_needed_for(current_offset, struct.alignme
 > 此算法可以产生[零大小][zero-sized]结构体。在 C 中，像 `struct Foo { }` 这样的空结构体声明是非法的。然而，gcc 和 clang 都支持启用此类结构体的选项，并为其分配大小零。相比之下，C++ 为空结构体赋予大小 1，除非它们来自继承或带有 `[[no_unique_address]]` 属性的字段，在这种情况下它们不会增加结构体的总大小。
 
 r[layout.repr.c.union]
-#### `#[repr(C)]` 联合体
+#### `#[repr(C)]` 联合体 {#reprc-unions}
 
 r[layout.repr.c.union.intro]
 用 `#[repr(C)]` 声明的联合体将具有与目标平台的 C 语言中等价 C 联合体声明相同的大小和对齐方式。
@@ -298,7 +298,7 @@ r[layout.repr.c.enum]
 > C 语言中的 `enum` 与具有此表示法的 Rust [无字段枚举][field-less enums]之间存在关键差异。C 中的 `enum` 主要是一个 `typedef` 加上一些命名常量；换句话说，`enum` 类型的对象可以容纳任何整数值。例如，这常用于 C 中的位标志。相比之下，Rust 的[无字段枚举][field-less enums]只能合法地容纳判别值，其他任何值都是[未定义行为][undefined behavior]。因此，在 FFI 中使用无字段枚举来建模 C `enum` 通常是错误的。
 
 r[layout.repr.c.adt]
-#### `#[repr(C)]` 带字段枚举
+#### `#[repr(C)]` 带字段枚举 {#reprc-enums-with-fields}
 
 r[layout.repr.c.adt.intro]
 带有字段的 `repr(C)` 枚举的表示法是一个包含两个字段的 `repr(C)` 结构体，在 C 中也被称为"带标签联合体"：
@@ -361,7 +361,7 @@ struct MyDFields;
 ```
 
 r[layout.repr.primitive]
-### 原始表示法
+### 原始表示法 {#primitive-representations}
 
 r[layout.repr.primitive.intro]
 *原始表示法*是与原始整数类型同名的表示法。即：`u8`、`u16`、`u32`、`u64`、`u128`、`usize`、`i8`、`i16`、`i32`、`i64`、`i128` 和 `isize`。
@@ -482,7 +482,7 @@ assert_eq!(std::mem::size_of::<Enum16>(), 4);
 [`repr(C)`]: #reprc-enums-with-fields
 
 r[layout.repr.alignment]
-### 对齐修饰符
+### 对齐修饰符 {#the-alignment-modifiers}
 
 r[layout.repr.alignment.intro]
 `align` 和 `packed` 修饰符可以分别用于提高或降低 `struct` 和 `union` 的对齐方式。`packed` 还可能改变字段之间的填充（尽管不会改变任何字段内部的填充）。单独使用时，`align` 和 `packed` 不提供关于结构体布局中字段顺序或枚举变体布局的保证，尽管它们可以与提供此类保证的表示法（如 `C`）组合使用。
@@ -532,7 +532,7 @@ r[layout.repr.alignment.enum]
 > ```
 
 r[layout.repr.transparent]
-### `transparent` 表示法
+### `transparent` 表示法 {#the-transparent-representation}
 
 r[layout.repr.transparent.constraint-field]
 `transparent` 表示法只能用于具有单个变体的 [`struct`][structs] 或 [`enum`][enumerations]，该变体具有：

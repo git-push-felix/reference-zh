@@ -68,7 +68,7 @@ r[expr.structure]
 > 我们为表达式的操作数命名以便讨论，但这些名称并不稳定，可能会发生变化。
 
 r[expr.precedence]
-## 表达式优先级
+## 表达式优先级 {#expression-precedence}
 
 Rust 运算符和表达式的优先级按从强到弱的顺序排列如下。处于同一优先级的二元运算符按其结合性给定的顺序分组。
 
@@ -143,7 +143,7 @@ assert_eq!(
 > 由于这是递归应用的，这些表达式也从最内层到最外层求值，忽略兄弟节点，直到没有内部子表达式为止。
 
 r[expr.place-value]
-## 位置表达式和值表达式
+## 位置表达式和值表达式 {#place-expressions-and-value-expressions}
 
 r[expr.place-value.intro]
 表达式分为两大类：位置表达式和值表达式；还有第三类次要的表达式，称为赋值目标表达式。在每个表达式内部，操作数同样可以出现在位置上下文或值上下文中。表达式的求值取决于其自身的类别以及它所处的上下文。
@@ -191,7 +191,7 @@ r[expr.place-value.parenthesis]
 在赋值目标表达式内部允许任意加括号。
 
 r[expr.move]
-### 移动和复制类型
+### 移动和复制类型 {#moved-and-copied-types}
 
 r[expr.move.intro]
 当位置表达式在值表达式上下文中求值，或在模式中以值绑定时，它表示该内存位置中*持有的*值。
@@ -217,7 +217,7 @@ r[expr.move.place-invalid]
 在所有其他情况下，尝试在值表达式上下文中使用位置表达式是错误的。
 
 r[expr.mut]
-### 可变性
+### 可变性 {#mutability}
 
 r[expr.mut.intro]
 要使一个位置表达式能够被[赋值][assign]、可变[借用][borrow]、[隐式可变借用][implicitly mutably borrowed]或绑定到包含 `ref mut` 的模式，它必须是*可变的*。我们称这些为*可变位置表达式*。相反，其他位置表达式称为*不可变位置表达式*。
@@ -235,7 +235,7 @@ r[expr.mut.valid-places]
 * 对实现了 `IndexMut` 的类型的[数组索引][array indexing]：这在可变位置表达式上下文中求值被索引的值，但不求值索引。
 
 r[expr.temporary]
-### 临时值
+### 临时值 {#temporaries}
 
 在大多数位置表达式上下文中使用值表达式时，会创建一个临时的无名内存位置并初始化为该值。表达式求值为该位置，除非被[提升][promoted]为 `static`。临时值的[丢弃作用域][drop scope]通常是包围语句的末尾。
 
@@ -317,7 +317,7 @@ x; // OK
 ```
 
 r[expr.implicit-borrow]
-### 隐式借用
+### 隐式借用 {#implicit-borrows}
 
 r[expr.implicit-borrow-intro]
 某些表达式会将一个表达式视为位置表达式，通过隐式借用它。例如，可以直接比较两个非固定大小的[切片][slice]是否相等，因为 `==` 运算符会隐式借用其操作数：
@@ -353,7 +353,7 @@ r[expr.overload]
 以下许多运算符和表达式也可以使用 `std::ops` 或 `std::cmp` 中的 trait 为其他类型进行重载。这些 trait 也以相同的名称存在于 `core::ops` 和 `core::cmp` 中。
 
 r[expr.attr]
-## 表达式属性
+## 表达式属性 {#expression-attributes}
 
 r[expr.attr.restriction]
 表达式前允许[外部属性][Outer attributes]的情况仅限于以下几种：

@@ -1,5 +1,5 @@
 r[type.closure]
-# 闭包类型
+# 闭包类型 {#closure-types}
 
 r[type.closure.intro]
 [闭包表达式][closure expression]生成一个闭包值，其类型是唯一的、匿名的，无法被写出。闭包类型大致等价于一个包含被捕获值的结构体。例如，以下闭包：
@@ -54,7 +54,7 @@ f(Closure{ left_top: &mut rect.left_top, right_bottom_x: &mut rect.right_bottom.
 ```
 
 r[type.closure.capture]
-## 捕获模式
+## 捕获模式 {#capture-modes}
 
 r[type.closure.capture.intro]
 *捕获模式*决定了环境中的[位置表达式][place expression]如何被借用或移动到闭包中。捕获模式有：
@@ -625,7 +625,7 @@ let z = &x;
 在上述示例中，取消 `y` 声明的注释将产生错误，因为这会违反闭包对 `x` 的借用的唯一性；`z` 的声明是有效的，因为闭包的生命周期已在块结束时到期，释放了借用。
 
 r[type.closure.call]
-## 调用 trait 与强制转换
+## 调用 trait 与强制转换 {#call-traits-and-coercions}
 
 r[type.closure.call.intro]
 闭包类型都实现了 [`FnOnce`]，表示它们可通过消耗闭包所有权被调用一次。此外，某些闭包实现了更具体的调用 trait：

@@ -16,7 +16,7 @@ r[names.preludes.kinds]
 - [工具预导入][Tool prelude]
 
 r[names.preludes.std]
-## 标准库预导入
+## 标准库预导入 {#standard-library-prelude}
 
 r[names.preludes.std.intro]
 每个 crate 都有一个标准库预导入，由来自单个标准库模块的名称组成。
@@ -42,7 +42,7 @@ r[names.preludes.std.module]
 > 详情请参见 [names.resolution.expansion.imports.ambiguity.panic-hack]。
 
 r[names.preludes.extern]
-## 外部 crate 预导入
+## 外部 crate 预导入 {#extern-prelude}
 
 r[names.preludes.extern.intro]
 在根模块中使用 [`extern crate`] 导入的或提供给编译器的（如使用 `rustc` 的 `--extern` 标志）外部 crate 被添加到*外部 crate 预导入*中。如果使用别名导入，例如 `extern crate orig_name as new_name`，则符号 `new_name` 被添加到预导入中。
@@ -75,7 +75,7 @@ See https://github.com/rust-lang/rust/issues/57288 for more about the alloc/test
 
 <!-- template:attributes -->
 r[names.preludes.extern.no_std]
-### `no_std` 属性
+### `no_std` 属性 {#the-no_std-attribute}
 
 r[names.preludes.extern.no_std.intro]
 *`no_std` [属性][attributes]* 导致 [`std`] crate 不被自动链接，并且[标准库预导入][standard library prelude]改为使用 `core` 预导入。
@@ -112,7 +112,7 @@ r[names.preludes.extern.no_std.edition2018]
 > 在 2018 版次之前，`std` 默认被注入到 crate 根中。如果指定了 `no_std`，则改为注入 `core`。从 2018 版次开始，无论是否指定 `no_std`，两者都不会被注入到 crate 根中。
 
 r[names.preludes.lang]
-## 语言预导入
+## 语言预导入 {#language-prelude}
 
 r[names.preludes.lang.intro]
 语言预导入包括语言内置的类型和属性名称。语言预导入始终在作用域中。
@@ -132,20 +132,20 @@ r[names.preludes.lang.entities]
     * [内置派生宏][attributes.derive.built-in]
 
 r[names.preludes.macro_use]
-## `macro_use` 预导入
+## `macro_use` 预导入 {#macro_use-prelude}
 
 r[names.preludes.macro_use.intro]
 `macro_use` 预导入包括通过对 [`extern crate`] 应用 [`macro_use` 属性][`macro_use` attribute]从外部 crate 导入的宏。
 
 r[names.preludes.tool]
-## 工具预导入
+## 工具预导入 {#tool-prelude}
 
 r[names.preludes.tool.intro]
 工具预导入包括[类型命名空间][Type namespace]中外部工具的工具名称。更多细节请参见[工具属性][tool attributes]部分。
 
 <!-- template:attributes -->
 r[names.preludes.no_implicit_prelude]
-## `no_implicit_prelude` 属性
+## `no_implicit_prelude` 属性 {#the-no_implicit_prelude-attribute}
 
 r[names.preludes.no_implicit_prelude.intro]
 *`no_implicit_prelude` [属性][attribute]* 用于阻止隐式预导入被带入作用域。

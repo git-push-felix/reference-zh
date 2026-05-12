@@ -1,7 +1,7 @@
 r[expr.tuple]
 # 元组和元组索引表达式
 
-## 元组表达式
+## 元组表达式 {#tuple-expressions}
 
 r[expr.tuple.syntax]
 ```grammar,expressions
@@ -41,7 +41,7 @@ r[expr.tuple.fields]
 | `("a", 4usize, true)` | `(&'static str, usize, bool)` |
 
 r[expr.tuple-index]
-## 元组索引表达式
+## 元组索引表达式 {#tuple-indexing-expressions}
 
 r[expr.tuple-index.syntax]
 ```grammar,expressions

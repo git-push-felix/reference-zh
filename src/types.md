@@ -39,7 +39,7 @@ r[type.kinds]
     * [impl Trait][Impl trait]
 
 r[type.name]
-## 类型表达式
+## 类型表达式 {#type-expressions}
 
 r[type.name.syntax]
 ```grammar,types
@@ -97,7 +97,7 @@ r[type.name.macro-expansion]
 * [宏][Macros]，展开为一个类型表达式。
 
 r[type.name.parenthesized]
-### 括号类型
+### 括号类型 {#parenthesized-types}
 
 r[type.name.parenthesized.syntax]
 ```grammar,types
