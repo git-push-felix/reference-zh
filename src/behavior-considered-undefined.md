@@ -72,8 +72,8 @@ r[undefined.pointed-to]
 指针或引用"指向"的字节范围由指针值和指向对象类型的大小（使用 `size_of_val`）确定。
 
 r[undefined.misaligned]
-## 基于未对齐指针的位置
-[based on a misaligned pointer]: #基于未对齐指针的位置
+## 基于未对齐指针的位置 {#places-based-on-misaligned-pointers}
+[based on a misaligned pointer]: #places-based-on-misaligned-pointers
 
 r[undefined.misaligned.ptr]
 如果一个位置在位置计算期间最后一次 `*` 投影是在一个对其类型未对齐的指针上执行的，则称该位置"基于未对齐指针"。（如果位置表达式中没有 `*` 投影，那么访问的是局部变量或 `static` 的字段，rustc 将保证正确的对齐。如果存在多个 `*` 投影，则每个投影都会从内存中加载待解引用的指针本身，每个这样的加载都受对齐约束。请注意，由于自动解引用，一些 `*` 投影可能在表面 Rust 语法中被省略；我们在此考虑的是完全展开的位置表达式。）
@@ -93,8 +93,8 @@ r[undefined.misaligned.packed]
 在字段类型可能比包含它的类型更严格对齐的情况下，即 `repr(packed)`，获取引用将导致编译器错误。这意味着基于对齐指针总是足以确保新引用是对齐的，但不总是必需的。
 
 r[undefined.dangling]
-## 悬垂指针
-[dangling]: #悬垂指针
+## 悬垂指针 {#dangling-pointers}
+[dangling]: #dangling-pointers
 
 r[undefined.dangling.def]
 如果引用/指针所[指向][points to]的字节并非全部属于同一个存活分配（因此特别是它们必须全部属于*某个*分配），则该引用/指针是"悬垂的"。

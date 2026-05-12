@@ -60,7 +60,7 @@ r[type.closure.capture.intro]
 *捕获模式*决定了环境中的[位置表达式][place expression]如何被借用或移动到闭包中。捕获模式有：
 
 1. 不可变借用 (`ImmBorrow`) --- 位置表达式被捕获为[共享引用][shared reference]。
-2. 唯一不可变借用 (`UniqueImmBorrow`) --- 类似于不可变借用，但必须是唯一的，如[下文](#唯一不可变借用于捕获)所述。
+2. 唯一不可变借用 (`UniqueImmBorrow`) --- 类似于不可变借用，但必须是唯一的，如[下文](#unique-immutable-borrows-in-captures)所述。
 3. 可变借用 (`MutBorrow`) --- 位置表达式被捕获为[可变引用][mutable reference]。
 4. 移动 (`ByValue`) --- 位置表达式通过[移动值][moving the value]的方式被捕获到闭包中。
 
@@ -601,7 +601,7 @@ let c_box = move || {
 ```
 
 r[type.closure.unique-immutable]
-## 唯一不可变借用于捕获 {#唯一不可变借用于捕获}
+## 唯一不可变借用于捕获 {#unique-immutable-borrows-in-captures}
 
 捕获可以通过一种特殊的借用发生，称为*唯一不可变借用*，它不能在语言的其他任何地方使用，也无法显式写出。当修改可变引用的所指对象时会发生这种借用，如下例所示：
 
@@ -757,7 +757,7 @@ r[type.closure.drop-order]
 ```
 
 r[type.closure.capture.precision.edition2018.entirety]
-## 2018 及更早版本 {#2018-及更早版本}
+## 2018 及更早版本 {#edition-2018-and-before}
 
 ### 闭包类型差异
 

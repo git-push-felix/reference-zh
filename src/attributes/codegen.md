@@ -516,7 +516,7 @@ fn f() {
 > `core` 提供 [`core::panic::Location::caller`] 用于观察调用者位置。它包装了由 `rustc` 实现的 [`core::intrinsics::caller_location`] 内部函数。
 
 > [!NOTE]
-> 因为生成的 `Location` 是一个提示，实现可以提前停止向上遍历栈。请参见[限制](#限制)了解重要注意事项。
+> 因为生成的 `Location` 是一个提示，实现可以提前停止向上遍历栈。请参见[限制](#limitations)了解重要注意事项。
 
 #### 示例
 
@@ -525,7 +525,7 @@ fn f() {
 当 `f` 被另一个带属性的函数 `g` 调用，而 `g` 又被 `calls_g` 调用时，`f` 和 `g` 中的代码观察到 `g` 在 `calls_g` 中的调用点。
 
 r[attributes.codegen.track_caller.limits]
-### 限制
+### 限制 {#limitations}
 
 r[attributes.codegen.track_caller.hint]
 此信息是一个提示，实现不需要保留它。

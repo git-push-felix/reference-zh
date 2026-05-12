@@ -25,11 +25,11 @@ r[glossary.abi]
 
 数组，有时也称为固定大小数组或内联数组，是一个描述元素集合的值，每个元素通过程序在运行时可以计算的索引来选择。它占用连续的内存区域。
 
-### 关联项
+### 关联项 {#associated-item}
 
 关联项是与另一个项关联的项。关联项在[实现][implementations]中定义，在 [trait][traits] 中声明。只有函数、常量和类型别名可以关联。与[自由项][free item]对比。
 
-### 毯式实现
+### 毯式实现 {#blanket-implementation}
 
 任何在其中类型以[未覆盖](#uncovered-type)形式出现的实现。`impl<T> Foo for T`、`impl<T> Bar<T> for T`、`impl<T> Bar<Vec<T>> for T` 和 `impl<T> Bar<T> for Vec<T>` 被视为毯式 impl。然而，`impl<T> Bar<Vec<T>> for Vec<T>` 不是毯式 impl，因为在此 `impl` 中出现的所有 `T` 实例都被 `Vec` 覆盖。
 
@@ -53,7 +53,7 @@ Crate 是编译和链接的单位。存在不同[类型的 crate][types of crate
 
 动态大小类型（DST）是一种没有静态已知大小或对齐的类型。
 
-### 实体
+### 实体 {#entity}
 
 [*实体*][*entity*]是一种语言构造，可以在源程序中以某种方式引用，通常通过[路径][paths]。实体包括[类型][types]、[程序项][items]、[泛型参数][generic parameters]、[变量绑定][variable bindings]、[循环标签][loop labels]、[生命周期][lifetimes]、[字段][fields]、[属性][attributes]和 [lint][lints]。
 
@@ -73,13 +73,13 @@ Crate 是编译和链接的单位。存在不同[类型的 crate][types of crate
 
 ### 基础类型构造器 {#fundamental-type-constructors}
 
-基础类型构造器是这样一个类型：在其上实现[毯式实现](#毯式实现)是一个破坏性更改。`&`、`&mut`、`Box` 和 `Pin` 是基础类型构造器。
+基础类型构造器是这样一个类型：在其上实现[毯式实现](#blanket-implementation)是一个破坏性更改。`&`、`&mut`、`Box` 和 `Pin` 是基础类型构造器。
 
 任何时候类型 `T` 被认为是[局部的](#local-type)，`&T`、`&mut T`、`Box<T>` 和 `Pin<T>` 也被认为是局部的。基础类型构造器不能[覆盖](#uncovered-type)其他类型。任何时候使用术语"已覆盖类型"时，`&T`、`&mut T`、`Box<T>` 和 `Pin<T>` 中的 `T` 不被认为是被覆盖的。
 
-### 有人居住的
+### 有人居住的 {#inhabited}
 
-如果类型有构造函数并因此可以被实例化，则该类型是有人居住的。有人居住的类型不是"空"的，因为可以存在该类型的值。与[无人居住的](#无人居住的)相反。
+如果类型有构造函数并因此可以被实例化，则该类型是有人居住的。有人居住的类型不是"空"的，因为可以存在该类型的值。与[无人居住的](#uninhabited)相反。
 
 ### 固有实现
 
@@ -105,17 +105,17 @@ Crate 是编译和链接的单位。存在不同[类型的 crate][types of crate
 
 模块是包含零个或多个[程序项][items]的容器。模块组织成树，从根部的无名模块开始，称为 crate 根或根模块。[路径][Paths] 可用于引用其他模块的项，这可能受到[可见性规则][visibility rules]的限制。[更多信息][modules]
 
-### 名称
+### 名称 {#name}
 
-[*名称*][*name*] 是引用[实体](#实体)的[标识符][identifier]或[生命周期或循环标签][lifetime or loop label]。*名称绑定*是当实体声明引入与该实体关联的标识符或标签时。路径、标识符和标签用于引用实体。
+[*名称*][*name*] 是引用[实体](#entity)的[标识符][identifier]或[生命周期或循环标签][lifetime or loop label]。*名称绑定*是当实体声明引入与该实体关联的标识符或标签时。路径、标识符和标签用于引用实体。
 
 ### 名称解析
 
-[*名称解析*][*Name resolution*] 是将[路径][paths]、[标识符][identifiers]和[标签][labels]绑定到[实体](#实体)声明的编译时过程。
+[*名称解析*][*Name resolution*] 是将[路径][paths]、[标识符][identifiers]和[标签][labels]绑定到[实体](#entity)声明的编译时过程。
 
-### 命名空间
+### 命名空间 {#namespace}
 
-*命名空间*是基于名称所指[实体](#实体)的类型对已声明[名称](#名称)的逻辑分组。命名空间允许一个命名空间中的名称出现不会与另一个命名空间中的相同名称冲突。
+*命名空间*是基于名称所指[实体](#entity)的类型对已声明[名称](#name)的逻辑分组。命名空间允许一个命名空间中的名称出现不会与另一个命名空间中的相同名称冲突。
 
 在命名空间内，名称组织成层次结构，层次结构的每个级别都有自己的一组命名实体。
 
@@ -131,7 +131,7 @@ Crate 是编译和链接的单位。存在不同[类型的 crate][types of crate
 
 ### 路径
 
-[*路径*][*path*] 是用于引用当前作用域或[命名空间](#命名空间)层次结构其他级别中的[实体](#实体)的一个或多个路径段的序列。
+[*路径*][*path*] 是用于引用当前作用域或[命名空间](#namespace)层次结构其他级别中的[实体](#entity)的一个或多个路径段的序列。
 
 ### 预导入
 
@@ -139,7 +139,7 @@ Crate 是编译和链接的单位。存在不同[类型的 crate][types of crate
 
 ### 作用域
 
-[*作用域*][*scope*] 是源文本中可以以其名称引用某命名[实体](#实体)的区域。
+[*作用域*][*scope*] 是源文本中可以以其名称引用某命名[实体](#entity)的区域。
 
 ### 被匹配项 {#scrutinee}
 
@@ -207,9 +207,9 @@ let vec = [1, 2, 3].iter().map(|n| n * 2).collect::<Vec<_>>();
 未指定的编译时或运行时行为。这可能导致但不限于：进程终止或损坏；不当、不正确或意外的计算；或特定于平台的结果。[更多信息][undefined-behavior]。
 
 r[glossary.uninhabited]
-### 无人居住的
+### 无人居住的 {#uninhabited}
 
-如果类型没有构造函数并因此永远不能被实例化，则该类型是无人居住的。无人居住的类型是"空"的，因为没有该类型的值。无人居住类型的经典示例是 [never 类型][never type] `!`，或没有变体的枚举 `enum Never { }`。与[有人居住的](#有人居住的)相反。
+如果类型没有构造函数并因此永远不能被实例化，则该类型是无人居住的。无人居住的类型是"空"的，因为没有该类型的值。无人居住类型的经典示例是 [never 类型][never type] `!`，或没有变体的枚举 `enum Never { }`。与[有人居住的](#inhabited)相反。
 
 r[glossary.zst]
 ### 零大小类型（ZST）
@@ -270,7 +270,7 @@ assert_eq!(0, size_of::<U>());
 [`extern fn`]: items.fn.extern
 [alignment]: type-layout.md#size-and-alignment
 [arrays]: type.array
-[associated item]: #关联项
+[associated item]: #associated-item
 [attributes]: attributes.md
 [*entity*]: names.md
 [crate]: crates-and-source-files.md

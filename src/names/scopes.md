@@ -17,7 +17,7 @@ r[names.scopes.items.duplicate]
 在同一模块或块内引入与同[命名空间][namespace]中另一个项名称重复的项是错误的。[星号 glob 导入][Asterisk glob imports]对处理重复名称和遮蔽有特殊行为，更多细节请参见链接的章节。
 
 r[names.scopes.items.shadow-prelude]
-模块中的项可以遮蔽[预导入](#预导入作用域)中的项。
+模块中的项可以遮蔽[预导入](#prelude-scopes)中的项。
 
 r[names.scopes.items.nested-modules]
 外部模块的项名称不在嵌套模块的作用域中。可以使用[路径][path]引用另一个模块中的项。
@@ -260,7 +260,7 @@ r[names.scopes.loop-label.shadow]
 ```
 
 r[names.scopes.prelude]
-## 预导入作用域
+## 预导入作用域 {#prelude-scopes}
 
 r[names.scopes.prelude.intro]
 [预导入][Preludes]将实体带入每个模块的作用域。这些实体不是模块的成员，而是在[名称解析][name resolution]期间被隐式查询。

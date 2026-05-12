@@ -6,7 +6,7 @@ r[names.intro]
 
 *声明*是一种语法构造，可以引入一个*名称*来引用实体。实体名称在其[*作用域*][*scope*]内有效------作用域是源文本中可以引用该名称的区域。
 
-某些实体在源代码中[显式声明](#显式声明的实体)，某些实体作为语言或编译器扩展的一部分[隐式声明](#隐式声明的实体)。
+某些实体在源代码中[显式声明](#explicitly-declared-entities)，某些实体作为语言或编译器扩展的一部分[隐式声明](#implicitly-declared-entities)。
 
 [*路径*][*paths*]用于引用实体，可能位于其他模块或类型中。
 
@@ -19,7 +19,7 @@ r[names.intro]
 对某些名称的访问可能受其[*可见性*][*visibility*]的限制。
 
 r[names.explicit]
-## 显式声明的实体
+## 显式声明的实体 {#explicitly-declared-entities}
 
 r[names.explicit.list]
 在源代码中显式引入名称的实体包括：
@@ -67,7 +67,7 @@ r[names.explicit.macro-invocation]
 此外，[宏调用][macro invocations]和[属性][attributes]可以通过展开为上述某一项来引入名称。
 
 r[names.implicit]
-## 隐式声明的实体
+## 隐式声明的实体 {#implicitly-declared-entities}
 
 r[names.implicit.list]
 以下实体由语言隐式定义，或由编译器选项和扩展引入：
