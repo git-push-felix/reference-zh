@@ -4,7 +4,7 @@
 
 关于测试链接，也可参见[链接检查器测试](tests.md#linkcheck)。
 
-## 规则链接
+## 规则链接{#rule-links}
 
 [规则](rules/index.md)可以通过其 ID 使用 Markdown 进行链接，目标设置为规则 ID。自动链接引用使得任何规则都可以从书中的任何页面被引用。
 
@@ -18,7 +18,7 @@ Definition link: [namespace kinds]
 [namespace kinds]: names.namespaces.kinds
 ```
 
-## 标准库链接
+## 标准库链接{#standard-library-links}
 
 你应该在不指定 URL 的情况下链接到标准库，方式类似于 [rustdoc 文档内链接][intra]。一些示例：
 
@@ -66,7 +66,7 @@ Definition link: [namespace kinds]
 [intra]: https://doc.rust-lang.org/rustdoc/write-documentation/linking-to-items-by-name.html
 [rel]: tooling/building.md#spec_relative
 
-## 语法链接
+## 语法链接{#grammar-links}
 
 所有语法产生式名称的链接定义都会自动生成。更多信息请参见[语法自动链接](grammar.md#automatic-linking)。
 
@@ -80,7 +80,7 @@ Grammar links can also appear in link reference definitions, e.g. [type].
 [type]: grammar-Type
 ```
 
-## 外部书籍链接
+## 外部书籍链接{#outside-book-links}
 
 指向与参考手册一起发布的其他书籍的链接应该是相对链接，指向对应的书籍。这使链接能够指向正确的版本，与离线文档一起工作，并被链接检查器检查。例如：
 
