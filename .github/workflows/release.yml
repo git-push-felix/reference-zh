@@ -89,10 +89,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release view latest &>/dev/null; then
-            gh release delete latest --yes --cleanup-tag
-            sleep 5
-          fi
+    gh release delete latest --yes --cleanup-tag 2>/dev/null || true
+    sleep 5
           gh release create latest \
             --title "Latest PDFs" \
             --notes-file /tmp/notes.md \
