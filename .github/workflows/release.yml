@@ -99,7 +99,6 @@ jobs:
             --title "Latest PDFs" \
             --notes-file /tmp/notes.md
           sleep 3
-          gh release upload latest \
-            "Rust 参考手册.pdf" \
-            "Rust 参考手册开发者指南.pdf" \
-            --clobber
+          gh release upload latest "Rust 参考手册.pdf"
+          sleep 1
+          gh release upload latest "Rust 参考手册开发者指南.pdf"
