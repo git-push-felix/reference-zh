@@ -8,7 +8,7 @@
 
 &emsp;&emsp;项目仓库目前是通过同步[上游仓库代码](https://github.com/rust-lang/reference/)，翻译内容变化部分的方式保持所有翻译内容为最新内容，这可能与您在[《The Rust Reference》英文网页](https://doc.rust-lang.org/stable/reference/)上看到的内容有些许不同，当前翻译的英文原文的提交哈希为：`ad35aca4`，提交时间是：2026年5月14日。
 
-&emsp;&emsp;您可以选择点击 [《Rust 参考手册》](https://git-push-felix.github.io/reference-zh/) 或 [《Rust 参考手册开发者指南》](https://git-push-felix.github.io/reference-zh/dev-guide/) 链接在线阅读译本，或者从仓库的 [Release 页面](https://github.com/git-push-felix/reference-zh/releases)下载两本书的 PDF 文件，又或者参考 [CONTRIBUTING.md](CONTRIBUTING.md#构建与测试) 的构建与测试板块，下载项目后构建书籍的 HTML 文件，进一步本地生成 PDF 文件。
+&emsp;&emsp;您可以选择点击 [《Rust 参考手册》](https://git-push-felix.github.io/reference-zh/) 或 [《Rust 参考手册开发者指南》](https://git-push-felix.github.io/reference-zh/dev-guide/) 链接在线阅读译本，或者从仓库的 [Release 页面](https://github.com/git-push-felix/reference-zh/releases)下载两本书的 PDF 文件，又或者参考 [CONTRIBUTING.md](CONTRIBUTING.md#构建与测试项目) 的构建与测试板块，下载项目后构建书籍的 HTML 文件，进一步本地生成 PDF 文件。
 
 &emsp;&emsp;书本专业内容强，译者能力有限，翻译内容难免会有疏漏和欠妥之处，恳请各位读者批评指正。如果你在阅读过程中发现任何问题，欢迎到项目仓库提交 Issue 或 Pull Request 参与贡献翻译内容，让我们一起努力，使得《Rust 参考手册》与《Rust 参考手册开发者指南》更加完善。
 
@@ -22,6 +22,6 @@ The translation workflow for this repository begins with an initial machine tran
 
 The project repository is kept up to date by synchronizing with the [upstream repository](https://github.com/rust-lang/reference/) and translating any changed content. This means the translation may differ slightly from what is currently displayed on [the English web page of *The Rust Reference*](https://doc.rust-lang.org/stable/reference/). The English source text on which the current translation is based corresponds to commit hash `ad35aca4`, committed on May 14, 2026.
 
-You can read the translations online: [《Rust 参考手册》](https://git-push-felix.github.io/reference-zh/) and [《Rust 参考手册开发者指南》](https://git-push-felix.github.io/reference-zh/dev-guide/). Alternatively, PDF files for both books can be downloaded from the repository’s [Release page](https://github.com/git-push-felix/reference-zh/releases), or you can consult the build and testing instructions in [CONTRIBUTING.md](CONTRIBUTING.md#构建与测试) (currently available in Chinese) to build the HTML version of the books locally and then generate PDF files.
+You can read the translations online: [《Rust 参考手册》](https://git-push-felix.github.io/reference-zh/) and [《Rust 参考手册开发者指南》](https://git-push-felix.github.io/reference-zh/dev-guide/). Alternatively, PDF files for both books can be downloaded from the repository’s [Release page](https://github.com/git-push-felix/reference-zh/releases), or you can consult the build and testing instructions in [CONTRIBUTING.md](CONTRIBUTING.md#构建与测试项目) (currently available in Chinese) to build the HTML version of the books locally and then generate PDF files.
 
 Given the highly specialized nature of the content and the limited ability of the translators, errors and omissions in the translation are inevitable. Readers are kindly invited to offer criticism and corrections. If you discover any issues while reading, you are welcome to submit an Issue or a Pull Request to the project repository and contribute to the translation effort. Let us work together to make both the 《Rust 参考手册》 and the 《Rust 参考手册开发者指南》 ever more accurate and complete.
