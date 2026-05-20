@@ -1,5 +1,7 @@
 # Rust 参考手册
 
+[译者序](translator-preface.md)
+
 [引言](introduction.md)
 
 - [记法](notation.md)

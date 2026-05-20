@@ -1,13 +1,13 @@
 [book]
 
 title = "Rust 参考手册"
-authors = ["The Rust Project Developers"]
+authors = ["The Rust Project Developers", "Felix (https://github.com/git-push-felix)"]
 
 [output.html]
 additional-css = ["theme/reference.css"]
 additional-js = ["theme/reference.js"]
 git-repository-url = "https://github.com/git-push-felix/reference-zh/"
-edit-url-template = "https://github.com/git-push-felix/reference-zh/edit/main/{path}"
+# edit-url-template = "https://github.com/git-push-felix/reference-zh/edit/main/{path}"
 smart-punctuation = true
 
 [output.html.fold]
