@@ -3,7 +3,7 @@
 你可以运行几类不同的测试（这些测试在 CI 中强制执行）：
 
 - [`cargo xtask test-all`](#all-tests) --- 运行所有测试。
-- [`mdbook test`](#inline-tests) --- 测试内联 Rust 代码块。
+- [`cargo xtask mdbook-test`](#inline-tests) --- 测试内联 Rust 代码块。
 - [`cargo xtask linkcheck`](#linkcheck) --- 验证 Markdown 链接没有失效。
 - [`cargo xtask style-check`](#style-checks) --- 验证各种风格检查。
 - [代码格式化](#code-formatting) --- 检查所有 Rust 工具代码是否已格式化。
@@ -22,10 +22,12 @@ cargo xtask test-all
 ## 内联测试{#inline-tests}
 
 ```sh
-mdbook test
+cargo xtask mdbook-test
 ```
 
 此命令运行 Markdown 中内联的所有测试。内部使用 [`rustdoc`](https://doc.rust-lang.org/rustdoc/) 来运行测试，并支持所有相同的功能。任何带有 `rust` 语言的代码块都将被编译，除非被忽略。更多信息请参见[示例][Examples]。
+
+此前的指南建议使用 `mdbook test`，但只有默认 toolchain 为 nightly 时才能可靠运行。
 
 ## 链接检查{#linkcheck}
 

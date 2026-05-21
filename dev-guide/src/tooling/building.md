@@ -17,7 +17,6 @@ cd reference
 
 ```sh
 rustup toolchain install nightly
-rustup override set nightly
 ```
 
 现在，确保你安装了 `mdbook`，因为构建参考手册需要它：

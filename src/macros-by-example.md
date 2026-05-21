@@ -106,7 +106,7 @@ r[macro.decl.meta.intro]
 r[macro.decl.meta.specifier]
 有效的片段说明符有：
 
-  * `block`：一个[块表达式][BlockExpression]
+  * `block`：一个[块表达式][BlockExpressionNoInnerAttributes]
   * `expr`：一个[表达式][Expression]
   * `expr_2021`：一个[表达式][Expression]，但不包括[下划线表达式][UnderscoreExpression]和[常量块表达式][ConstBlockExpression]（参见 [macro.decl.meta.edition2024]）
   * `ident`：一个 [IDENTIFIER_OR_KEYWORD]，不包括 `_`、[RAW_IDENTIFIER] 或 [`$crate`]

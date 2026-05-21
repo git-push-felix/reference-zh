@@ -6,7 +6,7 @@
 
 本书翻译的是《The Rust Reference》的 [nightly 版本](https://doc.rust-lang.org/nightly/reference/)，这可能与您在其他地方看到的 [stable 版本](https://doc.rust-lang.org/stable/reference/) 的内容有些许不同。
 
-本书的翻译通过同步上游仓库代码、翻译内容变化部分的方式保持所有翻译内容为最新。当前翻译的英文原文提交哈希为 `ad35aca4`，提交时间为 2026 年 5 月 14 日。
+本书的翻译通过同步上游仓库代码、翻译内容变化部分的方式保持所有翻译内容为最新。当前翻译的英文原文提交哈希为 `5d5be50f`，提交时间为 2026 年 5 月 21 日。
 
 您可以通过以下方式阅读本书：
 

@@ -29,9 +29,9 @@ Rust 示例通过 [rustdoc 进行测试][tested via rustdoc]，应包含适当�
 
 ## 测试示例
 
-Rust 代码块在 CI 中被测试。你可以通过运行 [`mdbook test`] 来验证示例是否通过。
+Rust 代码块在 CI 中被测试。你可以通过运行 [`cargo xtask mdbook-test`] 来验证示例是否通过。
 
-[`mdbook test`]: tests.md#inline-tests
+[`cargo xtask mdbook-test`]: tests.md#inline-tests
 [mdBook supported languages]: https://rust-lang.github.io/mdBook/format/theme/syntax-highlighting.html#supported-languages
 [rustdoc documentation]: https://doc.rust-lang.org/rustdoc/documentation-tests.html
 [tested via rustdoc]: tests.md#inline-tests
