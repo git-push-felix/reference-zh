@@ -12,7 +12,7 @@
 
 &emsp;&emsp;您可以选择点击 [《Rust 参考手册》](https://git-push-felix.github.io/reference-zh/) 或 [《Rust 参考手册开发者指南》](https://git-push-felix.github.io/reference-zh/dev-guide/) 链接在线阅读译本，或者从仓库的 [Release 页面](https://github.com/git-push-felix/reference-zh/releases)下载两本书的 PDF 文件，又或者参考 [CONTRIBUTING.md](CONTRIBUTING.md#构建与测试项目) 的构建与测试板块，下载项目后构建书籍的 HTML 文件，进一步本地生成 PDF 文件。
 
-&emsp;&emsp;书本专业内容强，译者能力有限，翻译内容难免会有疏漏和欠妥之处，恳请各位读者批评指正。如果你在阅读过程中发现任何问题，欢迎到项目仓库提交 [Issue](https://github.com/git-push-felix/reference-zh/issues) 或 [Pull Request](https://github.com/git-push-felix/reference-zh/pulls) 参与贡献翻译内容，让我们一起努力，使得《Rust 参考手册》与《Rust 参考手册开发者指南》更加完善。
+&emsp;&emsp;书本专业内容强，译者能力有限，翻译内容难免会有疏漏和欠妥之处，恳请各位读者批评指正。如果你在阅读过程中发现任何问题，欢迎到项目仓库提交 [Issues](https://github.com/git-push-felix/reference-zh/issues) 或 [Pull Requests](https://github.com/git-push-felix/reference-zh/pulls) 参与贡献翻译内容，让我们一起努力，使得《Rust 参考手册》与《Rust 参考手册开发者指南》更加完善。
 
 # Repo. Introduction
 
@@ -28,4 +28,4 @@ The project repository is kept up to date by synchronizing with the upstream rep
 
 You can read the translations online: [《Rust 参考手册》](https://git-push-felix.github.io/reference-zh/) and [《Rust 参考手册开发者指南》](https://git-push-felix.github.io/reference-zh/dev-guide/). Alternatively, PDF files for both books can be downloaded from the repository’s [Release page](https://github.com/git-push-felix/reference-zh/releases), or you can consult the build and testing instructions in [CONTRIBUTING.md](CONTRIBUTING.md#构建与测试项目) (currently available in Chinese) to build the HTML version of the books locally and then generate PDF files.
 
-Given the highly specialized nature of the content and the limited ability of the translators, errors and omissions in the translation are inevitable. Readers are kindly invited to offer criticism and corrections. If you discover any issues while reading, you are welcome to submit an [Issue](https://github.com/git-push-felix/reference-zh/issues) or a [Pull Request](https://github.com/git-push-felix/reference-zh/pulls) to the project repository and contribute to the translation effort. Let us work together to make both the 《Rust 参考手册》 and the 《Rust 参考手册开发者指南》 ever more accurate and complete.
+Given the highly specialized nature of the content and the limited ability of the translators, errors and omissions in the translation are inevitable. Readers are kindly invited to offer criticism and corrections. If you discover any issues while reading, you are welcome to submit an [Issues](https://github.com/git-push-felix/reference-zh/issues) or a [Pull Requests](https://github.com/git-push-felix/reference-zh/pulls) to the project repository and contribute to the translation effort. Let us work together to make both the 《Rust 参考手册》 and the 《Rust 参考手册开发者指南》 ever more accurate and complete.

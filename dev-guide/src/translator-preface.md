@@ -12,4 +12,4 @@
 - PDF 下载：从仓库的 [Release 页面](https://github.com/git-push-felix/reference-zh/releases) 下载
 - 本地构建：参考 [CONTRIBUTING.md](https://github.com/git-push-felix/reference-zh/blob/main/CONTRIBUTING.md#构建与测试项目) 的构建与测试板块，下载项目后构建 HTML 文件，进一步本地生成 PDF
 
-本书专业性强，译者能力有限，翻译难免会有疏漏和欠妥之处，恳请各位读者批评指正。如果您在阅读过程中发现任何问题，欢迎到项目仓库提交 [Issue](https://github.com/git-push-felix/reference-zh/issues) 或 [Pull Request](https://github.com/git-push-felix/reference-zh/pulls) 参与贡献翻译内容。
+本书专业性强，译者能力有限，翻译难免会有疏漏和欠妥之处，恳请各位读者批评指正。如果您在阅读过程中发现任何问题，欢迎到项目仓库提交 [Issues](https://github.com/git-push-felix/reference-zh/issues) 或 [Pull Requests](https://github.com/git-push-felix/reference-zh/pulls) 参与贡献翻译内容。

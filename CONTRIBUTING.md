@@ -8,7 +8,7 @@
 
 ## 翻译内容的编写规范
 
-在项目的 [docs/authoring.md](docs/authoring.md) 文件里记载了从英文翻译成中文所需要注意和调整的地方，以及一些翻译原则。同时，这篇文档是给DeepSeek的提示词(prompts)。
+在项目的 [docs/authoring.md](docs/authoring.md) 文件里记载了从英文翻译成中文所需要注意和调整的地方，以及一些翻译原则。同时，这篇文档也是给 DeepSeek 进行翻译的提示词(prompts)。
 
 ## 向仓库贡献内容
 

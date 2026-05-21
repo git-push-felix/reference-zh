@@ -148,7 +148,7 @@ Cut -> `^` Sequence
 | RepeatRange (named) | Expr{name:2..4} | 当名称在范围之前时，重复次数会绑定到该名称，以便后续的 RepeatRangeNamed 表达式可以引用它。同样适用于 RepeatRangeInclusive。 |
 | RepeatRangeNamed | Expr{name} | 前面的表达式重复的次数由先前命名的 RepeatRange 或 RepeatRangeInclusive 确定。 |
 
-## 自动链接{#automatic-linking}
+## 自动链接 {#automatic-linking}
 
 [`mdbook-spec`] 插件会自动在每一页上为所有产生式名称添加 Markdown 链接定义。要直接链接到一个产生式名称，只需将其用方括号包围，如 `[ArrayExpression]`。
 
