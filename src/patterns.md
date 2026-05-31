@@ -6,10 +6,10 @@ r[patterns.syntax]
 Pattern -> `|`? PatternNoTopAlt  ( `|` PatternNoTopAlt )*
 
 PatternNoTopAlt ->
-      PatternWithoutRange
-    | RangePattern
+      PatternWithoutModernRange
+    | ModernRangePattern
 
-PatternWithoutRange ->
+PatternWithoutModernRange ->
       LiteralPattern
     | IdentifierPattern
     | WildcardPattern
@@ -22,7 +22,10 @@ PatternWithoutRange ->
     | SlicePattern
     | PathPattern
     | MacroInvocation
+    | ObsoleteRangePattern[^obsolete-range-edition]
 ```
+
+[^obsolete-range-edition]: [ObsoleteRangePattern] 语法在 2021 版及之后的版本中语义上无效。
 
 r[patterns.intro]
 模式用于将值与结构进行匹配，并可选择性地将变量绑定到这些结构中的值。它们也用于变量声明以及函数和闭包的参数。
@@ -460,13 +463,12 @@ r[patterns.range]
 
 r[patterns.range.syntax]
 ```grammar,patterns
-RangePattern ->
+ModernRangePattern ->
       RangeExclusivePattern
     | RangeInclusivePattern
     | RangeFromPattern
     | RangeToExclusivePattern
     | RangeToInclusivePattern
-    | ObsoleteRangePattern[^obsolete-range-edition]
 
 RangeExclusivePattern ->
       RangePatternBound `..` RangePatternBound
@@ -490,8 +492,6 @@ RangePatternBound ->
       LiteralPattern
     | PathExpression
 ```
-
-[^obsolete-range-edition]: [ObsoleteRangePattern] 语法已在 2021 版中移除。
 
 r[patterns.range.intro]
 *范围模式*匹配由其边界定义的范围内的标量值。它们由*标记符号*（`..` 或 `..=`）以及一侧或两侧的边界组成。
@@ -655,7 +655,7 @@ r[patterns.ref]
 
 r[patterns.ref.syntax]
 ```grammar,patterns
-ReferencePattern -> (`&`|`&&`) `mut`? PatternWithoutRange
+ReferencePattern -> (`&`|`&&`) `mut`? PatternWithoutModernRange
 ```
 
 r[patterns.ref.intro]

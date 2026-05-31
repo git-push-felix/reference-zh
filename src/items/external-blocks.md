@@ -405,6 +405,9 @@ r[items.extern.attributes.link_name.intro]
 r[items.extern.attributes.link_name.syntax]
 `link_name` 属性使用 [MetaNameValueStr] 语法。
 
+r[items.extern.attributes.link_name.invalid-names]
+符号名称不能是空字符串，也不能包含任何 `U+0000` (NUL) 字节。
+
 r[items.extern.attributes.link_name.allowed-positions]
 `link_name` 属性只能应用于 `extern` 块中的函数或静态项。
 

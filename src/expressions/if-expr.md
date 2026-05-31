@@ -185,15 +185,20 @@ fn nested() {
 ```
 
 r[expr.if.chains.or]
-如果任何条件操作数是 `let` 模式，则由于与 `let` 受检者的歧义和优先级，所有条件操作数都不能是 `||` [惰性布尔运算符表达式][expr.bool-logic]。如果需要 `||` 表达式，可以使用括号。例如：
+如果任何条件操作数是 `let` 模式，则由于与 `let` 受检者的歧义和优先级，所有条件操作数都不能是 `||` [惰性布尔运算符表达式][expr.bool-logic]。
 
-```rust
-# let foo = Some(123);
-# let condition1 = true;
-# let condition2 = false;
-// 此处需要括号。
-if let Some(x) = foo && (condition1 || condition2) { /*...*/ }
-```
+> [!EXAMPLE]
+> 如果需要 `||` 表达式，可以使用括号。例如：
+>
+> ```rust
+> # let foo = Some(123);
+> # let condition1 = true;
+> # let condition2 = false;
+> if let Some(x) = foo
+>     // 此处需要括号。
+>     && (condition1 || condition2)
+> {}
+> ```
 
 r[expr.if.edition2024]
 > [!EDITION-2024]

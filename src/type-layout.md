@@ -198,7 +198,7 @@ r[layout.repr.c.struct]
 #### `#[repr(C)]` 结构体
 
 r[layout.repr.c.struct.align]
-结构体的对齐方式是其内部对齐方式最大的字段的对齐方式。
+结构体的对齐方式是其内部对齐方式最大的字段的对齐方式；若无字段则为 1。
 
 r[layout.repr.c.struct.size-field-offset]
 字段的大小和偏移量由以下算法确定。

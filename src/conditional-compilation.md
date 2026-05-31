@@ -256,6 +256,25 @@ r[cfg.target_has_atomic.values]
 * `"128"`
 * `"ptr"`
 
+r[cfg.target_has_atomic_primitive_alignment]
+### `target_has_atomic_primitive_alignment`
+
+r[cfg.target_has_atomic_primitive_alignment.def]
+键值选项，为每种位宽设置，其中[原子][core::sync::atomic]类型的对齐方式与相应整数类型的对齐方式相同。
+
+> [!NOTE]
+> 对齐方式通常对于给定的位宽是相同的。然而，在某些目标上（例如 32 位 x86），诸如 [`AtomicI64`][core::sync::atomic::AtomicI64] 这样的 64 位原子类型的对齐方式是 8 字节，而 `i64` 只对齐到 4 字节。在这种情况下，不会设置 `target_has_atomic_primitive_alignment = "64"`。
+
+r[cfg.target_has_atomic_primitive_alignment.values]
+可能的值：
+
+* `"8"`
+* `"16"`
+* `"32"`
+* `"64"`
+* `"128"`
+* `"ptr"`
+
 r[cfg.test]
 ### `test`
 

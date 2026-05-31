@@ -240,8 +240,9 @@ r[expr.match.guard.chains.or]
 > ```rust
 > # let foo = Some([123]);
 > match foo {
->     // 此处需要括号。
->     Some(xs) if let [x] = xs && (x < -100 || x > 20) => {}
+>     Some(xs) if let [x] = xs
+>         // 此处需要括号。
+>         && (x < -100 || x > 20) => {}
 >     _ => {}
 > }
 > ```
