@@ -97,41 +97,80 @@ r[attributes.codegen.cold.duplicates]
 r[attributes.codegen.cold.trait]
 当 `cold` 应用于 [trait] 中的函数时，它仅适用于[默认定义][default definition]的代码。
 
+<!-- template:attributes -->
 r[attributes.codegen.naked]
 ## `naked` 属性 {#the-naked-attribute}
 
 r[attributes.codegen.naked.intro]
-*`naked` [属性][attribute]* 阻止编译器为带属性的函数生成函数序言和尾声。
+*`naked` [属性][attribute]* 阻止编译器为带属性的函数生成函数序言和尾声——即*裸函数*。
+
+> [!EXAMPLE]
+> ```rust
+> # #[cfg(target_arch = "x86_64")] {
+> /// Adds 3 to the given number.
+> // SAFETY: The body respects the "sysv64" calling convention,
+> // upholds the signature, and does not fall through.
+> #[unsafe(naked)]
+> pub extern "sysv64" fn add_n(number: u64) -> u64 {
+>     core::arch::naked_asm!(
+>         "add rdi, {}",
+>         "mov rax, rdi",
+>         "ret",
+>         const 3,
+>     )
+> }
+> # }
+> ```
+
+r[attributes.codegen.naked.syntax]
+`naked` 属性使用 [MetaWord] 语法。
+
+r[attributes.codegen.naked.allowed-positions]
+`naked` 属性只能应用于[自由函数][free functions]、[固有 impl][inherent impl] 或 [trait impl][trait impl] 中的[关联函数][associated functions]，以及具有[默认定义][default definition]时 [trait 定义][trait definition]中的关联函数。
+
+r[attributes.codegen.naked.duplicates]
+只有第一次在函数上使用 `naked` 才有效。
+
+> [!NOTE]
+> `rustc` 会对第一次之后的使用发出 lint 警告。
+
+r[attributes.codegen.naked.unsafe]
+`naked` 属性必须使用 [`unsafe`][attributes.safety] 标记，因为函数体必须遵守函数的调用约定、履行其签名，并且要么返回要么发散（即不越过汇编代码的末尾而掉落）。
 
 r[attributes.codegen.naked.body]
 [函数体][function body]必须恰好由一个 [`naked_asm!`] 宏调用组成。
 
 r[attributes.codegen.naked.prologue-epilogue]
-不会为带属性的函数生成函数序言或尾声。`naked_asm!` 块中的汇编代码构成裸函数的完整函数体。
-
-r[attributes.codegen.naked.unsafe-attribute]
-`naked` 属性是一个 [unsafe 属性][unsafe attribute]。使用 `#[unsafe(naked)]` 标注函数附带的安全性义务是：函数体必须遵守函数的调用约定、履行其签名，并且要么返回要么发散（即不越过汇编代码的末尾而掉落）。
+编译器不会为裸函数生成序言或尾声：[`naked_asm!`] 调用中的汇编代码构成其完整函数体。
 
 r[attributes.codegen.naked.call-stack]
-汇编代码可以假设在入口时调用栈和寄存器状态根据函数的签名和调用约定是有效的。
+在入口时，汇编代码可以假设调用栈和寄存器状态根据函数的签名和调用约定是有效的。
 
 r[attributes.codegen.naked.no-duplication]
-汇编代码不能被编译器复制，除非在单态化多态函数时。
+编译器不能复制汇编代码，除非在单态化多态函数时。
 
 > [!NOTE]
-> 保证汇编代码何时可能被复制或不被复制对于定义符号的裸函数很重要。
+> 此保证对于定义符号的裸函数很重要。
 
 r[attributes.codegen.naked.unused-variables]
-[`unused_variables`] lint 在裸函数中被抑制。
+[`unused_variables` lint] 在裸函数中被抑制。
 
 r[attributes.codegen.naked.inline]
-[`inline`](#the-inline-attribute) 属性不能应用于裸函数。
+[`inline` 属性][`inline` attribute]不能应用于裸函数。
 
 r[attributes.codegen.naked.track_caller]
-[`track_caller`](#the-track_caller-attribute) 属性不能应用于裸函数。
+[`track_caller` 属性][`track_caller` attribute]不能应用于裸函数。
 
 r[attributes.codegen.naked.testing]
-[测试属性](testing.md)不能应用于裸函数。
+[测试属性][testing attributes]不能应用于裸函数。
+
+r[attributes.codegen.naked.target_feature]
+[`target_feature` 属性][`target_feature` attribute]不能应用于裸函数。
+
+<!-- TODO: Reflexive rules? -->
+
+r[attributes.codegen.naked.abi]
+裸函数不能使用["Rust" ABI]。
 
 <!-- template:attributes -->
 r[attributes.codegen.no_builtins]
@@ -584,13 +623,16 @@ r[attributes.codegen.instruction_set.arm]
 [`-C target-cpu`]: ../../rustc/codegen-options/index.html#target-cpu
 [`-C target-feature`]: ../../rustc/codegen-options/index.html#target-feature
 [`export_name`]: abi.export_name
+[`inline` attribute]: attributes.codegen.inline
 [`is_aarch64_feature_detected`]: ../../std/arch/macro.is_aarch64_feature_detected.html
 [`is_x86_feature_detected`]: ../../std/arch/macro.is_x86_feature_detected.html
 [`Location`]: core::panic::Location
-[`naked_asm!`]: ../inline-assembly.md
+[`naked_asm!`]: asm
 [`no_mangle`]: abi.no_mangle
+[`target_feature` attribute]: attributes.codegen.target_feature
 [`target_feature` conditional compilation option]: ../conditional-compilation.md#target_feature
-[`unused_variables`]: ../../rustc/lints/listing/warn-by-default.html#unused-variables
+[`track_caller` attribute]: attributes.codegen.track_caller
+[`unused_variables` lint]: ../../rustc/lints/listing/warn-by-default.html#unused-variables
 [associated functions]: items.associated.fn
 [async blocks]: expr.block.async
 [async closure]: expr.closure.async
@@ -601,11 +643,13 @@ r[attributes.codegen.instruction_set.arm]
 [closures]: expr.closure
 [default definition]: items.traits.associated-item-decls
 [free functions]: items.fn
-[function body]: ../items/functions.md#function-body
+[function body]: items.fn.body
 [functions]: ../items/functions.md
 [inherent impl]: items.impl.inherent
+["Rust" ABI]: items.extern.abi.rust
 [rust-abi]: ../items/external-blocks.md#abi
 [target architecture]: ../conditional-compilation.md#target_arch
+[testing attributes]: attributes.testing
 [trait]: items.traits
 [trait definition]: items.traits
 [trait impl]: items.impl.trait
