@@ -102,7 +102,7 @@ r[attributes.codegen.naked]
 ## `naked` 属性 {#the-naked-attribute}
 
 r[attributes.codegen.naked.intro]
-*`naked` [属性][attribute]* 阻止编译器为带属性的函数生成函数序言和尾声——即*裸函数*。
+*`naked` [属性][attribute]* 阻止编译器为带属性的函数生成函数序言和尾声 --- 即*裸函数*。
 
 > [!EXAMPLE]
 > ```rust
