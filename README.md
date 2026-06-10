@@ -8,7 +8,7 @@
 
 &emsp;&emsp;项目仓库翻译的是《The Rust Reference》的 [nightly 版本](https://doc.rust-lang.org/nightly/reference/)，这可能与您在其他地方看到的 [stable 版本](https://doc.rust-lang.org/stable/reference/)的内容有些许不同。
 
-&emsp;&emsp;项目仓库目前是通过同步上游仓库代码，翻译内容变化部分的方式保持所有翻译内容为最新内容，当前翻译的英文原文的提交哈希为：`01b0ee70`，提交时间是：2026年5月31日。
+&emsp;&emsp;项目仓库目前是通过同步上游仓库代码，翻译内容变化部分的方式保持所有翻译内容为最新内容，当前翻译的英文原文的提交哈希为：`6f2d1eac`，提交时间是：2026年6月8日。
 
 &emsp;&emsp;您可以选择点击 [《Rust 参考手册》](https://git-push-felix.github.io/reference-zh/) 或 [《Rust 参考手册开发者指南》](https://git-push-felix.github.io/reference-zh/dev-guide/) 链接在线阅读译本，或者从仓库的 [Release 页面](https://github.com/git-push-felix/reference-zh/releases)下载两本书的 PDF 文件，又或者参考 [CONTRIBUTING.md](CONTRIBUTING.md#构建与测试项目) 的构建与测试板块，下载项目后构建书籍的 HTML 文件，进一步本地生成 PDF 文件。
 
@@ -24,7 +24,7 @@ The translation workflow for this repository begins with an initial machine tran
 
 This project repository translates the [nightly version](https://doc.rust-lang.org/nightly/reference/) of *The Rust Reference*, which may differ slightly from the [stable version](https://doc.rust-lang.org/stable/reference/) you may see elsewhere.
 
-The project repository is kept up to date by synchronizing with the upstream repository and translating any changed content. The English source text on which the current translation is based corresponds to commit hash `01b0ee70`, committed on May 31, 2026.
+The project repository is kept up to date by synchronizing with the upstream repository and translating any changed content. The English source text on which the current translation is based corresponds to commit hash `6f2d1eac`, committed on June 8, 2026.
 
 You can read the translations online: [《Rust 参考手册》](https://git-push-felix.github.io/reference-zh/) and [《Rust 参考手册开发者指南》](https://git-push-felix.github.io/reference-zh/dev-guide/). Alternatively, PDF files for both books can be downloaded from the repository’s [Release page](https://github.com/git-push-felix/reference-zh/releases), or you can consult the build and testing instructions in [CONTRIBUTING.md](CONTRIBUTING.md#构建与测试项目) (currently available in Chinese) to build the HTML version of the books locally and then generate PDF files.
 
