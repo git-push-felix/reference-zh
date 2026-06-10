@@ -130,8 +130,7 @@ r[expr.operand-order.operands-before-primary]
 
 ```rust
 # // 使用 vec 而不是数组以避免引用
-# // 因为在编写此示例时尚无稳定的自有数组迭代器
-# // 在编写此示例时。
+# // 因为在编写此示例时尚无稳定的自有数组迭代器。
 let mut one_two = vec![1, 2].into_iter();
 assert_eq!(
     (1, 2),
@@ -166,7 +165,7 @@ r[expr.place-value.place-context]
 * [复合赋值][compound assignment]表达式的左操作数。
 * 一元[借用][borrow]、[裸借用][raw borrow]或[解引用][deref]运算符的操作数。
 * [字段表达式][field expression]的操作数。
-* [数组索引表达式][array indexing expression]的索引操作数。
+* [数组索引表达式][array indexing expression]的被索引操作数。
 * [元组索引表达式][tuple indexing expression]的元组操作数。
 * 任何[隐式借用][implicit borrow]的操作数。
 * [let 语句][let statement]的初始化器。

@@ -5,7 +5,7 @@ r[type.intro]
 Rust 程序中的每个变量、项和值都有一个类型。*值*的*类型*定义了其内存的解释方式以及可对该值执行的操作。
 
 r[type.builtin]
-内置类型与语言紧密集成，以非常规的方式实现，用户定义类型无法模拟。
+内置类型以深入且复杂的方式与语言紧密集成，这些方式是用户定义类型无法模拟的。
 
 r[type.user-defined]
 用户定义类型的功能有限。
@@ -121,7 +121,7 @@ r[type.recursive.intro]
 r[type.recursive.constraint]
 此类递归有若干限制：
 
-* 递归类型必须包含一个名义类型在递归中（不仅仅是[类型别名][type aliases]或其他结构类型如[数组][arrays]或[元组][tuples]）。因此 `type Rec = &'static [Rec]` 是不允许的。
+* 递归类型必须在递归中包含一个名义类型（不仅仅是[类型别名][type aliases]或其他结构类型如[数组][arrays]或[元组][tuples]）。因此 `type Rec = &'static [Rec]` 是不允许的。
 * 递归类型的大小必须是有限的；换句话说，类型的递归字段必须是[指针类型][pointer types]。
 
 *递归*类型的一个示例及其用法：

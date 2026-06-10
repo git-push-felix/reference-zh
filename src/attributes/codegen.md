@@ -107,9 +107,9 @@ r[attributes.codegen.naked.intro]
 > [!EXAMPLE]
 > ```rust
 > # #[cfg(target_arch = "x86_64")] {
-> /// Adds 3 to the given number.
-> // SAFETY: The body respects the "sysv64" calling convention,
-> // upholds the signature, and does not fall through.
+> /// 将给定数字加 3。
+> // SAFETY：函数体遵循 "sysv64" 调用约定，
+> // 保持签名，并且不会执行穿透。
 > #[unsafe(naked)]
 > pub extern "sysv64" fn add_n(number: u64) -> u64 {
 >     core::arch::naked_asm!(

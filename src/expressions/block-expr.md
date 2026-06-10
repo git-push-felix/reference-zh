@@ -362,7 +362,7 @@ fn is_unix_platform() -> bool {
 [function]: ../items/functions.md
 [inner attributes]: ../attributes.md
 [method]: ../items/associated-items.md#methods
-[mutable reference]: ../types/pointer.md#mutables-references-
+[mutable reference]: ../types/pointer.md#mutable-references-mut
 [never type]: type.never
 [never]: type.never
 [place expression]: expr.place-value.place-memory-location

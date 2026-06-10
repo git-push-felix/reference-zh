@@ -213,8 +213,8 @@ r[layout.repr.c.struct.size-field-offset]
 
 <!-- ignore: pseudocode -->
 ```rust,ignore
-/// Returns the amount of padding needed after `offset` to ensure that the
-/// following address will be aligned to `alignment`.
+/// 返回在 `offset` 之后需要填充的字节数，以确保
+/// 后续地址对齐到 `alignment`。
 fn padding_needed_for(offset: usize, alignment: usize) -> usize {
     let misalignment = offset % alignment;
     if misalignment > 0 {

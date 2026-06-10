@@ -24,10 +24,10 @@ r[attributes.inner]
 
 > [!EXAMPLE]
 > ```rust
-> // General metadata applied to the enclosing module or crate.
+> // 应用于封闭模块或 crate 的通用元数据。
 > #![crate_type = "lib"]
 >
-> // Inner attribute applies to the entire function.
+> // 内部属性应用于整个函数。
 > fn some_unused_variables() {
 >   #![allow(unused_variables)]
 >
@@ -42,19 +42,19 @@ r[attributes.outer]
 
 > [!EXAMPLE]
 > ```rust
-> // A function marked as a unit test
+> // 标记为单元测试的函数
 > #[test]
 > fn test_foo() {
 >     /* ... */
 > }
 >
-> // A conditionally-compiled module
+> // 条件编译的模块
 > #[cfg(target_os = "linux")]
 > mod bar {
 >     /* ... */
 > }
 >
-> // A lint attribute used to suppress a warning/error
+> // 用于抑制警告/错误的 lint 属性
 > #[allow(non_camel_case_types)]
 > type int8_t = i8;
 > ```
@@ -63,7 +63,7 @@ r[attributes.input]
 属性由属性的路径组成，后跟一个可选的分隔 token 树，其解释由该属性定义。除宏属性之外的属性还允许输入为等号 (`=`) 后跟一个表达式。更多细节请参见下面的[元项语法](#meta-item-attribute-syntax)。
 
 r[attributes.safety]
-属性可能是不安全的应用。为了避免使用这些属性时出现未定义行为，必须满足编译器无法检查的某些义务。为了断言这些义务已被满足，属性被包裹在 `unsafe(..)` 中，例如 `#[unsafe(no_mangle)]`。
+应用属性可能是不安全的。为了避免使用这些属性时出现未定义行为，必须满足编译器无法检查的某些义务。为了断言这些义务已被满足，属性被包裹在 `unsafe(..)` 中，例如 `#[unsafe(no_mangle)]`。
 
 以下属性是不安全的：
 

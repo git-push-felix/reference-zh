@@ -69,7 +69,7 @@ fn main () {
 ```
 
 r[items.associated.fn.qualified-self]
-当关联函数在 trait 上声明时，该函数也可以通过指向 trait 的路径后跟 trait 名称的[路径][path]来调用。当发生这种情况时，它会被替换为 `<_ as Trait>::function_name`。
+当关联函数在 trait 上声明时，该函数也可以通过指向 trait 后接 trait 名称的[路径][path]来调用。当发生这种情况时，它会被替换为 `<_ as Trait>::function_name`。
 
 ```rust
 trait Num {
