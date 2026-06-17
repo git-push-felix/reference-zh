@@ -103,7 +103,7 @@ r[undefined.dangling.zero-size]
 如果[大小为零][zero-sized]，则指针平凡地永远不会"悬垂"（即使它是空指针）。
 
 r[undefined.dangling.dynamic-size]
-请注意，动态大小类型（如切片和字符串）指向它们的整个范围，因此长度元数据绝不能太大是重要的。
+请注意，动态大小类型（如切片和字符串）指向它们的整个范围，因此长度[元数据][metadata]绝不能太大是重要的。
 
 r[undefined.dangling.alloc-limit]
 特别是，Rust 值的动态大小（由 `size_of_val` 确定）绝不能超过 `isize::MAX`，因为单个分配不可能大于 `isize::MAX`。
@@ -149,15 +149,19 @@ r[undefined.validity.union]
 
 r[undefined.validity.reference-box]
 * 引用或 [`Box<T>`] 必须对齐且非空，不能[悬垂][dangling]，并且必须指向一个有效值
-  （对于动态大小类型，使用由元数据确定的指向对象的实际动态类型）。
+  （对于动态大小类型，使用由[元数据][metadata]确定的指向对象的实际动态类型）。
   请注意最后一点（关于指向有效值）仍然存在一些争议。
 
 r[undefined.validity.wide]
-* 宽引用、[`Box<T>`] 或原始指针的元数据必须与无大小尾部的类型匹配：
+* 宽引用、[`Box<T>`] 或原始指针的[元数据][metadata]必须与[无大小尾部][unsized tail]的类型匹配：
   * `dyn Trait` 元数据必须是指向编译器生成的 `Trait` 虚表的指针。
     （对于原始指针，此要求仍存在一些争议。）
-  * 切片（`[T]`）元数据必须是有效的 `usize`。
-    此外，对于宽引用和 [`Box<T>`]，如果切片元数据使得指向值总大小大于 `isize::MAX`，则是无效的。
+  * 切片（`[T]`）和 `str` 元数据必须是有效的 `usize`。
+
+  此外，对于宽引用或 [`Box<T>`]，如果元数据使得指向值（由 `size_of_val` 确定）的总大小大于 `isize::MAX`，则是无效的。
+
+  > [!NOTE]
+  > 此界限是关于整个指向值的大小，而不仅仅是其无大小尾部，并且它对 `dyn Trait` 元数据的约束与对切片或 `str` 长度的约束相同。一个有效的虚表描述了一个不大于 `isize::MAX` 的 erased 类型，但有大小前缀仍可能导致总大小超过限制。
 
 r[undefined.validity.valid-range]
 * 如果一个类型有自定义的有效值范围，那么有效值必须在该范围内。
@@ -167,7 +171,7 @@ r[undefined.validity.valid-range]
   > `rustc` 通过不稳定的 `rustc_layout_scalar_valid_range_*` 属性实现这一点。
 
 r[undefined.validity.const-provenance]
-* **在 [const 上下文][const contexts] 中**：除了上述内容外，在常量求值期间还适用与来源（provenance）相关的进一步要求。任何持有纯整数数据的值（`i*`/`u*`/`f*` 类型以及 `bool` 和 `char`、枚举判别值和切片元数据）不得携带任何来源。任何持有指针数据的值（引用、原始指针、函数指针和 `dyn Trait` 元数据）必须要么不携带来源，要么所有字节必须是同一原始指针值的片段且顺序正确。
+* **在 [const 上下文][const contexts] 中**：除了上述内容外，在常量求值期间还适用与来源（provenance）相关的进一步要求。任何持有纯整数数据的值（`i*`/`u*`/`f*` 类型以及 `bool` 和 `char`、枚举判别值和切片[元数据][metadata]）不得携带任何来源。任何持有指针数据的值（引用、原始指针、函数指针和 `dyn Trait` 元数据）必须要么不携带来源，要么所有字节必须是同一原始指针值的片段且顺序正确。
 
   这意味着将指针（引用、原始指针或函数指针）transmute 或以其他方式重新解释为非指针类型（如整数）是未定义行为，如果该指针具有来源的话。
 
@@ -205,6 +209,7 @@ r[undefined.validity.undef]
 [`target_feature`]: attributes/codegen.md#the-target_feature-attribute
 [`UnsafeCell<U>`]: std::cell::UnsafeCell
 [Rustonomicon]: ../nomicon/index.html
+[metadata]: dynamic-sized.pointer-types
 [`NonNull<T>`]: core::ptr::NonNull
 [`NonZero<T>`]: core::num::NonZero
 [place expression context]: expressions.md#place-expressions-and-value-expressions
@@ -214,6 +219,7 @@ r[undefined.validity.undef]
 [project-field]: expressions/field-expr.md
 [project-tuple]: expressions/tuple-expr.md#tuple-indexing-expressions
 [project-slice]: expressions/array-expr.md#array-and-slice-indexing-expressions
+[unsized tail]: dynamic-sized.tail
 [unwinding-ffi]: panic.md#unwinding-across-ffi-boundaries
 [const-promoted]: destructors.md#constant-promotion
 [lifetime-extended]: destructors.md#temporary-lifetime-extension

@@ -731,7 +731,7 @@ r[expr.as.pointer.sized]
   > ```
 
 r[expr.as.pointer.discard-metadata]
-- 如果 `T` 是非固定大小的而 `U` 是固定大小的，该转换会丢弃完成宽指针 `T` 的所有元数据，并产生一个由非固定大小指针的数据部分组成的瘦指针 `U`。
+- 如果 `T` 是非固定大小的而 `U` 是固定大小的，该转换会丢弃完成宽指针 `T` 的所有[元数据][metadata]，并产生一个由非固定大小指针的数据部分组成的瘦指针 `U`。
 
   > [!EXAMPLE]
   > ```rust
@@ -1237,6 +1237,7 @@ r[expr.compound-assign.result]
 [logical not]: ../types/boolean.md#logical-not
 [logical or]: ../types/boolean.md#logical-or
 [logical xor]: ../types/boolean.md#logical-xor
+[metadata]: dynamic-sized.pointer-types
 [moved from]: expr.move.movable-place
 [mutable]: ../expressions.md#mutability
 [place expression]: ../expressions.md#place-expressions-and-value-expressions
